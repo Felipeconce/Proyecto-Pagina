@@ -1,0 +1,28 @@
+frontend/
+└── src/
+    ├── components/
+    │   ├── Login.js
+    │   ├── Layout/
+    │   │   ├── Header.js
+    │   │   ├── Sidebar.js
+    │   │   └── Footer.js
+    │   ├── Pagos/
+    │   │   ├── PagosList.js
+    │   │   └── PagosForm.js
+    │   ├── Gastos/
+    │   │   ├── GastosList.js
+    │   │   └── GastosForm.js
+    │   ├── Documentos/
+    │   │   ├── DocumentosList.js
+    │   │   └── DocumentosForm.js
+    │   └── Fechas/
+    │       ├── FechasList.js
+    │       └── FechasForm.js
+    ├── pages/
+    │   ├── Dashboard.js
+    │   ├── PagosPage.js
+    │   ├── GastosPage.js
+    │   ├── DocumentosPage.js
+    │   └── FechasPage.js
+    ├── App.js
+    └── index.js

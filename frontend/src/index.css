@@ -1,0 +1,17 @@
+body {
+  margin: 0;
+  /* Fuente más moderna y legible */
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Color de fondo suave general */
+  background-color: #ffffff; /* Cambiado a blanco */
+  color: #1e293b; /* Texto principal oscuro */
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}

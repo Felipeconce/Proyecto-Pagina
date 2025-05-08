@@ -1,0 +1,130 @@
+/* Estilos para solucionar problemas de desplazamiento en la tabla */
+
+/* Contenedor principal */
+.tabla-contenedor {
+  position: relative !important;
+  overflow: hidden !important;
+  width: 100% !important;
+  background-color: white !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+  margin-bottom: 1.5rem !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+/* Scroll principal con tabla */
+.tabla-scroll-main {
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  width: 100% !important;
+  display: block !important;
+  max-height: 500px !important; /* Altura máxima para permitir scroll vertical */
+}
+
+/* Scroll superior */
+.tabla-scroll-top {
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  height: 16px;
+  background-color: #e0e7ff;
+  border-bottom: 1px solid #c7d2fe;
+  display: block !important;
+  margin-bottom: 2px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+/* Elemento interno del scroll superior */
+.tabla-scroll-inner {
+  height: 1px;
+  margin-top: 8px;
+  background-color: transparent;
+}
+
+/* SOLO la columna de Alumnos fija */
+.pagos-table .sticky-col {
+  position: sticky !important;
+  left: 0 !important;
+  z-index: 1000 !important;
+  background-color: white !important;
+  border-right: 2px solid #e5e7eb !important;
+  box-shadow: 4px 0 8px -4px rgba(0, 0, 0, 0.15) !important;
+  min-width: 180px !important;
+  max-width: 250px !important;
+}
+
+/* Encabezado de la columna fija */
+.pagos-table thead .sticky-col {
+  background-color: #f1f5f9 !important;
+  z-index: 1001 !important;
+  font-weight: 600 !important;
+}
+
+/* IMPORTANTE: Asegurarse de que la columna de Alumnos siempre tenga fondo blanco */
+.pagos-table tbody td.sticky-col {
+  background-color: white !important;
+}
+
+/* Anular cualquier otro estilo para la columna sticky */
+.pagos-table tr:hover td.sticky-col {
+  background-color: white !important;
+}
+
+/* Tabla */
+.pagos-table {
+  width: max-content !important;
+  min-width: 100% !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  table-layout: auto !important;
+}
+
+/* IMPORTANTE: Estilos para el resto de celdas (no la columna fija) */
+.pagos-table th:not(.sticky-col), 
+.pagos-table td:not(.sticky-col) {
+  position: static !important;
+  min-width: 100px !important;
+  z-index: 1 !important;
+}
+
+/* Estilos para las barras de desplazamiento */
+.tabla-scroll-container::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.tabla-scroll-container::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.tabla-scroll-container::-webkit-scrollbar-thumb {
+  background-color: #94a3b8;
+  border-radius: 4px;
+  border: 2px solid #f1f5f9;
+}
+
+.tabla-scroll-container::-webkit-scrollbar-thumb:hover {
+  background-color: #64748b;
+}
+
+/* Restablecer los colores para las celdas normales con estado */
+.pagos-table td.pago-completado:not(.sticky-col) {
+  background-color: #dcfce7 !important;
+}
+
+.pagos-table td.pago-atrasado:not(.sticky-col) {
+  background-color: #fee2e2 !important;
+}
+
+.pagos-table td.pago-pendiente:not(.sticky-col) {
+  background-color: #fff7ed !important;
+}
+
+/* Scrollbar container general */
+.tabla-scroll-container {
+  scrollbar-width: thin;
+  scrollbar-color: #94a3b8 #f1f5f9;
+  overflow-x: auto !important;
+  width: 100% !important;
+} 
