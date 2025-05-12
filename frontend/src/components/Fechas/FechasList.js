@@ -1,19 +1,52 @@
 import React, { useEffect, useState } from 'react';
 import { FaCalendarDay, FaCalendarCheck, FaCalendarWeek, FaCalendarTimes } from 'react-icons/fa';
+import './FechasStyles.css';
 
 export default function FechasList() {
   const [fechas, setFechas] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [debug, setDebug] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     setLoading(true);
+    setError(null);
+    
+    // Almacenar información de depuración
+    try {
+      const tokenData = token ? JSON.parse(atob(token.split('.')[1])) : null;
+      setDebug({
+        tokenPresente: !!token,
+        tokenData: tokenData,
+        apiUrl: process.env.REACT_APP_API_URL
+      });
+    } catch (e) {
+      setDebug({
+        tokenPresente: !!token,
+        tokenError: e.message,
+        apiUrl: process.env.REACT_APP_API_URL
+      });
+    }
     
     fetch(`${process.env.REACT_APP_API_URL}/fechas`, {
       headers: { 'Authorization': `Bearer ${token}` }
     })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`Error al cargar fechas: ${res.status} ${res.statusText}`);
+        }
+        return res.json();
+      })
       .then(data => {
+        // Asegurarse de que data sea un array
+        if (!Array.isArray(data)) {
+          console.warn('La respuesta no es un array:', data);
+          data = [];
+        }
+        
+        console.log('Fechas recibidas:', data);
+        
         // Ordenar por fecha, más cercanas primero
         const fechasOrdenadas = [...data].sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
         setFechas(fechasOrdenadas);
@@ -21,6 +54,8 @@ export default function FechasList() {
       })
       .catch(err => {
         console.error('Error al cargar fechas:', err);
+        setError(`No se pudieron cargar las fechas importantes: ${err.message}`);
+        setFechas([]);
         setLoading(false);
       });
   }, []);
@@ -67,65 +102,87 @@ export default function FechasList() {
     }
   };
 
+  // Función para obtener clase CSS según el estado
+  const getEstadoClass = (fechaStr) => {
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    
+    const fechaEvento = new Date(fechaStr);
+    fechaEvento.setHours(0, 0, 0, 0);
+    
+    const diffDays = Math.round((fechaEvento - hoy) / (1000 * 60 * 60 * 24));
+    
+    if (diffDays < 0) {
+      return "estado-pasado";
+    } else if (diffDays === 0) {
+      return "estado-hoy";
+    } else if (diffDays <= 7) {
+      return "estado-semana";
+    } else {
+      return "estado-futuro";
+    }
+  };
+
+  // Mostrar estado de carga
+  if (loading) {
+    return (
+      <div className="fechas-list-container">
+        <h3 className="fechas-list-title">
+          <FaCalendarDay color="#3b82f6" /> Listado de Fechas Importantes
+        </h3>
+        <div className="fechas-loading">
+          Cargando fechas...
+        </div>
+      </div>
+    );
+  }
+
+  // Mostrar mensaje de error
+  if (error) {
+    return (
+      <div className="fechas-list-container">
+        <h3 className="fechas-list-title">
+          <FaCalendarDay color="#3b82f6" /> Listado de Fechas Importantes
+        </h3>
+        <div className="fechas-error">
+          {error}
+        </div>
+        {debug && (
+          <div className="fechas-debug">
+            <pre>{JSON.stringify(debug, null, 2)}</pre>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
-    <div className="content-section" style={{
-      backgroundColor: '#fff',
-      borderRadius: '16px',
-      padding: '24px',
-      boxShadow: '0 2px 12px rgba(0, 0, 0, 0.06)'
-    }}>
-      <h3 style={{
-        fontSize: '20px',
-        fontWeight: '700',
-        color: '#374151',
-        marginBottom: '16px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '10px'
-      }}>
+    <div className="fechas-list-container">
+      <h3 className="fechas-list-title">
         <FaCalendarDay color="#3b82f6" /> Listado de Fechas Importantes
       </h3>
 
-      {loading ? (
-        <div style={{ padding: '20px', textAlign: 'center', color: '#6b7280' }}>
-          Cargando fechas...
-        </div>
-      ) : fechas.length === 0 ? (
-        <div style={{ padding: '20px', textAlign: 'center', color: '#6b7280' }}>
+      {fechas.length === 0 ? (
+        <div className="fechas-empty">
           No hay fechas importantes registradas.
         </div>
       ) : (
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ 
-            width: '100%', 
-            borderCollapse: 'collapse',
-            fontSize: '15px',
-            color: '#374151'
-          }}>
+        <div className="fechas-table-container">
+          <table className="fechas-table">
             <thead>
-              <tr style={{ 
-                backgroundColor: '#dbeafe',
-                borderBottom: '2px solid #bfdbfe',
-                textAlign: 'left'
-              }}>
-                <th style={{ padding: '12px 16px', fontWeight: '600' }}>Fecha</th>
-                <th style={{ padding: '12px 16px', fontWeight: '600' }}>Descripción</th>
-                <th style={{ padding: '12px 16px', fontWeight: '600', textAlign: 'center' }}>Estado</th>
+              <tr>
+                <th>Fecha</th>
+                <th>Descripción</th>
+                <th className="col-estado">Estado</th>
               </tr>
             </thead>
             <tbody>
               {fechas.map(fecha => {
                 const fechaColor = getFechaColor(fecha.fecha);
+                const estadoClass = getEstadoClass(fecha.fecha);
                 return (
-                  <tr key={fecha.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
-                    <td style={{ 
-                      padding: '12px 16px', 
-                      fontWeight: '600',
-                      color: fechaColor,
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px'
-                    }}>
+                  <tr key={fecha.id}>
+                    <td className="fecha-cell" style={{color: fechaColor}}>
                       {getFechaIcon(fecha.fecha)}
                       {new Date(fecha.fecha).toLocaleDateString('es-CL', {
                         day: '2-digit', 
@@ -133,20 +190,9 @@ export default function FechasList() {
                         year: 'numeric'
                       }).replace(/\//g, '-')}
                     </td>
-                    <td style={{ padding: '12px 16px' }}>{fecha.descripcion}</td>
-                    <td style={{ 
-                      padding: '12px 16px', 
-                      textAlign: 'center' 
-                    }}>
-                      <span style={{
-                        display: 'inline-block',
-                        padding: '4px 10px',
-                        borderRadius: '9999px',
-                        fontSize: '13px',
-                        fontWeight: '600',
-                        backgroundColor: `${fechaColor}20`,
-                        color: fechaColor
-                      }}>
+                    <td>{fecha.descripcion}</td>
+                    <td className="col-estado">
+                      <span className={`estado-badge ${estadoClass}`}>
                         {getEstadoFecha(fecha.fecha)}
                       </span>
                     </td>

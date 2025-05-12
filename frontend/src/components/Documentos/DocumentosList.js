@@ -4,21 +4,50 @@ import { FaDownload, FaFileAlt, FaFileWord, FaFilePdf, FaFileExcel, FaImage, FaL
 export default function DocumentosList() {
   const [documentos, setDocumentos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [debug, setDebug] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     setLoading(true);
+    setError(null);
+    
+    // Almacenar información de depuración
+    try {
+      const tokenData = token ? JSON.parse(atob(token.split('.')[1])) : null;
+      setDebug({
+        tokenPresente: !!token,
+        tokenData: tokenData,
+        apiUrl: process.env.REACT_APP_API_URL
+      });
+    } catch (e) {
+      setDebug({
+        tokenPresente: !!token,
+        tokenError: e.message,
+        apiUrl: process.env.REACT_APP_API_URL
+      });
+    }
     
     fetch(`${process.env.REACT_APP_API_URL}/documentos`, {
       headers: { 'Authorization': `Bearer ${token}` }
     })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`Error al cargar documentos: ${res.status} ${res.statusText}`);
+        }
+        return res.json();
+      })
       .then(data => {
-        setDocumentos(data);
+        // Asegurar que data sea un array
+        const documentosArray = Array.isArray(data) ? data : [];
+        console.log('Documentos recibidos:', documentosArray);
+        setDocumentos(documentosArray);
         setLoading(false);
       })
       .catch(err => {
         console.error('Error al cargar documentos:', err);
+        setError(`No se pudieron cargar los documentos: ${err.message}`);
+        setDocumentos([]);
         setLoading(false);
       });
   }, []);
@@ -33,6 +62,70 @@ export default function DocumentosList() {
     if (['jpg', 'jpeg', 'png', 'gif'].includes(extension)) return <FaImage color="#60a5fa" />;
     return <FaFileAlt color="#6b7280" />;
   };
+
+  if (loading) {
+    return (
+      <div className="content-section" style={{
+        backgroundColor: '#fff',
+        borderRadius: '16px',
+        padding: '24px',
+        boxShadow: '0 2px 12px rgba(0, 0, 0, 0.06)'
+      }}>
+        <h3 style={{
+          fontSize: '20px',
+          fontWeight: '700',
+          color: '#374151',
+          marginBottom: '16px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px'
+        }}>
+          <FaList color="#4f46e5" /> Listado de Documentos
+        </h3>
+        <div style={{ padding: '20px', textAlign: 'center', color: '#6b7280' }}>
+          Cargando documentos...
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="content-section" style={{
+        backgroundColor: '#fff',
+        borderRadius: '16px',
+        padding: '24px',
+        boxShadow: '0 2px 12px rgba(0, 0, 0, 0.06)'
+      }}>
+        <h3 style={{
+          fontSize: '20px',
+          fontWeight: '700',
+          color: '#374151',
+          marginBottom: '16px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px'
+        }}>
+          <FaList color="#4f46e5" /> Listado de Documentos
+        </h3>
+        <div style={{ padding: '20px', textAlign: 'center', color: '#ef4444' }}>
+          {error}
+        </div>
+        {debug && (
+          <div style={{ 
+            padding: '15px', 
+            backgroundColor: '#f3f4f6', 
+            borderRadius: '8px', 
+            marginTop: '20px',
+            fontSize: '12px',
+            overflow: 'auto'
+          }}>
+            <pre>{JSON.stringify(debug, null, 2)}</pre>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="content-section" style={{
@@ -53,11 +146,7 @@ export default function DocumentosList() {
         <FaList color="#4f46e5" /> Listado de Documentos
       </h3>
 
-      {loading ? (
-        <div style={{ padding: '20px', textAlign: 'center', color: '#6b7280' }}>
-          Cargando documentos...
-        </div>
-      ) : documentos.length === 0 ? (
+      {documentos.length === 0 ? (
         <div style={{ padding: '20px', textAlign: 'center', color: '#6b7280' }}>
           No hay documentos disponibles.
         </div>

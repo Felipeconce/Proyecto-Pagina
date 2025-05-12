@@ -2,14 +2,32 @@ import React, { useEffect, useState } from 'react';
 import PagosList from '../components/Pagos/PagosList';
 import ConceptosForm from '../components/Pagos/ConceptosForm';
 import { FaMoneyBillWave, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
+import { useToast } from '../components/Layout/ToastProvider';
 
 export default function PagosPage({ user }) {
   const [refresh, setRefresh] = React.useState(false);
-  const [pagos, setPagos] = useState([]);
+  const [pagos, setPagos] = React.useState([]);
   const [alumnos, setAlumnos] = useState([]);
   const [conceptos, setConceptos] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [pagosAtrasadosMap, setPagosAtrasadosMap] = useState({});
+  const [loading, setLoading] = React.useState(true);
+  const [pagosAtrasadosMap, setPagosAtrasadosMap] = React.useState({});
+  const [estadisticas, setEstadisticas] = React.useState({
+    totalPagado: 0,
+    pagosCompletados: 0,
+    pagosAtrasados: 0,
+    totalAtrasado: 0
+  });
+  const toast = useToast();
+  
+  // Referencia para saber si el componente está montado
+  const isMounted = React.useRef(true);
+  
+  // Efecto para limpiar al desmontar
+  React.useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   // Mapeo de abreviaturas de meses a números de mes (1-12)
   // Incluimos tanto mayúsculas como minúsculas para asegurar compatibilidad
@@ -25,51 +43,137 @@ export default function PagosPage({ user }) {
   // Lista de conceptos que siempre deben marcarse como atrasados
   const conceptosAtrasadosForzados = ['MAR', 'ABR', 'MAM', 'Mar', 'Abr'];
 
-  useEffect(() => {
+  // Función para cargar todos los datos de pagos
+  const cargarDatos = React.useCallback(async () => {
     setLoading(true);
     
-    // Hacer las peticiones para obtener pagos, alumnos y conceptos
-    Promise.all([
-      fetch(`${process.env.REACT_APP_API_URL}/pagos`),
-      fetch(`${process.env.REACT_APP_API_URL}/apoderados`),
-      fetch(`${process.env.REACT_APP_API_URL}/conceptos`)
-    ])
-      .then(([pagosRes, alumnosRes, conceptosRes]) => {
-        return Promise.all([
-          pagosRes.ok ? pagosRes.json() : [],
-          alumnosRes.ok ? alumnosRes.json() : [],
-          conceptosRes.ok ? conceptosRes.json() : []
-        ]);
-      })
-      .then(([pagosData, alumnosData, conceptosData]) => {
-        console.log("Pagos cargados:", pagosData);
-        console.log("Conceptos cargados:", conceptosData);
-        
-        // Identificar los IDs de los conceptos MAR y ABR para forzarlos como atrasados
-        const conceptosEspeciales = conceptosData.filter(c => 
-          conceptosAtrasadosForzados.includes(c.nombre)
-        );
-        console.log("Conceptos especiales a forzar como atrasados:", conceptosEspeciales);
-        
-        setPagos(pagosData);
-        setAlumnos(alumnosData);
-        setConceptos(conceptosData);
-        
-        // Procesar los conceptos y pagos después de cargarlos
-        const atrasadosMap = calcularPagosAtrasados(pagosData, conceptosData, alumnosData, conceptosEspeciales);
-        setPagosAtrasadosMap(atrasadosMap);
-        
+    try {
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        toast.showToast('Sesión no válida', 'error');
         setLoading(false);
-      })
-      .catch(err => {
-        console.error("Error al cargar datos:", err);
+        return;
+      }
+      
+      // Cargar pagos, conceptos y alumnos en paralelo
+      const [pagosRes, conceptosRes, alumnosRes] = await Promise.all([
+        fetch(`${process.env.REACT_APP_API_URL}/pagos`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+        fetch(`${process.env.REACT_APP_API_URL}/conceptos`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+        fetch(`${process.env.REACT_APP_API_URL}/apoderados`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        })
+      ]);
+      
+      // Verificar respuestas
+      if (!pagosRes.ok || !conceptosRes.ok || !alumnosRes.ok) {
+        throw new Error('Error al cargar datos');
+      }
+      
+      // Convertir respuestas a JSON
+      const [pagosData, conceptosData, alumnosData] = await Promise.all([
+        pagosRes.json(),
+        conceptosRes.json(),
+        alumnosRes.json()
+      ]);
+      
+      // Asegurarse de que sean arrays
+      const pagosArray = Array.isArray(pagosData) ? pagosData : [];
+      const conceptosArray = Array.isArray(conceptosData) ? conceptosData : [];
+      const alumnosArray = Array.isArray(alumnosData) ? alumnosData : [];
+      
+      // Guardar pagos en estado
+      setPagos(pagosArray);
+      
+      // Calcular pagos atrasados
+      const atrasadosMap = calcularPagosAtrasados(pagosArray, conceptosArray, alumnosArray);
+      setPagosAtrasadosMap(atrasadosMap);
+      
+      // Calcular estadísticas
+      actualizarEstadisticas(pagosArray, atrasadosMap);
+    } catch (error) {
+      console.error('Error cargando datos:', error);
+      toast.showToast('Error al cargar datos', 'error');
+    } finally {
+      if (isMounted.current) {
         setLoading(false);
-        setPagos([]);
-        setAlumnos([]);
-        setConceptos([]);
-        setPagosAtrasadosMap({});
-      });
-  }, [refresh]);
+      }
+    }
+  }, [toast]);
+  
+  // Calcular estadísticas con pagos actualizados
+  const actualizarEstadisticas = (pagosArray, atrasadosMap) => {
+    // Total pagado: sumar montos de pagos con estado 'pagado'
+    const totalPagado = pagosArray.reduce((acc, p) => 
+      acc + (p.estado === 'pagado' ? Number(p.monto) : 0), 0);
+    
+    // Pagos completados: contar pagos con estado 'pagado'
+    const pagosCompletados = pagosArray.filter(p => p.estado === 'pagado').length;
+    
+    // Pagos atrasados: contar usando el mapa de atrasados
+    const pagosAtrasados = Object.keys(atrasadosMap).reduce(
+      (total, alumnoId) => total + Object.keys(atrasadosMap[alumnoId] || {}).length, 
+      0
+    );
+    
+    // Total atrasado: sumar montos de pagos atrasados y no pagados
+    const totalAtrasado = pagosArray.reduce((acc, p) => {
+      // Solo considerar si no está pagado Y está en el mapa de atrasados
+      if (p.estado !== 'pagado' && atrasadosMap[p.usuario_id]?.[p.concepto_id]) {
+        return acc + Number(p.monto);
+      }
+      return acc;
+    }, 0);
+    
+    // Actualizar estado con las estadísticas calculadas
+    setEstadisticas({
+      totalPagado,
+      pagosCompletados,
+      pagosAtrasados,
+      totalAtrasado
+    });
+    
+    console.log('Estadísticas actualizadas:', {
+      totalPagado,
+      pagosCompletados,
+      pagosAtrasados,
+      totalAtrasado
+    });
+  };
+  
+  // Efecto para cargar datos iniciales
+  React.useEffect(() => {
+    cargarDatos();
+  }, [cargarDatos, refresh]);
+  
+  // Escuchar el evento personalizado para recalcular
+  React.useEffect(() => {
+    const handleRecalculate = () => {
+      console.log('Evento de recálculo de pagos recibido');
+      setRefresh(prev => !prev);
+    };
+    
+    // Añadir listener para el evento personalizado
+    document.addEventListener('pagos-recalculate', handleRecalculate);
+    
+    // Limpiar al desmontar
+    return () => {
+      document.removeEventListener('pagos-recalculate', handleRecalculate);
+    };
+  }, []);
+  
+  // Función para forzar actualización cuando cambian los pagos
+  const handlePagosChange = () => {
+    console.log('Forzando actualización después de cambio en pagos');
+    // Usar setTimeout para asegurar que la actualización ocurra en el siguiente ciclo
+    setTimeout(() => {
+      setRefresh(prev => !prev);
+    }, 200);
+  };
 
   // Verificar si un concepto está atrasado basado en su fecha de vencimiento o si es un mes pasado
   const isConceptoAtrasado = (conceptoId, conceptosArray, conceptosEspeciales = []) => {
@@ -173,86 +277,59 @@ export default function PagosPage({ user }) {
     return pagosAtrasadosMap[pago.usuario_id]?.[pago.concepto_id] === true;
   };
 
-  // Resumen de pagos
-  const totalPagado = pagos.reduce((acc, p) => acc + (p.estado === 'pagado' ? Number(p.monto) : 0), 0);
-  const pagosCompletados = pagos.filter(p => p.estado === 'pagado').length;
-  
-  // Contar pagos atrasados basados en nuestro mapa
-  const pagosAtrasados = Object.keys(pagosAtrasadosMap).reduce(
-    (total, alumnoId) => total + Object.keys(pagosAtrasadosMap[alumnoId]).length, 
-    0
-  );
-  
-  // Calcular monto total de atrasados
-  const totalAtrasado = pagos.filter(p => 
-    p.estado !== 'pagado' && pagosAtrasadosMap[p.usuario_id]?.[p.concepto_id]
-  ).reduce((acc, p) => acc + Number(p.monto), 0);
-
   // Opciones de formato para eliminar decimales
   const formatoMoneda = { maximumFractionDigits: 0 };
 
   return (
-    <section>
-      <h2 style={{
-        fontSize: '28px',
-        fontWeight: '700',
-        color: '#111827',
-        marginBottom: '24px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '12px'
-      }}>
+    <section className="pagos-page">
+      <h2 className="page-title">
         <FaMoneyBillWave color="#2563eb" /> Pagos
       </h2>
       
-      {/* Resumen destacado arriba - Ahora con 3 elementos en lugar de 4 */}
-      <div style={{
-        display: 'flex',
-        gap: '20px',
-        marginBottom: '32px',
-        background: '#e0e7ff',
-        borderRadius: '16px',
-        padding: '20px',
-        boxShadow: '0 2px 12px rgba(0, 0, 0, 0.05)',
-        flexWrap: 'wrap',
-        justifyContent: 'space-between'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: '1' }}>
+      {/* Resumen destacado */}
+      <div className="pagos-resumen">
+        <div className="resumen-item">
           <FaMoneyBillWave color="#2563eb" size={24} />
           <div>
-            <div style={{ fontWeight: '600', fontSize: '14px' }}>Total recaudado</div>
-            <div style={{ fontSize: '18px', fontWeight: '700', color: '#2563eb' }}>${totalPagado.toLocaleString('es-CL', formatoMoneda)}</div>
+            <div className="resumen-label">Total recaudado</div>
+            <div className="resumen-value resumen-value-primary">${estadisticas.totalPagado.toLocaleString('es-CL', formatoMoneda)}</div>
           </div>
         </div>
         
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: '1' }}>
+        <div className="resumen-item">
           <FaCheckCircle color="#22c55e" size={24} />
           <div>
-            <div style={{ fontWeight: '600', fontSize: '14px' }}>Pagos completados</div>
-            <div style={{ fontSize: '18px', fontWeight: '700', color: '#22c55e' }}>{pagosCompletados}</div>
+            <div className="resumen-label">Pagos completados</div>
+            <div className="resumen-value resumen-value-success">{estadisticas.pagosCompletados}</div>
           </div>
         </div>
         
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: '1' }}>
+        <div className="resumen-item">
           <FaExclamationTriangle color="#ef4444" size={24} />
           <div>
-            <div style={{ fontWeight: '600', fontSize: '14px' }}>Atrasados</div>
-            <div style={{ fontSize: '18px', fontWeight: '700', color: '#ef4444' }}>{pagosAtrasados} (${totalAtrasado.toLocaleString('es-CL', formatoMoneda)})</div>
+            <div className="resumen-label">Atrasados</div>
+            <div className="resumen-value resumen-value-danger">{estadisticas.pagosAtrasados} (${estadisticas.totalAtrasado.toLocaleString('es-CL', formatoMoneda)})</div>
           </div>
         </div>
       </div>
       
-      <ConceptosForm user={user} setRefresh={setRefresh} />
-      <PagosList 
-        user={user}
-        refresh={refresh}
-        onPagosChange={() => setRefresh(prev => !prev)}
-        isPagoAtrasado={isPagoAtrasado}
-        pagosAtrasadosMap={pagosAtrasadosMap}
-        mesesMap={mesesMap}
-        conceptosAtrasadosForzados={conceptosAtrasadosForzados}
-        formatoMoneda={formatoMoneda}
-      />
+      <div className="card">
+        <ConceptosForm user={user} setRefresh={setRefresh} />
+      </div>
+      
+      <div className="card">
+        <h3 className="section-subtitle">Listado de pagos</h3>
+        <PagosList 
+          user={user}
+          refresh={refresh}
+          onPagosChange={handlePagosChange}
+          isPagoAtrasado={isPagoAtrasado}
+          pagosAtrasadosMap={pagosAtrasadosMap}
+          mesesMap={mesesMap}
+          conceptosAtrasadosForzados={conceptosAtrasadosForzados}
+          formatoMoneda={formatoMoneda}
+        />
+      </div>
     </section>
   );
 }

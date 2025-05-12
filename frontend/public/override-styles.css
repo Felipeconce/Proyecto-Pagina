@@ -1,0 +1,331 @@
+/* Estilos de override para asegurar la consistencia visual */
+
+/* Variables CSS globales */
+:root {
+  /* Colores primarios */
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-primary-light: #e0e7ff;
+  
+  /* Colores de estado */
+  --color-success: #22c55e;
+  --color-success-bg: #dcfce7;
+  --color-warning: #f97316;
+  --color-warning-bg: #fff7ed;
+  --color-error: #ef4444;
+  --color-error-bg: #fee2e2;
+  
+  /* Colores neutrales */
+  --color-bg: #ffffff;
+  --color-bg-secondary: #f9fafb;
+  --color-text: #1e293b;
+  --color-text-secondary: #64748b;
+  --color-border: #e5e7eb;
+  
+  /* Espaciados */
+  --spacing-xs: 0.25rem;  /* 4px */
+  --spacing-sm: 0.5rem;   /* 8px */
+  --spacing-md: 1rem;     /* 16px */
+  --spacing-lg: 1.5rem;   /* 24px */
+  --spacing-xl: 2rem;     /* 32px */
+  
+  /* Dimensiones fijas */
+  --header-height: 64px;
+  --sidebar-width: 200px;
+  
+  /* Sombras */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  
+  /* Bordes */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+}
+
+/* RESET GENERAL */
+* {
+  outline: none !important;
+  box-sizing: border-box;
+}
+
+/* PREVENIR MOVIMIENTO VERTICAL - Solución para el problema de subir y bajar */
+html {
+  overflow-y: scroll !important; /* Forzar siempre barra de desplazamiento */
+  scrollbar-width: thin; /* Para Firefox */
+  height: 100%;
+  margin-right: 0 !important; /* Evitar ajustes de margen */
+}
+
+body {
+  position: relative;
+  height: 100%;
+  overflow-x: hidden;
+  overscroll-behavior: none; /* Prevenir rebote en móviles */
+  -webkit-overflow-scrolling: touch; /* Mejor desplazamiento en iOS */
+}
+
+/* Fijar tamaño mínimo para evitar cambios de dimensiones */
+.app-container {
+  min-height: 100vh !important;
+  width: 100% !important;
+  overflow: hidden !important;
+}
+
+/* CORRECCIÓN DE FONDOS ROJOS */
+[style*="background-color: rgb(255, 0, 0)"],
+[style*="background-color: rgb(255,0,0)"],
+[style*="background-color: rgba(255, 0, 0,"],
+[style*="background-color: #ff0000"],
+[style*="background-color: #f00"],
+[style*="background-color: red"] {
+  background-color: transparent !important;
+  background: none !important;
+}
+
+/* Tabla principal */
+.tabla-contenedor {
+  background-color: var(--color-bg) !important;
+  border-radius: var(--border-radius-md) !important;
+  box-shadow: var(--shadow-sm) !important;
+  border: 1px solid var(--color-border) !important;
+  overflow: hidden !important;
+  position: relative !important;
+  margin-bottom: var(--spacing-md) !important;
+}
+
+.tabla-scroll-main {
+  background-color: var(--color-bg) !important;
+  overflow: visible !important;
+}
+
+.tabla-scroll-main > div {
+  background-color: transparent !important;
+  background-image: none !important;
+  background: none !important;
+}
+
+/* TABLA DE PAGOS */
+.pagos-table {
+  background-color: transparent !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+
+.pagos-table tr {
+  background-color: transparent !important;
+}
+
+.pagos-table th {
+  background-color: var(--color-bg-secondary) !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 10 !important;
+  padding: var(--spacing-md) !important;
+  text-align: center !important;
+  border-bottom: 1px solid var(--color-border) !important;
+  font-weight: 600 !important;
+}
+
+.pagos-table td {
+  background-color: var(--color-bg) !important;
+  padding: var(--spacing-md) !important;
+  text-align: center !important;
+  border-bottom: 1px solid var(--color-border) !important;
+}
+
+/* ESTADOS DE PAGOS */
+.pagos-table td.pago-completado {
+  background-color: var(--color-success-bg) !important;
+  color: var(--color-success) !important;
+  font-weight: 600 !important;
+}
+
+.pagos-table td.pago-pendiente {
+  background-color: var(--color-warning-bg) !important;
+  color: var(--color-warning) !important;
+  font-weight: 600 !important;
+}
+
+.pagos-table td.pago-atrasado {
+  background-color: var(--color-error-bg) !important;
+  color: var(--color-error) !important;
+  font-weight: 600 !important;
+}
+
+/* STICKY COLUMN */
+.pagos-table .sticky-col {
+  position: sticky !important;
+  left: 0 !important;
+  z-index: 20 !important;
+  background-color: var(--color-bg) !important;
+  box-shadow: 3px 0 5px rgba(0, 0, 0, 0.1) !important;
+  min-width: 180px !important;
+  text-align: left !important;
+}
+
+.pagos-table th.sticky-col {
+  background-color: var(--color-bg-secondary) !important;
+  z-index: 21 !important;
+}
+
+/* ESTADOS STICKY COLUMNS */
+.pagos-table td.sticky-col.pago-completado {
+  background-color: var(--color-success-bg) !important;
+}
+
+.pagos-table td.sticky-col.pago-atrasado {
+  background-color: var(--color-error-bg) !important;
+}
+
+.pagos-table td.sticky-col.pago-pendiente {
+  background-color: var(--color-warning-bg) !important;
+}
+
+/* Z-INDEX FIXES */
+header, 
+[role="banner"],
+[class*="navbar"],
+[class*="header"] {
+  z-index: 1000 !important;
+  position: relative !important;
+}
+
+aside, 
+[role="navigation"],
+[class*="sidebar"] {
+  z-index: 999 !important;
+  position: relative !important;
+  padding-top: 0 !important;
+}
+
+/* SIDEBAR LINKS */
+aside a, 
+[role="navigation"] a,
+[class*="sidebar"] a,
+aside ul, 
+[role="navigation"] ul,
+[class*="sidebar"] ul,
+aside li, 
+[role="navigation"] li,
+[class*="sidebar"] li,
+aside button,
+[role="navigation"] button,
+[class*="sidebar"] button {
+  margin-top: 0 !important;
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+}
+
+/* MAIN CONTENT */
+main, 
+[role="main"],
+[class*="content"],
+[class*="main"] {
+  z-index: 1 !important;
+  position: relative !important;
+  margin-top: 0 !important;
+  padding-top: var(--spacing-md) !important;
+}
+
+/* LEYENDA DE COLORES */
+.pagos-leyenda {
+  display: flex !important;
+  gap: 20px !important;
+  justify-content: center !important;
+  margin-top: var(--spacing-md) !important;
+  padding: var(--spacing-md) !important;
+  background-color: var(--color-bg) !important;
+  border-radius: var(--border-radius-md) !important;
+  box-shadow: var(--shadow-sm) !important;
+  border: 1px solid var(--color-border) !important;
+}
+
+.leyenda-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+/* ELIMINAR BORDES DE DESARROLLO */
+[style*="border-color: green"],
+[style*="border: 1px solid green"],
+[style*="border: 1px dashed blue"],
+[style*="border: 1px dashed"] {
+  border-color: transparent !important;
+  border: none !important;
+  outline: none !important;
+}
+
+/* Estilos adicionales para corregir problemas de menu e iconos */
+
+/* Asegurar que los SVG sean visibles */
+svg {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Estilos para el menú móvil */
+[class*="SimpleMenu"] {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  [class*="SimpleMenu"] {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 9999 !important;
+  }
+  
+  [class*="SimpleMenu"] button {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    background-color: #2563eb !important;
+    color: white !important;
+  }
+  
+  [class*="SimpleMenu"] button svg {
+    color: white !important;
+    fill: currentColor !important;
+  }
+  
+  /* Ocultar sidebar en móvil */
+  .sidebar-modern {
+    display: none !important;
+  }
+}
+
+/* Estilos para desktop */
+@media (min-width: 901px) {
+  [class*="SimpleMenu"] {
+    display: none !important;
+  }
+  
+  .sidebar-modern {
+    display: block !important;
+  }
+  
+  /* Estilos para el botón hamburguesa en desktop */
+  .hamburger {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  .hamburger svg {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    color: #2563eb !important;
+    fill: currentColor !important;
+  }
+}
+
+/* Corrección para el contenido principal */
+.main-content {
+  padding-top: 70px !important;
+} 

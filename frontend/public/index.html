@@ -1,16 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
+    <meta name="theme-color" content="#3b82f6" />
+    <meta name="description" content="Aplicación de gestión para centros de apoderados" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <!--
       manifest.json provides metadata used when your web app is installed on a
@@ -26,10 +23,403 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>React App</title>
+    <title>Centro de Apoderados</title>
+    
+    <!-- Fuente Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Enlace a la hoja de estilos optimizada -->
+    <link rel="stylesheet" href="%PUBLIC_URL%/override-styles.css">
+    
+    <!-- Estilos mínimos necesarios -->
+    <style>
+      /* Estilos básicos */
+      body, html {
+        margin: 0;
+        padding: 0;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+          'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+        overflow-x: hidden;
+        overflow-y: auto;
+        height: 100%;
+        width: 100%;
+      }
+      
+      /* Correcciones específicas */
+      .header-pro {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        z-index: 1000 !important;
+      }
+      
+      .header-left {
+        display: flex !important;
+        align-items: center !important;
+      }
+      
+      /* Ajustar contenido principal para no solapar con header */
+      .main-content {
+        padding-top: 70px !important;
+      }
+
+      /* Botones personalizados para móvil y desktop */
+      #custom-menu-mobile {
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        z-index: 10001;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        background-color: #2563eb;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      }
+
+      #custom-menu-desktop {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background-color: transparent;
+        color: #2563eb;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-right: 10px;
+      }
+
+      #custom-menu-desktop:hover {
+        background-color: #eff6ff;
+      }
+
+      @media (max-width: 900px) {
+        #custom-menu-mobile {
+          display: flex !important;
+        }
+        #custom-menu-desktop, .hamburger, .desktop-hamburger {
+          display: none !important;
+        }
+      }
+
+      @media (min-width: 901px) {
+        #custom-menu-desktop {
+          display: flex !important;
+        }
+        #custom-menu-mobile {
+          display: none !important;
+        }
+      }
+      
+      /* Estado del body con sidebar abierto */
+      body.sidebar-open {
+        overflow-y: hidden !important;
+      }
+      
+      html.sidebar-open {
+        overflow-y: hidden !important;
+      }
+      
+      /* Hacer que los botones estándar queden ocultos */
+      .hamburger, .desktop-hamburger {
+        opacity: 0 !important;
+        visibility: hidden !important;
+        position: absolute !important;
+      }
+    </style>
+    
+    <!-- Script principal de corrección de emergencia -->
+    <script src="%PUBLIC_URL%/emergency-fix.js"></script>
+    
+    <!-- Script optimizado para detectar y corregir problemas de visualización -->
+    <script>
+      // Función auto-ejecutable para solucionar problemas visuales
+      (function() {
+        // Evitar que la página suba y baje con un temporizador de agrupación
+        let isFixingVisuals = false;
+        let fixTimer = null;
+        
+        // Constantes para colores correctos
+        const COLORS = {
+          pagado: '#dcfce7',
+          pendiente: '#fff7ed',
+          atrasado: '#fee2e2',
+          header: '#f1f5f9',
+          default: 'white'
+        };
+        
+        // Ejecutar correcciones tan pronto como sea posible
+        window.addEventListener('DOMContentLoaded', function() {
+          // Primera ejecución inmediata
+          requestAnimationFrame(fixVisualIssues);
+          
+          // Establecer un intervalo más largo para evitar cambios frecuentes
+          setInterval(scheduleVisualFix, 2000);
+          
+          // Ejecutar después de cualquier clic en la página
+          document.addEventListener('click', function() {
+            scheduleVisualFix();
+          });
+          
+          // Observer para detectar cambios en el DOM, con throttling
+          const observer = new MutationObserver(function() {
+            scheduleVisualFix();
+          });
+          
+          // Observar cambios en todo el cuerpo del documento
+          observer.observe(document.body, {
+            childList: true,
+            subtree: true
+          });
+        });
+        
+        // Programar corrección visual con agrupación para prevenir flickering
+        function scheduleVisualFix() {
+          if (isFixingVisuals) return;
+          
+          if (fixTimer) {
+            clearTimeout(fixTimer);
+          }
+          
+          fixTimer = setTimeout(function() {
+            requestAnimationFrame(fixVisualIssues);
+          }, 100);
+        }
+        
+        // Función principal para corregir problemas visuales
+        function fixVisualIssues() {
+          isFixingVisuals = true;
+          
+          try {
+            // 1. Corregir fondos rojos
+            document.querySelectorAll('.tabla-scroll-main > div').forEach(function(el) {
+              el.style.backgroundColor = 'transparent';
+              el.style.background = 'none';
+            });
+            
+            // 2. Corregir tabla de pagos
+            const pagosTable = document.querySelector('.pagos-table');
+            if (pagosTable) {
+              // Asegurar que la tabla tenga el fondo correcto
+              pagosTable.style.backgroundColor = 'transparent';
+              
+              // Corregir celdas según sus clases
+              document.querySelectorAll('td.pago-completado').forEach(function(cell) {
+                cell.style.backgroundColor = COLORS.pagado;
+              });
+              
+              document.querySelectorAll('td.pago-pendiente').forEach(function(cell) {
+                cell.style.backgroundColor = COLORS.pendiente;
+              });
+              
+              document.querySelectorAll('td.pago-atrasado').forEach(function(cell) {
+                cell.style.backgroundColor = COLORS.atrasado;
+              });
+            }
+            
+            // 3. Eliminar bordes verdes
+            document.querySelectorAll('[style*="border-color: green"], [style*="border: 1px solid green"]').forEach(function(el) {
+              el.style.borderColor = 'transparent';
+              el.style.border = 'none';
+            });
+          } finally {
+            isFixingVisuals = false;
+          }
+        }
+      })();
+    </script>
+    
+    <!-- Script para corregir las sumatorias de pagos y gestionar navegación -->
+    <script>
+      // Script para corregir las sumatorias de pagos y botones de navegación
+      (function() {
+        // Hacer toggleSidebar disponible a nivel global
+        window.toggleSidebar = function() {
+          // Busca el estado actual del sidebar en las clases del body
+          const isSidebarOpen = document.body.classList.contains('sidebar-open');
+          
+          // Invertir el estado
+          if (isSidebarOpen) {
+            document.body.classList.remove('sidebar-open');
+            document.documentElement.classList.remove('sidebar-open');
+            
+            // Buscar el backdrop si está visible y ocultarlo
+            const backdrop = document.querySelector('[class*="sidebarBackdrop"]');
+            if (backdrop) backdrop.style.display = 'none';
+            
+            // Transformar el sidebar
+            const sidebar = document.querySelector('[class*="sidebar"]:not([class*="Open"])');
+            if (sidebar) sidebar.style.transform = 'translateX(-100%)';
+          } else {
+            document.body.classList.add('sidebar-open');
+            document.documentElement.classList.add('sidebar-open');
+            
+            // Mostrar el backdrop si existe
+            const backdrop = document.querySelector('[class*="sidebarBackdrop"]');
+            if (backdrop) backdrop.style.display = 'block';
+            
+            // Transformar el sidebar
+            const sidebar = document.querySelector('[class*="sidebar"]:not([class*="Open"])');
+            if (sidebar) sidebar.style.transform = 'translateX(0)';
+          }
+          
+          // Notificación para depuración
+          console.log('Estado del sidebar ahora es:', !isSidebarOpen ? 'ABIERTO' : 'CERRADO');
+        };
+        
+        // Ejecutar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+          // Iniciar inmediatamente
+          fixPagosSummary();
+          
+          // Y repetir cada segundo
+          setInterval(fixPagosSummary, 1000);
+          
+          // También después de clicks que podrían ser en botones de guardar
+          document.addEventListener('click', function(e) {
+            if (e.target.tagName === 'BUTTON') {
+              setTimeout(fixPagosSummary, 200);
+              setTimeout(fixPagosSummary, 500);
+              setTimeout(fixPagosSummary, 1000);
+            }
+          });
+
+          // Añadir botones personalizados
+          createCustomButtons();
+        });
+        
+        function fixPagosSummary() {
+          // Si estamos en la página de pagos (verifica la URL o elementos específicos)
+          if (window.location.pathname.includes('/pagos') || document.querySelector('.pagos-container')) {
+            try {
+              // Verificar si hay discrepancias en las sumatorias
+              const pagosVerdes = document.querySelectorAll('.pago-completado');
+              const verdesCount = pagosVerdes.length;
+              
+              // Obtener el valor mostrado en "Pagos completados"
+              const pagosCompletadosEl = document.querySelector('.resumen-value-success');
+              if (pagosCompletadosEl) {
+                const pagosCompletadosTexto = pagosCompletadosEl.textContent.trim();
+                const pagosCompletadosValor = parseInt(pagosCompletadosTexto, 10);
+                
+                // Si hay discrepancia, forzar una actualización de la página
+                if (!isNaN(pagosCompletadosValor) && pagosCompletadosValor !== verdesCount) {
+                  console.log('Discrepancia detectada en pagos completados:', pagosCompletadosValor, 'vs', verdesCount);
+                  
+                  // Buscar un botón para forzar recarga (esto podría ser una llamada directa a la API)
+                  const refreshButton = document.querySelector('button.btn-refresh');
+                  if (refreshButton) {
+                    refreshButton.click();
+                  } else {
+                    // Como alternativa, forzar recalculo mediante un evento
+                    const event = new CustomEvent('pagos-recalculate');
+                    document.dispatchEvent(event);
+                  }
+                }
+              }
+              
+              // También calcular y corregir la suma total si es necesario
+              const montos = Array.from(pagosVerdes).map(el => {
+                const montoTexto = el.textContent.trim();
+                // Extraer el número del formato "$X.XXX"
+                const montoNum = parseInt(montoTexto.replace(/[^\d]/g, ''), 10);
+                return isNaN(montoNum) ? 0 : montoNum;
+              });
+              
+              const totalCalculado = montos.reduce((a, b) => a + b, 0);
+              
+              // Obtener el valor mostrado en "Total recaudado"
+              const totalRecaudadoEl = document.querySelector('.resumen-value-primary');
+              if (totalRecaudadoEl) {
+                const totalTexto = totalRecaudadoEl.textContent.trim();
+                // Extraer el número del formato "$X.XXX"
+                const totalValor = parseInt(totalTexto.replace(/[^\d]/g, ''), 10);
+                
+                // Si hay discrepancia, forzar actualización
+                if (!isNaN(totalValor) && Math.abs(totalValor - totalCalculado) > 100) {
+                  console.log('Discrepancia detectada en total recaudado:', totalValor, 'vs', totalCalculado);
+                  
+                  // Forzar refresco
+                  const event = new CustomEvent('pagos-recalculate');
+                  document.dispatchEvent(event);
+                }
+              }
+            } catch (error) {
+              console.error('Error al corregir sumatorias de pagos:', error);
+            }
+          }
+        }
+
+        // Función para crear y configurar botones personalizados
+        function createCustomButtons() {
+          // 1. Crear botón para móvil (si no existe)
+          let mobileBtn = document.getElementById('custom-menu-mobile');
+          if (!mobileBtn) {
+            mobileBtn = document.createElement('button');
+            mobileBtn.id = 'custom-menu-mobile';
+            mobileBtn.setAttribute('aria-label', 'Menú móvil');
+            mobileBtn.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>';
+            document.body.appendChild(mobileBtn);
+          }
+
+          // 2. Crear botón para desktop (si no existe)
+          let desktopBtn = document.getElementById('custom-menu-desktop');
+          if (!desktopBtn) {
+            desktopBtn = document.createElement('button');
+            desktopBtn.id = 'custom-menu-desktop';
+            desktopBtn.setAttribute('aria-label', 'Menú desktop');
+            desktopBtn.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>';
+
+            // Insertar al principio de header-left (si existe)
+            const headerLeft = document.querySelector('.header-left');
+            if (headerLeft) {
+              headerLeft.insertBefore(desktopBtn, headerLeft.firstChild);
+            } else {
+              // Si no hay header-left, intentar insertar en el header
+              const header = document.querySelector('.header-pro, header');
+              if (header) {
+                header.appendChild(desktopBtn);
+              }
+            }
+          }
+
+          // 3. Configurar eventos de clic
+          mobileBtn.addEventListener('click', function() {
+            // Encontrar y clickear el botón existente del menú móvil
+            const simpleMenuBtn = document.querySelector('[style*="position: fixed"][style*="top: 15px"][style*="left: 15px"] button');
+            if (simpleMenuBtn) {
+              simpleMenuBtn.click();
+            }
+          });
+
+          desktopBtn.addEventListener('click', function() {
+            // Activar el toggleSidebar global
+            if (typeof window.toggleSidebar === 'function') {
+              window.toggleSidebar();
+            } else {
+              // Alternativa: buscar y clickear el botón hamburguesa existente
+              const hamburgerBtn = document.querySelector('.hamburger, .desktop-hamburger');
+              if (hamburgerBtn) {
+                hamburgerBtn.click();
+              }
+            }
+          });
+        }
+      })();
+    </script>
   </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <noscript>Necesitas habilitar JavaScript para ejecutar esta aplicación.</noscript>
     <div id="root"></div>
     <!--
       This HTML file is a template.

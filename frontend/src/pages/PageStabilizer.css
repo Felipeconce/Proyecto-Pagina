@@ -1,0 +1,123 @@
+/* 
+ * PageStabilizer.css
+ * Estilos específicos para estabilizar las páginas y prevenir movimientos verticales indeseados
+ */
+
+/* Prevenir cambios de altura que causen saltos */
+.page-container {
+  min-height: calc(100vh - var(--header-height) - var(--spacing-lg) * 2);
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  contain: content; /* Mejorar rendimiento y evitar desbordamientos */
+}
+
+/* Evitar que tablas dinámicas causen saltos */
+.table-container {
+  min-height: 200px; /* Altura mínima para tablas */
+  height: auto;
+  contain: content;
+}
+
+/* Asegurar contenedores de datos de altura constante */
+.data-container {
+  contain: content;
+  position: relative;
+}
+
+/* Prevenir cambios bruscos en elementos que cargan dinámicamente */
+.loading-container {
+  min-height: 200px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Prevenir que los formularios cambien bruscamente la página */
+.form-wrapper {
+  position: relative;
+  min-height: 100px; /* Altura mínima para evitar colapsos */
+  contain: content;
+}
+
+/* Evitar saltos en elementos que aparecen/desaparecen */
+.conditional-content {
+  position: absolute;
+  width: 100%;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.2s ease;
+  contain: content;
+}
+
+.conditional-content.visible {
+  position: relative;
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Estabilizar componentes de paginación */
+.pagination-container {
+  height: 40px; /* Altura fija para evitar saltos */
+  margin: var(--spacing-md) 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Asegurar que las animaciones no causen saltos */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease forwards;
+  will-change: opacity;
+}
+
+/* Mejora de rendimiento para elementos con transiciones */
+.transition-element {
+  will-change: transform, opacity;
+}
+
+/* Evitar que los modales causen scroll */
+.modal-open {
+  overflow: hidden !important;
+}
+
+/* Estabilizar altura de los encabezados de sección */
+.section-header {
+  height: 50px;
+  display: flex;
+  align-items: center;
+}
+
+/* Contenedor principal de cada página que necesita estabilidad */
+.dashboard-page,
+.pagos-page,
+.gastos-page,
+.documentos-page,
+.fechas-page,
+.historial-page {
+  contain: content;
+  min-height: calc(100vh - var(--header-height) - var(--spacing-lg) * 2);
+}
+
+/* Ajustes para optimizar espaciado entre sidebar y contenido */
+section {
+  padding: var(--spacing-md);
+  height: 100%;
+  box-sizing: border-box;
+}
+
+/* Optimización de espaciado en formularios */
+form.documentos-form-grid, 
+form.pagos-form-grid,
+form.gastos-form-grid,
+form.fechas-form-grid {
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+} 

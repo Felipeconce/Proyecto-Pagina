@@ -12,6 +12,16 @@
   border: 1px solid #e5e7eb !important;
 }
 
+/* Reset agresivo para todos los elementos de la tabla */
+.pagos-table,
+.pagos-table tr,
+.pagos-table tbody,
+.pagos-table thead,
+.pagos-table th,
+.pagos-table td {
+  background-color: transparent !important;
+}
+
 /* Scroll principal con tabla */
 .tabla-scroll-main {
   overflow-x: auto !important;
@@ -19,6 +29,7 @@
   width: 100% !important;
   display: block !important;
   max-height: 500px !important; /* Altura máxima para permitir scroll vertical */
+  background-color: white !important;
 }
 
 /* Scroll superior */
@@ -26,8 +37,8 @@
   overflow-x: auto !important;
   overflow-y: hidden !important;
   height: 16px;
-  background-color: #e0e7ff;
-  border-bottom: 1px solid #c7d2fe;
+  background-color: #e0e7ff !important;
+  border-bottom: 1px solid #c7d2fe !important;
   display: block !important;
   margin-bottom: 2px;
   border-top-left-radius: 12px;
@@ -38,7 +49,7 @@
 .tabla-scroll-inner {
   height: 1px;
   margin-top: 8px;
-  background-color: transparent;
+  background-color: transparent !important;
 }
 
 /* SOLO la columna de Alumnos fija */
@@ -77,14 +88,29 @@
   border-collapse: separate !important;
   border-spacing: 0 !important;
   table-layout: auto !important;
+  background-color: transparent !important; /* Fondo transparente para la tabla */
 }
 
-/* IMPORTANTE: Estilos para el resto de celdas (no la columna fija) */
-.pagos-table th:not(.sticky-col), 
-.pagos-table td:not(.sticky-col) {
+/* IMPORTANTE: Estilos específicos para celdas no sticky con alta especificidad */
+body .pagos-table th:not(.sticky-col), 
+body .pagos-table td:not(.sticky-col) {
   position: static !important;
   min-width: 100px !important;
   z-index: 1 !important;
+  background-color: white !important; /* Color de fondo por defecto para todas las celdas */
+}
+
+/* Asegurarse de aplicar colores correctos para estados con alta especificidad */
+body .pagos-table td.pago-completado {
+  background-color: #dcfce7 !important;
+}
+
+body .pagos-table td.pago-pendiente {
+  background-color: #fff7ed !important;
+}
+
+body .pagos-table td.pago-atrasado {
+  background-color: #fee2e2 !important;
 }
 
 /* Estilos para las barras de desplazamiento */
@@ -106,19 +132,6 @@
 
 .tabla-scroll-container::-webkit-scrollbar-thumb:hover {
   background-color: #64748b;
-}
-
-/* Restablecer los colores para las celdas normales con estado */
-.pagos-table td.pago-completado:not(.sticky-col) {
-  background-color: #dcfce7 !important;
-}
-
-.pagos-table td.pago-atrasado:not(.sticky-col) {
-  background-color: #fee2e2 !important;
-}
-
-.pagos-table td.pago-pendiente:not(.sticky-col) {
-  background-color: #fff7ed !important;
 }
 
 /* Scrollbar container general */

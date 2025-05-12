@@ -17,6 +17,296 @@
   z-index: 10;
 }
 
+/* Estilos para el contenedor principal de pagos */
+.pagos-container {
+  background-color: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2rem;
+}
+
+/* Título principal de pagos */
+.pagos-titulo {
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 1.25rem;
+  color: #1e293b;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+/* Estado de carga y spinner */
+.estado-carga {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(59, 130, 246, 0.2);
+  border-radius: 50%;
+  border-top-color: #3b82f6;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Estado de error */
+.estado-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 20px;
+  background-color: #fee2e2;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #fecaca;
+  margin-bottom: 1.5rem;
+}
+
+.estado-error p {
+  margin: 15px 0;
+  text-align: center;
+  color: #b91c1c;
+  font-weight: 500;
+}
+
+.btn-retry {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-retry:hover {
+  background-color: #dc2626;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Mensaje sin datos */
+.no-data {
+  padding: 30px;
+  text-align: center;
+  background-color: #f1f5f9;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border: 1px dashed #cbd5e1;
+}
+
+.no-data p {
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* Estilos para contenedor de tabla mejorado */
+.tabla-contenedor {
+  overflow-x: auto;
+  width: 100%;
+  border-radius: 8px;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  max-width: 100%;
+}
+
+/* Barra de desplazamiento principal con la tabla */
+.tabla-scroll-main {
+  overflow-x: auto !important;
+  width: 100%;
+  background-color: white !important;
+}
+
+/* Estilos personalizados para barras de desplazamiento */
+.tabla-scroll-main::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.tabla-scroll-main::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.tabla-scroll-main::-webkit-scrollbar-thumb {
+  background-color: #94a3b8;
+  border-radius: 4px;
+  border: 2px solid #f1f5f9;
+}
+
+.tabla-scroll-main::-webkit-scrollbar-thumb:hover {
+  background-color: #64748b;
+}
+
+/* Estilos para la tabla de pagos */
+.pagos-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+  background-color: white;
+  font-family: 'Inter', system-ui, sans-serif;
+  table-layout: fixed;
+  font-size: 0.9rem;
+}
+
+/* Mantener la columna de Alumno fija */
+.sticky-col {
+  position: sticky !important;
+  left: 0 !important;
+  z-index: 20 !important;
+  background-color: white !important;
+  box-shadow: 3px 0 5px rgba(0, 0, 0, 0.1) !important;
+  min-width: 200px !important;
+  width: 200px !important;
+  text-align: left !important;
+  padding: 12px !important;
+  border-bottom: 1px solid #e5e7eb !important;
+  font-weight: 500 !important;
+}
+
+/* Estilo para columnas de conceptos */
+.concepto-col {
+  min-width: 80px !important;
+  width: 80px !important;
+  max-width: 80px !important;
+  text-align: center !important;
+  padding: 10px 8px !important;
+  border-bottom: 1px solid #e5e7eb !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  font-size: 0.85rem !important;
+}
+
+thead .sticky-col {
+  background-color: #f1f5f9 !important;
+  z-index: 21 !important;
+  font-weight: 600 !important;
+  position: sticky !important;
+  top: 0 !important;
+  padding: 12px !important;
+  text-align: left !important;
+  border-bottom: 1px solid #e5e7eb !important;
+}
+
+.pagos-table th {
+  background-color: #f1f5f9 !important;
+  font-weight: 600 !important;
+  color: #334155 !important;
+  text-transform: uppercase !important;
+  font-size: 0.75rem !important;
+  letter-spacing: 0.025em !important;
+  padding: 10px 8px !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 10 !important;
+  border-bottom: 1px solid #e5e7eb !important;
+}
+
+/* Estilos para estados de pagos */
+.pago-completado {
+  color: #22c55e !important; 
+  font-weight: 600 !important;
+  background-color: #dcfce7 !important;
+}
+
+.pago-pendiente {
+  color: #f97316 !important;
+  font-weight: 600 !important;
+  background-color: #fff7ed !important;
+}
+
+.pago-atrasado {
+  color: #ef4444 !important;
+  font-weight: 600 !important;
+  background-color: #fee2e2 !important;
+}
+
+/* Ajuste para estados de celda en columna fija */
+.sticky-col.pago-completado {
+  background-color: #dcfce7 !important;
+}
+
+.sticky-col.pago-atrasado {
+  background-color: #fee2e2 !important;
+}
+
+.sticky-col.pago-pendiente {
+  background-color: #fff7ed !important;
+}
+
+/* Contenedor de la tabla de pagos */
+.tabla-pagos-wrapper {
+  margin-bottom: 1.5rem;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e7eb;
+}
+
+/* Leyenda mejorada */
+.pagos-leyenda {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 24px;
+  padding: 12px 16px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e7eb;
+}
+
+.leyenda-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.leyenda-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+}
+
+.leyenda-color.pagado {
+  background-color: #dcfce7;
+  border: 1px solid #22c55e;
+}
+
+.leyenda-color.pendiente {
+  background-color: #fff7ed;
+  border: 1px solid #f97316;
+}
+
+.leyenda-color.atrasado {
+  background-color: #fee2e2;
+  border: 1px solid #ef4444;
+}
+
+.leyenda-item span {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #1e293b;
+}
+
 /* Estilos para la sección de Nuevo Cobro */
 .nuevo-cobro-container {
   background-color: white;
@@ -52,12 +342,6 @@
   height: 20px;
 }
 
-/* Barra de desplazamiento principal con la tabla */
-.tabla-scroll-main {
-  max-height: none !important; /* Eliminar límite de altura */
-  overflow-y: visible !important; /* Permitir desplazamiento vertical */
-}
-
 /* Script para sincronizar las barras de desplazamiento */
 @media screen {
   .tabla-scroll-top, .tabla-scroll-main {
@@ -85,72 +369,6 @@
 
 .tabla-scroll-container::-webkit-scrollbar-thumb:hover {
   background-color: #64748b;
-}
-
-/* Mantener la columna de Alumno fija */
-.sticky-col {
-  position: sticky !important;
-  left: 0 !important;
-  z-index: 20 !important;
-  background-color: white !important;
-  box-shadow: 3px 0 5px rgba(0, 0, 0, 0.1) !important;
-  min-width: 180px !important; /* Ancho mínimo para la columna de alumnos */
-  text-align: left !important;
-}
-
-thead .sticky-col {
-  background-color: #f1f5f9 !important;
-  z-index: 21 !important;
-  font-weight: 600;
-  position: sticky !important;
-  top: 0 !important;
-}
-
-/* Ajuste para estados de celda en columna fija */
-.sticky-col.pago-completado {
-  background-color: #dcfce7 !important;
-}
-
-.sticky-col.pago-atrasado {
-  background-color: #fee2e2 !important;
-}
-
-.sticky-col.pago-pendiente {
-  background-color: #fff7ed !important;
-}
-
-.pagos-table tr:hover .sticky-col {
-  background-color: rgba(241, 245, 249, 0.5); /* Mantener el hover consistente */
-}
-
-.pagos-table tr:hover td {
-  background-color: rgba(241, 245, 249, 0.5);
-}
-
-/* Asegurarse de que las clases de estado tengan prioridad en el hover */
-.pagos-table tr:hover td.pago-completado {
-  background-color: #dcfce7 !important;
-}
-
-.pagos-table tr:hover td.pago-atrasado {
-  background-color: #fee2e2 !important;
-}
-
-.pagos-table tr:hover td.pago-pendiente {
-  background-color: #fff7ed !important;
-}
-
-/* Asegurarse de que las clases de estado tengan prioridad */
-.pagos-table tr:hover td.pago-completado.sticky-col {
-  background-color: #dcfce7 !important;
-}
-
-.pagos-table tr:hover td.pago-atrasado.sticky-col {
-  background-color: #fee2e2 !important;
-}
-
-.pagos-table tr:hover td.pago-pendiente.sticky-col {
-  background-color: #fff7ed !important;
 }
 
 .nuevo-cobro-header {
@@ -369,89 +587,74 @@ thead .sticky-col {
   display: block;
 }
 
-/* Títulos y encabezados */
-.pagos-titulo {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #1e293b;
-  margin-bottom: 1.25rem;
-  text-align: center;
-  padding-bottom: 0.75rem;
-  border-bottom: 2px solid #e5e7eb;
-}
-
-/* Contenedor de la tabla con sombra y bordes redondeados */
-.tabla-contenedor {
-  background-color: white;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  margin-bottom: 1.5rem;
-  border: 1px solid #e5e7eb;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Estilo para pagos completados */
-.pago-completado {
-  color: #22c55e !important;
-  font-weight: 600;
-  position: relative;
-  background-color: #dcfce7 !important;
-  transition: all 0.3s ease;
-}
-
-.pago-completado:hover {
-  background-color: #bbf7d0 !important;
-  transform: translateY(-2px);
-  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.2);
-}
-
-/* Indicador de pago completado */
-.completado-indicator {
-  position: absolute;
+/* Estilo para el modal de edición de pagos */
+.modal-overlay {
+  position: fixed;
   top: 0;
+  left: 0;
   right: 0;
-  color: #22c55e;
-  font-size: 14px;
-  padding: 2px;
-  background-color: rgba(34, 197, 94, 0.1);
-  border-radius: 0 4px 0 4px;
-  width: 14px;
-  height: 14px;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
-  align-items: center;
   justify-content: center;
-  z-index: 10;
+  align-items: center;
+  z-index: 1000;
 }
 
-.pago-atrasado {
-  color: #ef4444 !important;
-  font-weight: 600;
-  position: relative;
-  background-color: #fee2e2 !important;
-  transition: all 0.3s ease;
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 400px;
 }
 
-.pago-atrasado:hover {
-  background-color: #fecaca !important;
-  transform: translateY(-2px);
-  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
+.modal-content h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+  color: #1e293b;
 }
 
-.pago-pendiente {
-  color: #f97316 !important;
-  font-weight: 600;
-  position: relative;
-  background-color: #fff7ed !important;
-  transition: all 0.3s ease;
+.modal-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  margin-bottom: 15px;
 }
 
-.pago-pendiente:hover {
-  background-color: #ffedd5 !important;
-  transform: translateY(-2px);
-  box-shadow: 0 2px 8px rgba(249, 115, 22, 0.2);
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.btn-guardar, .btn-cancelar {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-guardar {
+  background-color: #22c55e;
+  color: white;
+}
+
+.btn-cancelar {
+  background-color: #ef4444;
+  color: white;
+}
+
+.btn-guardar:hover {
+  background-color: #16a34a;
+}
+
+.btn-cancelar:hover {
+  background-color: #dc2626;
 }
 
 /* Excepción para PAP - no debe aparecer como atrasado si no pasó el 8 de mayo */
@@ -504,217 +707,13 @@ thead .sticky-col {
   transition: all 0.2s ease;
 }
 
-/* Estilos para la tabla de pagos */
-.pagos-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  margin: 0;
-  background-color: white;
-  font-family: 'Inter', system-ui, sans-serif;
-  min-width: 100%;
-  table-layout: auto;
-}
-
-.pagos-table th, 
-.pagos-table td {
-  padding: 12px 16px;
-  text-align: center;
-  border-bottom: 1px solid #e5e7eb;
-  position: relative;
-  transition: all 0.2s ease;
-  min-width: 100px; /* Ancho mínimo para las celdas */
-  max-width: 200px; /* Ancho máximo para las celdas */
-  white-space: nowrap; /* Evitar saltos de línea */
-}
-
-.pagos-table th {
-  background-color: #f1f5f9;
-  font-weight: 600;
-  color: #334155;
-  text-transform: uppercase;
-  font-size: 0.85rem;
-  letter-spacing: 0.025em;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-
-.pagos-table th:first-child {
-  text-align: left;
-  border-top-left-radius: 8px;
-}
-
-.pagos-table th:last-child {
-  border-top-right-radius: 8px;
-}
-
-.pagos-table td:first-child {
-  text-align: left;
-  font-weight: 600;
-  color: #334155;
-  border-left: 4px solid transparent;
-}
-
-.pagos-table tbody tr:hover td {
-  background-color: rgba(241, 245, 249, 0.5);
-}
-
-.pagos-table tbody tr:last-child td:first-child {
-  border-bottom-left-radius: 8px;
-}
-
-.pagos-table tbody tr:last-child td:last-child {
-  border-bottom-right-radius: 8px;
-}
-
-.editable {
-  cursor: pointer;
-  transition: all 0.2s;
-  position: relative;
-}
-
-.editable:hover {
-  background-color: #f1f5f9;
-}
-
-.editable:hover::after {
-  content: '✏️';
-  font-size: 12px;
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  opacity: 0.5;
-}
-
-.pago-atrasado::after {
-  content: '!';
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  display: block;
-  width: 16px;
-  height: 16px;
-  background-color: #ef4444;
-  color: white;
-  border-radius: 50%;
-  font-size: 12px;
-  font-weight: bold;
-  line-height: 16px;
-  text-align: center;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-}
-
-.edit-cell-container {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 4px;
-}
-
-.edit-cell-container input {
-  padding: 8px 12px;
-  border: 2px solid #3b82f6;
-  border-radius: 6px;
-  width: 100%;
-  font-size: 1rem;
-  transition: all 0.2s;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.edit-cell-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.edit-cell-actions button {
-  padding: 6px 10px;
-  border: none;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  flex: 1;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.save-button {
-  background-color: #22c55e;
-  color: white;
-}
-
-.cancel-button {
-  background-color: #ef4444;
-  color: white;
-}
-
-/* Leyenda mejorada */
-.pagos-leyenda {
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-  margin-top: 24px;
-  padding: 12px 16px;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e5e7eb;
-}
-
-.leyenda-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.leyenda-color {
-  width: 16px;
-  height: 16px;
-  border-radius: 4px;
-}
-
-.leyenda-color.pagado {
-  background-color: #dcfce7;
-  border: 1px solid #22c55e;
-}
-
-.leyenda-color.pendiente {
-  background-color: #fff7ed;
-  border: 1px solid #f97316;
-}
-
-.leyenda-color.atrasado {
-  background-color: #fee2e2;
-  border: 1px solid #ef4444;
-}
-
-.leyenda-item span {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #1e293b;
-}
-
-/* Estilos específicos para hover y focus */
-.edit-cell-container input:focus {
-  outline: none;
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
-}
-
-.save-button:hover {
-  background-color: #16a34a;
-  transform: translateY(-1px);
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-}
-
-.cancel-button:hover {
-  background-color: #dc2626;
-  transform: translateY(-1px);
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+/* Estilos para columnas de conceptos */
+.pagos-table th:not(:first-child),
+.pagos-table td:not(:first-child) {
+  min-width: 100px !important;
+  max-width: 120px !important;
+  text-align: center !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 } 

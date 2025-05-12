@@ -1,31 +1,29 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
+import './SidebarReset.css';
+import styles from './Sidebar.module.css';
+import { FaChartLine, FaMoneyBillWave, FaReceipt, FaFileAlt, FaCalendarAlt, FaHistory, FaSignOutAlt } from 'react-icons/fa';
 
+// Items de navegación
 const menuItems = [
-  { nombre: 'Dashboard', ruta: '/', icono: 'dashboard', color: '#fff', bg: 'rgba(99,102,241,0.95)' }, // blanco sobre violeta/indigo
-  { nombre: 'Pagos', ruta: '/pagos', icono: 'payments', color: '#fff', bg: 'rgba(37,99,235,0.95)' }, // blanco sobre azul fuerte
-  { nombre: 'Gastos', ruta: '/gastos', icono: 'trending_down', color: '#22c55e', bg: 'rgba(255,255,255,0.95)' }, // verde sobre blanco
-  { nombre: 'Documentos', ruta: '/documentos', icono: 'description', color: '#fbbf24', bg: 'rgba(255,255,255,0.95)' }, // naranja sobre blanco
-  { nombre: 'Calendario', ruta: '/fechas', icono: 'event', color: '#60a5fa', bg: 'rgba(255,255,255,0.95)' }, // azul claro sobre blanco
+  { nombre: 'Dashboard', ruta: '/', icono: <FaChartLine size={20} /> },
+  { nombre: 'Pagos', ruta: '/pagos', icono: <FaMoneyBillWave size={20} /> },
+  { nombre: 'Gastos', ruta: '/gastos', icono: <FaReceipt size={20} /> },
+  { nombre: 'Documentos', ruta: '/documentos', icono: <FaFileAlt size={20} /> },
+  { nombre: 'Calendario', ruta: '/fechas', icono: <FaCalendarAlt size={20} /> },
 ];
-const logoutItem = { nombre: 'Cerrar sesión', icono: 'logout', color: '#fff', bg: 'rgba(37,99,235,0.95)' };
 
-function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 900);
-  
-  useEffect(() => {
-    const onResize = () => setIsMobile(window.innerWidth <= 900);
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
-  }, []);
-  
-  return isMobile;
-}
+// Función para detectar si estamos en un dispositivo móvil
+const isMobileDevice = () => window.innerWidth <= 900;
 
 export default function Sidebar({ open, setOpen, user }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const isMobile = useIsMobile();
+  const [isMobile, setIsMobile] = useState(isMobileDevice());
+  const sidebarRef = useRef(null);
+  
+  // Referencia al backdrop
+  const backdropRef = useRef(null);
   
   // Manejar cierre de sesión
   const handleLogout = useCallback((e) => {
@@ -35,98 +33,97 @@ export default function Sidebar({ open, setOpen, user }) {
     window.location.reload();
   }, [navigate]);
   
-  // Cerrar el sidebar móvil si se hace clic fuera del mismo
+  // Cerrar el sidebar si se hace clic en el overlay (solo en desktop)
+  const handleOverlayClick = useCallback((e) => {
+    console.log('Overlay clickeado');
+    e.preventDefault();
+    e.stopPropagation();
+    setOpen(false);
+  }, [setOpen]);
+  
+  // Actualizar estado de dispositivo móvil
   useEffect(() => {
-    // No ejecutar el efecto si no hay usuario o si no estamos en móvil o si el sidebar no está abierto
-    if (!user || !isMobile || !open) return;
-    
-    const handleClickOutside = (e) => {
-      if (!e.target.closest('.sidebar-drawer')) {
-        setOpen(false);
-      }
+    const handleResize = () => {
+      setIsMobile(isMobileDevice());
     };
     
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
-  }, [isMobile, open, setOpen, user]);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   
-  // Cerrar sidebar al cambiar de ruta en móvil
+  // Efecto para gestionar el backdrop
   useEffect(() => {
-    // No ejecutar el efecto si no hay usuario o si no estamos en móvil o si el sidebar no está abierto
-    if (!user || !isMobile || !open) return;
+    if (!backdropRef.current) return;
     
-    setOpen(false);
-  }, [location.pathname, isMobile, open, setOpen, user]);
-
-  // Si no hay usuario, no renderizar nada
-  if (!user) return null;
-
-  const filteredMenuItems = [
+    // Solo mostrar backdrop en desktop cuando el sidebar está abierto
+    if (open && !isMobile) {
+      backdropRef.current.style.display = 'block';
+    } else {
+      backdropRef.current.style.display = 'none';
+    }
+  }, [open, isMobile]);
+  
+  // No renderizar en dispositivos móviles
+  if (isMobile) {
+    return null;
+  }
+  
+  // Filtrar elementos de menú según el rol del usuario
+  const filteredItems = [
     ...menuItems,
     (user.rol_id === 1 || user.rol_id === 2 || user.rol_id === 3) && {
       nombre: 'Historial',
       ruta: '/historial',
-      icono: 'history',
-      color: '#6b7280',
-      bg: 'rgba(255,255,255,0.95)',
+      icono: <FaHistory size={20} />,
     },
   ].filter(Boolean);
-
-  if (isMobile) {
-    // Drawer para móvil
-    return (
-      <nav 
-        className={`sidebar-drawer${open ? ' open' : ''}`} 
-        style={open ? { position: 'fixed', zIndex: 2000 } : {}}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <ul className="sidebar-drawer-list">
-          {filteredMenuItems.map(item => (
-            <li key={item.ruta}>
-              <Link
-                to={item.ruta}
-                className={`sidebar-drawer-link${location.pathname === item.ruta ? ' active' : ''}`}
-              >
-                <span className="material-icons sidebar-icon-material" style={{ color: item.color, background: item.bg }}>{item.icono}</span>
-                {item.nombre}
-              </Link>
-            </li>
-          ))}
-          <li style={{ marginTop: '2rem' }}>
-            <a href="#logout" className="sidebar-drawer-link" onClick={handleLogout}>
-              <span className="material-icons sidebar-icon-material" style={{ color: logoutItem.color, background: logoutItem.bg }}>{logoutItem.icono}</span>
-              {logoutItem.nombre}
-            </a>
-          </li>
-        </ul>
-      </nav>
-    );
-  }
-
-  // Sidebar clásica para desktop
+  
   return (
-    <aside className="sidebar-modern">
-      <nav>
-        <ul className="sidebar-list">
-          {filteredMenuItems.map(item => (
-            <li key={item.ruta}>
-              <Link
-                to={item.ruta}
-                className={`sidebar-link${location.pathname === item.ruta ? ' active' : ''}`}
+    <>
+      {/* Backdrop para cuando el sidebar está abierto */}
+      <div 
+        ref={backdropRef} 
+        className={styles.sidebarBackdrop} 
+        onClick={handleOverlayClick}
+        style={{ display: 'none' }}
+      />
+      
+      {/* Sidebar para desktop */}
+      <aside 
+        ref={sidebarRef}
+        className={`${styles.sidebar} ${open ? styles.sidebarOpen : ''}`}
+      >
+        <nav className={styles.sidebarNav}>
+          <ul className={styles.sidebarList}>
+            {filteredItems.map((item) => (
+              <li key={item.ruta} className={styles.sidebarItem}>
+                <Link
+                  to={item.ruta}
+                  className={`${styles.sidebarLink} ${
+                    location.pathname === item.ruta ? styles.active : ''
+                  }`}
+                >
+                  <span className={styles.sidebarIcon}>{item.icono}</span>
+                  <span className={styles.sidebarText}>{item.nombre}</span>
+                </Link>
+              </li>
+            ))}
+            
+            <li className={styles.sidebarItem}>
+              <a 
+                href="#logout" 
+                className={styles.sidebarLinkLogout}
+                onClick={handleLogout}
               >
-                <span className="material-icons sidebar-icon-material" style={{ color: item.color, background: item.bg }}>{item.icono}</span>
-                {item.nombre}
-              </Link>
+                <span className={styles.sidebarIcon}>
+                  <FaSignOutAlt size={20} />
+                </span>
+                <span className={styles.sidebarText}>Cerrar sesión</span>
+              </a>
             </li>
-          ))}
-          <li style={{ marginTop: '2rem' }}>
-            <a href="#logout" className="sidebar-link" onClick={handleLogout}>
-              <span className="material-icons sidebar-icon-material" style={{ color: logoutItem.color, background: logoutItem.bg }}>{logoutItem.icono}</span>
-              {logoutItem.nombre}
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </aside>
+          </ul>
+        </nav>
+      </aside>
+    </>
   );
 }

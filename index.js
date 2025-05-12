@@ -9,7 +9,10 @@ const { body, validationResult } = require('express-validator');
 require('dotenv').config();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  credentials: true
+}));
 app.use(express.json());
 
 // Middleware de autenticación
@@ -65,6 +68,14 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Ruta de prueba
 app.get('/', (req, res) => {
   res.send('¡Backend funcionando!');
+});
+
+// Ruta para verificar conexión CORS
+app.get('/api/test', (req, res) => {
+  res.json({ 
+    message: 'Conexión exitosa al backend', 
+    timestamp: new Date().toISOString() 
+  });
 });
 
 // Al iniciar el backend, asegurarse de que los conceptos de marzo a diciembre existan
@@ -130,7 +141,15 @@ verificarColumnasDocumentos();
 // Usuarios
 app.get('/usuarios', authenticateToken, async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM usuarios');
+    // Obtener curso_id y colegio_id del usuario autenticado
+    const { curso_id, colegio_id } = req.user;
+    
+    // Filtrar usuarios por curso y colegio
+    const result = await pool.query(
+      'SELECT * FROM usuarios WHERE curso_id = $1 AND colegio_id = $2', 
+      [curso_id, colegio_id]
+    );
+    
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -229,22 +248,47 @@ app.get('/pagos', async (req, res) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
     
+    let curso_id, colegio_id;
+    
     if (token) {
       try {
-        jwt.verify(token, process.env.JWT_SECRET);
-        // Token válido, continuar
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        curso_id = decoded.curso_id;
+        colegio_id = decoded.colegio_id;
       } catch (err) {
         // Si el token es inválido, aún permitir acceso de solo lectura
         console.log('Token inválido pero permitiendo acceso de solo lectura');
       }
     }
     
-    const result = await pool.query(
-      `SELECT pagos.id, pagos.usuario_id, pagos.concepto_id, usuarios.nombre AS apoderado, conceptos_pago.nombre AS concepto, pagos.monto, pagos.fecha, pagos.estado
-       FROM pagos
-       JOIN usuarios ON pagos.usuario_id = usuarios.id
-       JOIN conceptos_pago ON pagos.concepto_id = conceptos_pago.id`
-    );
+    // Si tenemos curso_id y colegio_id, filtramos
+    let query;
+    let params = [];
+    
+    if (curso_id && colegio_id) {
+      query = `
+        SELECT pagos.id, pagos.usuario_id, pagos.concepto_id, 
+               usuarios.nombre AS apoderado, conceptos_pago.nombre AS concepto, 
+               pagos.monto, pagos.fecha, pagos.estado
+        FROM pagos
+        JOIN usuarios ON pagos.usuario_id = usuarios.id
+        JOIN conceptos_pago ON pagos.concepto_id = conceptos_pago.id
+        WHERE usuarios.curso_id = $1 AND usuarios.colegio_id = $2
+      `;
+      params = [curso_id, colegio_id];
+    } else {
+      // Sin autenticación, mostrar datos limitados (para demo pública)
+      query = `
+        SELECT pagos.id, pagos.concepto_id, 
+               'Usuario' AS apoderado, conceptos_pago.nombre AS concepto, 
+               pagos.monto, pagos.fecha, pagos.estado
+        FROM pagos
+        JOIN conceptos_pago ON pagos.concepto_id = conceptos_pago.id
+        LIMIT 10
+      `;
+    }
+    
+    const result = await pool.query(query, params);
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -394,11 +438,47 @@ app.put('/conceptos/:id', authenticateToken, async (req, res) => {
 // Gastos
 app.get('/gastos', async (req, res) => {
   try {
-    const result = await pool.query(
-      `SELECT gastos.id, cursos.nombre AS curso, gastos.descripcion, gastos.monto, gastos.fecha
-       FROM gastos
-       JOIN cursos ON gastos.curso_id = cursos.id`
-    );
+    // Si hay token, verificar la autenticación
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    
+    let curso_id, colegio_id;
+    
+    if (token) {
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        curso_id = decoded.curso_id;
+        colegio_id = decoded.colegio_id;
+      } catch (err) {
+        console.log('Token inválido pero permitiendo acceso de solo lectura');
+      }
+    }
+    
+    // Si tenemos curso_id y colegio_id, filtramos
+    let query;
+    let params = [];
+    
+    if (curso_id && colegio_id) {
+      query = `
+        SELECT gastos.id, cursos.nombre AS curso, gastos.descripcion, 
+               gastos.monto, gastos.fecha
+        FROM gastos
+        JOIN cursos ON gastos.curso_id = cursos.id
+        WHERE gastos.curso_id = $1 AND gastos.colegio_id = $2
+      `;
+      params = [curso_id, colegio_id];
+    } else {
+      // Sin autenticación, mostrar datos limitados
+      query = `
+        SELECT gastos.id, cursos.nombre AS curso, 
+               gastos.descripcion, gastos.monto, gastos.fecha
+        FROM gastos
+        JOIN cursos ON gastos.curso_id = cursos.id
+        LIMIT 10
+      `;
+    }
+    
+    const result = await pool.query(query, params);
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -434,17 +514,35 @@ app.post('/gastos', authenticateToken, async (req, res) => {
   }
   try {
     const result = await pool.query(
-      "INSERT INTO gastos (curso_id, descripcion, monto, fecha) VALUES ($1, $2, $3, $4) RETURNING *",
-      [curso_id, descripcion, monto, fecha]
+      "INSERT INTO gastos (curso_id, colegio_id, descripcion, monto, fecha) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+      [curso_id, colegio_id, descripcion, monto, fecha]
     );
-    // Registrar log
-    await pool.query(
-      'INSERT INTO logs (usuario_id, usuario_nombre, rol_id, curso_id, colegio_id, accion, entidad, entidad_id, detalle) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)',
-      [usuario_id, usuario_nombre, rol_id, curso_id, colegio_id, 'crear', 'gasto', result.rows[0].id, `Agregó gasto: ${descripcion} $${monto}`]
-    );
+
+    // Registrar actividad
+    try {
+      await pool.query(
+        `INSERT INTO logs (fecha, usuario_id, usuario_nombre, rol_id, accion, entidad, entidad_id, detalle, curso_id, colegio_id)
+         VALUES (NOW(), $1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+        [
+          usuario_id,
+          usuario_nombre,
+          rol_id,
+          'crear',
+          'gasto',
+          result.rows[0].id,
+          `Gasto: ${descripcion} - $${monto}`,
+          curso_id,
+          colegio_id
+        ]
+      );
+    } catch (logError) {
+      console.error('Error al registrar actividad:', logError);
+    }
+
     res.json(result.rows[0]);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error(err);
+    res.status(500).json({ error: 'Error al guardar el gasto en la base de datos.' });
   }
 });
 
@@ -471,12 +569,133 @@ app.put('/gastos/:id', authenticateToken, async (req, res) => {
 // Documentos
 app.get('/documentos', async (req, res) => {
   try {
-    const result = await pool.query(
-      "SELECT id, nombre, descripcion, fecha_subida, url FROM documentos"
-    );
-    res.json(result.rows);
+    // Si hay token, verificar la autenticación
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    
+    let curso_id, colegio_id;
+    
+    if (token) {
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        curso_id = decoded.curso_id;
+        colegio_id = decoded.colegio_id;
+        console.log(`Token válido. Curso: ${curso_id}, Colegio: ${colegio_id}`);
+      } catch (err) {
+        console.log('Token inválido pero permitiendo acceso de solo lectura:', err.message);
+      }
+    }
+    
+    // Comprobar si la tabla existe
+    try {
+      const tableCheck = await pool.query(`
+        SELECT EXISTS (
+          SELECT FROM information_schema.tables 
+          WHERE table_schema = 'public' 
+          AND table_name = 'documentos'
+        )
+      `);
+      
+      const tableExists = tableCheck.rows[0].exists;
+      console.log('¿Existe la tabla documentos?', tableExists);
+      
+      if (!tableExists) {
+        console.log('La tabla documentos no existe. Creando...');
+        await pool.query(`
+          CREATE TABLE IF NOT EXISTS documentos (
+            id SERIAL PRIMARY KEY,
+            nombre VARCHAR(100) NOT NULL,
+            descripcion TEXT,
+            fecha_subida DATE NOT NULL,
+            url TEXT NOT NULL,
+            curso_id INTEGER NOT NULL DEFAULT 1,
+            colegio_id INTEGER NOT NULL DEFAULT 1
+          )
+        `);
+        console.log('Tabla documentos creada exitosamente');
+        return res.json([]);
+      }
+    } catch (checkErr) {
+      console.error('Error verificando tabla documentos:', checkErr);
+    }
+    
+    // Comprobar columnas de la tabla documentos
+    try {
+      const columnsCheck = await pool.query(`
+        SELECT column_name, data_type 
+        FROM information_schema.columns 
+        WHERE table_name = 'documentos'
+      `);
+      
+      console.log('Columnas de la tabla documentos:', columnsCheck.rows);
+    } catch (columnsErr) {
+      console.error('Error verificando columnas:', columnsErr);
+    }
+    
+    // Si tenemos curso_id y colegio_id, filtramos
+    let query;
+    let params = [];
+    
+    if (curso_id && colegio_id) {
+      // Comprobar si existen las columnas curso_id y colegio_id
+      try {
+        const columnsExist = await pool.query(`
+          SELECT 
+            COUNT(*) filter (WHERE column_name = 'curso_id') AS has_curso,
+            COUNT(*) filter (WHERE column_name = 'colegio_id') AS has_colegio
+          FROM information_schema.columns 
+          WHERE table_name = 'documentos'
+        `);
+        
+        const hasCurso = parseInt(columnsExist.rows[0].has_curso) > 0;
+        const hasColegio = parseInt(columnsExist.rows[0].has_colegio) > 0;
+        
+        console.log('¿Tiene columna curso_id?', hasCurso);
+        console.log('¿Tiene columna colegio_id?', hasColegio);
+        
+        if (hasCurso && hasColegio) {
+          query = `
+            SELECT id, nombre, descripcion, fecha_subida, url 
+            FROM documentos
+            WHERE curso_id = $1 AND colegio_id = $2
+          `;
+          params = [curso_id, colegio_id];
+        } else {
+          console.log('Faltan columnas en la tabla documentos, usando consulta sin filtro');
+          query = `
+            SELECT id, nombre, descripcion, fecha_subida, url 
+            FROM documentos
+          `;
+        }
+      } catch (colErr) {
+        console.error('Error verificando columnas curso_id/colegio_id:', colErr);
+        query = `
+          SELECT id, nombre, descripcion, fecha_subida, url 
+          FROM documentos
+        `;
+      }
+    } else {
+      // Sin autenticación, mostrar datos limitados
+      query = `
+        SELECT id, nombre, descripcion, fecha_subida, url 
+        FROM documentos
+        LIMIT 10
+      `;
+    }
+    
+    console.log('Ejecutando query documentos:', query);
+    console.log('Params:', params);
+    
+    const result = await pool.query(query, params);
+    console.log(`Se encontraron ${result.rows.length} documentos`);
+    res.json(result.rows || []);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error('Error en endpoint /documentos:', err);
+    console.error('Stack trace:', err.stack);
+    res.status(500).json({ 
+      error: err.message,
+      stack: process.env.NODE_ENV === 'development' ? err.stack : undefined 
+    });
   }
 });
 
@@ -500,8 +719,8 @@ app.post('/documentos', authenticateToken, upload.single('documento'), async (re
   
   try {
     const result = await pool.query(
-      "INSERT INTO documentos (nombre, descripcion, fecha_subida, url) VALUES ($1, $2, $3, $4) RETURNING *",
-      [nombre, descripcion, fechaActual, url]
+      "INSERT INTO documentos (nombre, descripcion, fecha_subida, url, curso_id, colegio_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+      [nombre, descripcion, fechaActual, url, curso_id, colegio_id]
     );
     // Registrar log
     await pool.query(
@@ -518,12 +737,135 @@ app.post('/documentos', authenticateToken, upload.single('documento'), async (re
 // Fechas Importantes
 app.get('/fechas', async (req, res) => {
   try {
-    const result = await pool.query(
-      "SELECT id, fecha, descripcion FROM fechas ORDER BY fecha ASC"
-    );
-    res.json(result.rows);
+    // Si hay token, verificar la autenticación
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    
+    let curso_id, colegio_id;
+    
+    if (token) {
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        curso_id = decoded.curso_id;
+        colegio_id = decoded.colegio_id;
+        console.log(`Token válido. Curso: ${curso_id}, Colegio: ${colegio_id}`);
+      } catch (err) {
+        console.log('Token inválido pero permitiendo acceso de solo lectura:', err.message);
+      }
+    }
+    
+    // Comprobar si la tabla existe
+    try {
+      const tableCheck = await pool.query(`
+        SELECT EXISTS (
+          SELECT FROM information_schema.tables 
+          WHERE table_schema = 'public' 
+          AND table_name = 'fechas'
+        )
+      `);
+      
+      const tableExists = tableCheck.rows[0].exists;
+      console.log('¿Existe la tabla fechas?', tableExists);
+      
+      if (!tableExists) {
+        console.log('La tabla fechas no existe. Creando...');
+        await pool.query(`
+          CREATE TABLE IF NOT EXISTS fechas (
+            id SERIAL PRIMARY KEY,
+            fecha DATE NOT NULL,
+            descripcion TEXT NOT NULL,
+            curso_id INTEGER NOT NULL DEFAULT 1,
+            colegio_id INTEGER NOT NULL DEFAULT 1
+          )
+        `);
+        console.log('Tabla fechas creada exitosamente');
+        return res.json([]);
+      }
+    } catch (checkErr) {
+      console.error('Error verificando tabla fechas:', checkErr);
+    }
+    
+    // Comprobar columnas de la tabla fechas
+    try {
+      const columnsCheck = await pool.query(`
+        SELECT column_name, data_type 
+        FROM information_schema.columns 
+        WHERE table_name = 'fechas'
+      `);
+      
+      console.log('Columnas de la tabla fechas:', columnsCheck.rows);
+    } catch (columnsErr) {
+      console.error('Error verificando columnas:', columnsErr);
+    }
+    
+    // Si tenemos curso_id y colegio_id, filtramos
+    let query;
+    let params = [];
+    
+    if (curso_id && colegio_id) {
+      // Comprobar si existen las columnas curso_id y colegio_id
+      try {
+        const columnsExist = await pool.query(`
+          SELECT 
+            COUNT(*) filter (WHERE column_name = 'curso_id') AS has_curso,
+            COUNT(*) filter (WHERE column_name = 'colegio_id') AS has_colegio
+          FROM information_schema.columns 
+          WHERE table_name = 'fechas'
+        `);
+        
+        const hasCurso = parseInt(columnsExist.rows[0].has_curso) > 0;
+        const hasColegio = parseInt(columnsExist.rows[0].has_colegio) > 0;
+        
+        console.log('¿Tiene columna curso_id?', hasCurso);
+        console.log('¿Tiene columna colegio_id?', hasColegio);
+        
+        if (hasCurso && hasColegio) {
+          query = `
+            SELECT id, fecha, descripcion 
+            FROM fechas 
+            WHERE curso_id = $1 AND colegio_id = $2
+            ORDER BY fecha ASC
+          `;
+          params = [curso_id, colegio_id];
+        } else {
+          console.log('Faltan columnas en la tabla fechas, usando consulta sin filtro');
+          query = `
+            SELECT id, fecha, descripcion 
+            FROM fechas 
+            ORDER BY fecha ASC
+          `;
+        }
+      } catch (colErr) {
+        console.error('Error verificando columnas curso_id/colegio_id:', colErr);
+        query = `
+          SELECT id, fecha, descripcion 
+          FROM fechas 
+          ORDER BY fecha ASC
+        `;
+      }
+    } else {
+      // Sin autenticación, mostrar datos limitados
+      query = `
+        SELECT id, fecha, descripcion 
+        FROM fechas 
+        ORDER BY fecha ASC
+        LIMIT 10
+      `;
+    }
+    
+    console.log('Ejecutando query fechas:', query);
+    console.log('Params:', params);
+    
+    const result = await pool.query(query, params);
+    console.log(`Se encontraron ${result.rows.length} fechas`);
+    res.json(result.rows || []);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error('Error en endpoint /fechas:', err);
+    console.error('Stack trace:', err.stack);
+    res.status(500).json({ 
+      error: err.message,
+      stack: process.env.NODE_ENV === 'development' ? err.stack : undefined 
+    });
   }
 });
 
@@ -538,8 +880,8 @@ app.post('/fechas', authenticateToken, async (req, res) => {
   
   try {
     const result = await pool.query(
-      "INSERT INTO fechas (fecha, descripcion) VALUES ($1, $2) RETURNING *",
-      [fecha, descripcion]
+      "INSERT INTO fechas (fecha, descripcion, curso_id, colegio_id) VALUES ($1, $2, $3, $4) RETURNING *",
+      [fecha, descripcion, curso_id, colegio_id]
     );
     // Registrar log
     await pool.query(
@@ -596,6 +938,13 @@ app.put('/conceptos/:id', authenticateToken);
 app.delete('/conceptos/:id', authenticateToken);
 app.post('/gastos', authenticateToken);
 app.put('/gastos/:id', authenticateToken);
+app.post('/documentos', authenticateToken);
+app.put('/documentos/:id', authenticateToken);
+app.delete('/documentos/:id', authenticateToken);
+app.post('/fechas', authenticateToken);
+app.put('/fechas/:id', authenticateToken);
+app.delete('/fechas/:id', authenticateToken);
+app.post('/logs', authenticateToken);
 
 // Agregar el middleware de manejo de errores al final
 app.use(errorHandler);

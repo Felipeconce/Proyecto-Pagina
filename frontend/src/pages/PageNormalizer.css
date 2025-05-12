@@ -1,0 +1,123 @@
+/*
+ * PageNormalizer.css
+ * Estilos para normalizar la estructura y apariencia de todas las páginas
+ */
+
+/* Estructura base para todas las páginas */
+section,
+.dashboard-page,
+.pagos-page,
+.gastos-page,
+.documentos-page,
+.fechas-page,
+.historial-page,
+.gastosContainer,
+div[class*="Container"] {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+/* Estilo unificado para títulos de sección */
+section h2,
+.gastosTitle,
+h2[class*="Title"],
+div[class*="Title"] {
+  font-size: 28px !important;
+  font-weight: 700 !important;
+  color: #111827 !important;
+  margin-bottom: 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+/* Estilo unificado para cards y contenedores de contenido */
+.card,
+div[class*="card"],
+form,
+.table-container,
+.content-section {
+  background-color: var(--color-bg-secondary) !important;
+  border-radius: var(--border-radius-md) !important;
+  border: 1px solid var(--color-border) !important;
+  padding: var(--spacing-md) !important;
+  margin-bottom: var(--spacing-md) !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+/* Estilo unificado para tablas */
+table {
+  min-width: 100% !important;
+  border-collapse: collapse !important;
+  background: #fff !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06) !important;
+  margin-bottom: 0 !important;
+}
+
+table thead {
+  background: #e0e7ff !important;
+}
+
+table th {
+  padding: 12px 8px !important;
+  font-weight: 700 !important;
+  color: #1e293b !important;
+  text-align: left !important;
+}
+
+table td {
+  padding: 12px 8px !important;
+  border-bottom: 1px solid #e5e7eb !important;
+}
+
+table tr:last-child td {
+  border-bottom: none !important;
+}
+
+/* Estilos para formularios */
+form .form-group,
+div[class*="formGroup"] {
+  margin-bottom: var(--spacing-md) !important;
+}
+
+/* Estilos para botones principales */
+button[type="submit"],
+.btn-primary,
+.btn-principal,
+button[class*="Primary"] {
+  background-color: var(--color-primary) !important;
+  color: white !important;
+}
+
+/* Estilos para textos de carga y mensajes */
+.loading-text,
+div[class*="loading"] {
+  color: var(--color-text-secondary) !important;
+  margin: var(--spacing-md) 0 !important;
+  font-size: 1rem !important;
+  text-align: center !important;
+}
+
+/* Estilos para iconos */
+svg[class*="icon"],
+i[class*="icon"],
+svg[class*="Icon"],
+i[class*="Icon"] {
+  color: var(--color-primary) !important;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  section h2,
+  .gastosTitle,
+  h2[class*="Title"],
+  div[class*="Title"] {
+    font-size: 24px !important;
+  }
+} 

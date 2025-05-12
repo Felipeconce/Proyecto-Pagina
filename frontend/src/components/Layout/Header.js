@@ -1,7 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { HiOutlineUserGroup } from 'react-icons/hi';
+import { HiOutlineUserGroup, HiMenu } from 'react-icons/hi';
 import { FiLogOut } from 'react-icons/fi';
+import './Header.css';
+
+function getRolName(rol_id) {
+  switch (rol_id) {
+    case 1: return 'Administrador';
+    case 2: return 'Tesorero';
+    case 3: return 'Secretario';
+    case 4: return 'Apoderado';
+    default: return 'Usuario';
+  }
+}
 
 export default function Header({ onHamburgerClick, user, onLogout }) {
   if (!user) return null;
@@ -12,40 +23,50 @@ export default function Header({ onHamburgerClick, user, onLogout }) {
     }
   };
   
+  // Manejador específico para el botón hamburguesa
+  const handleHamburgerClick = (e) => {
+    // Detener la propagación para evitar que se cierre inmediatamente
+    e.preventDefault();
+    e.stopPropagation();
+    
+    console.log("Hamburguesa clickeada en Header");
+    
+    // Llamar a la función proporcionada desde el componente padre
+    if (onHamburgerClick) {
+      onHamburgerClick();
+    }
+  };
+  
+  // Comprobación de si estamos en un dispositivo móvil
+  const isMobileDevice = window.innerWidth <= 900;
+  
   return (
     <header className="header-pro">
-      <button className="hamburger" onClick={onHamburgerClick}>
-        <i className="material-icons">menu</i>
-      </button>
-      <h1>
-        <HiOutlineUserGroup className="header-logo" size={30} />
-        Centro de Apoderados
-      </h1>
-      <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 16 }}>
-        <span style={{ 
-          color: '#4b5563', 
-          fontSize: '0.95rem',
-          fontWeight: 500 
-        }}>
+      <div className="header-left">
+        {isMobileDevice && (
+          <button 
+            className="hamburger desktop-hamburger" 
+            onClick={handleHamburgerClick}
+            aria-label="Menú"
+            type="button"
+          >
+            <HiMenu size={24} />
+          </button>
+        )}
+        <h1>
+          <HiOutlineUserGroup className="header-logo" size={30} />
+          Centro de Apoderados
+        </h1>
+      </div>
+      <div className="header-user-section">
+        <span className="header-user-name">
           {user.nombre} | {getRolName(user.rol_id)}
         </span>
         <button
           onClick={handleLogout}
-          style={{
-            background: 'transparent',
-            color: '#ef4444',
-            border: 'none',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 6,
-            cursor: 'pointer',
-            padding: '6px 12px',
-            borderRadius: 8,
-            boxShadow: 'none',
-            fontWeight: 600,
-            fontSize: '0.95rem'
-          }}
+          className="btn-logout"
           title="Cerrar sesión"
+          type="button"
         >
           <FiLogOut />
           Salir
@@ -53,14 +74,4 @@ export default function Header({ onHamburgerClick, user, onLogout }) {
       </div>
     </header>
   );
-}
-
-function getRolName(rol_id) {
-  switch (rol_id) {
-    case 1: return 'Administrador';
-    case 2: return 'Presidente';
-    case 3: return 'Tesorero';
-    case 4: return 'Apoderado';
-    default: return 'Usuario';
-  }
 }

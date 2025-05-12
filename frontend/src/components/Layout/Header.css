@@ -1,0 +1,178 @@
+/* Estilos para el Header */
+
+.header-pro {
+  background-color: #ffffff;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Contenedor izquierdo del header */
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Por defecto, oculto */
+.desktop-hamburger {
+  display: none !important;
+}
+
+/* SOLO y EXCLUSIVAMENTE en desktop - NO en móvil */
+@media (min-width: 901px) {
+  header .hamburger, 
+  .header-pro .hamburger {
+    display: flex !important;
+    background-color: transparent;
+    border: none;
+    color: #3b82f6;
+    cursor: pointer;
+    padding: 8px;
+    font-size: 1.8rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    margin-right: 10px;
+    width: 40px;
+    height: 40px;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+  }
+  
+  /* Garantizar que el icono sea visible */
+  .hamburger svg,
+  header .hamburger svg,
+  .header-pro .hamburger svg {
+    display: block !important;
+    width: 24px !important;
+    height: 24px !important;
+    color: #3b82f6 !important;
+    fill: currentColor !important;
+    visibility: visible !important;
+  }
+}
+
+/* EXCLUSIVAMENTE para móvil - NO en desktop */
+@media (max-width: 900px) {
+  .hamburger, 
+  header .hamburger, 
+  .header-pro .hamburger {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+    pointer-events: none !important;
+  }
+  
+  .header-pro h1 {
+    font-size: 1.2rem;
+    margin-left: 0;
+  }
+  
+  .header-user-name {
+    display: none;
+  }
+  
+  .header-pro {
+    padding: 0 1rem;
+  }
+  
+  .desktop-hamburger {
+    display: flex !important;
+  }
+}
+
+/* Para pantallas extra pequeñas */
+@media (max-width: 480px) {
+  .header-pro h1 {
+    font-size: 1rem;
+  }
+  
+  .header-user-name {
+    max-width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+/* Efectos de hover */
+.hamburger:hover {
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+.hamburger:active {
+  transform: scale(0.95);
+  background-color: rgba(59, 130, 246, 0.2);
+}
+
+/* Con esta clase se modifica la apariencia del botón cuando el sidebar está abierto */
+.sidebar-open .hamburger,
+body.sidebar-open .hamburger {
+  background-color: rgba(59, 130, 246, 0.15);
+  color: #1d4ed8;
+}
+
+.header-pro h1 {
+  color: var(--color-text);
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: normal;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.header-logo {
+  color: #2563eb;
+  margin-right: 0.5rem;
+}
+
+.header-user-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-user-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #1e293b;
+}
+
+/* Botón de logout */
+.btn-logout {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.5rem 0.8rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  margin-right: 8px;
+}
+
+.btn-logout:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+} 

@@ -2,23 +2,22 @@ import React from 'react';
 import DocumentosList from '../components/Documentos/DocumentosList';
 import DocumentosForm from '../components/Documentos/DocumentosForm';
 import { FaFileAlt } from 'react-icons/fa';
+import '../components/Documentos/DocumentosAlignments.css';
 
 export default function DocumentosPage({ user }) {
   return (
-    <section>
-      <h2 style={{
-        fontSize: '28px',
-        fontWeight: '700',
-        color: '#111827',
-        marginBottom: '24px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '12px'
-      }}>
+    <section className="documentos-page">
+      <h2 className="page-title">
         <FaFileAlt color="#d97706" /> Documentos
       </h2>
-      <DocumentosForm user={user} />
-      <DocumentosList user={user} />
+      <div className="card">
+        <h3 className="section-subtitle">Agregar documento nuevo</h3>
+        <DocumentosForm user={user} />
+      </div>
+      <div className="card">
+        <h3 className="section-subtitle">Listado de documentos</h3>
+        <DocumentosList user={user} />
+      </div>
     </section>
   );
 }

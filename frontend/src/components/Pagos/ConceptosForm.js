@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useToast } from '../Layout/ToastProvider';
-import './PagosStyles.css';
+import styles from './ConceptosForm.module.css';
 
 export default function ConceptosForm({ user, onConceptoAgregado }) {
   const [nombre, setNombre] = useState('');
@@ -12,7 +12,7 @@ export default function ConceptosForm({ user, onConceptoAgregado }) {
   const [editNombre, setEditNombre] = useState('');
   const [editFechaVencimiento, setEditFechaVencimiento] = useState('');
   const [editMode, setEditMode] = useState(false);
-  const [collapsedSection, setCollapsedSection] = useState(false);
+  const [collapsedSection, setCollapsedSection] = useState(true);
   const toast = useToast();
 
   useEffect(() => {
@@ -318,46 +318,43 @@ export default function ConceptosForm({ user, onConceptoAgregado }) {
         className="nuevo-cobro-header"
         onClick={() => setCollapsedSection(!collapsedSection)}
       >
-        <h3>Nuevo Cobro</h3>
+        <h3>Agregar Concepto de Pago</h3>
         <span className={`arrow-icon ${collapsedSection ? 'collapsed' : ''}`}>▼</span>
       </div>
       
       {!collapsedSection && (
         <div className="nuevo-cobro-content">
-          <form onSubmit={handleSubmit} className="nuevo-cobro-form">
-            <div className="form-row">
-              <div className="form-group">
-                <input 
-                  type="text" 
-                  value={nombre} 
-                  onChange={(e) => setNombre(e.target.value)} 
-                  maxLength={3}
-                  placeholder="Nuevo ítem (3 caracteres)"
-                  className="cobro-input"
-                />
-                {nombre.length > 0 && nombre.length !== 3 && (
-                  <small className="error-hint">Debe tener 3 caracteres</small>
-                )}
-              </div>
-              
-              <div className="form-group">
-                <input 
-                  type="date" 
-                  value={fechaVencimiento} 
-                  onChange={(e) => setFechaVencimiento(e.target.value)}
-                  className="cobro-input date-input"
-                  placeholder="dd-mm-aaaa"
-                />
-              </div>
-              
-              <button 
-                type="submit" 
-                className="add-button" 
-                disabled={nombre.length !== 3}
-              >
-                +
+          <form onSubmit={handleSubmit} className={styles.conceptosFormGrid}>
+            <div className={styles.formGroup}>
+              <label htmlFor="nombreConcepto">Nombre (3 letras)</label>
+              <input
+                id="nombreConcepto"
+                type="text"
+                maxLength={3}
+                placeholder="Ej: MAR"
+                value={nombre}
+                onChange={e => setNombre(e.target.value.toUpperCase())}
+                required
+                className={styles.input}
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label htmlFor="fechaVencimiento">Fecha Vencimiento</label>
+              <input
+                id="fechaVencimiento"
+                type="date"
+                value={fechaVencimiento}
+                onChange={e => setFechaVencimiento(e.target.value)}
+                className={styles.input}
+              />
+            </div>
+            <div className={styles.formGroup} style={{alignSelf:'end', marginTop: '22px'}}>
+              <button type="submit" className={styles.btnPrimary}>
+                <i className="fa fa-plus"></i> Agregar
               </button>
             </div>
+            {error && <div className={styles.errorMsg}>{error}</div>}
+            {success && <div className={styles.successMsg}>Ítem agregado correctamente</div>}
           </form>
           
           <div className="items-selector">

@@ -1,0 +1,82 @@
+/* 
+ * LayoutAdjustments.css
+ * Ajustes específicos para optimizar el layout y reducir espacios innecesarios
+ */
+
+/* Optimiza el espacio entre sidebar y contenido principal */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  padding-top: var(--header-height);
+  position: relative;
+  overflow-x: hidden;
+  gap: 0; /* Elimina cualquier gap entre sidebar y contenido */
+}
+
+/* Ajuste más compacto para el contenido principal */
+.main-content {
+  background: var(--color-bg);
+  border-radius: var(--border-radius-md);
+  margin: var(--spacing-sm);
+  margin-left: calc(var(--sidebar-width) + 0);
+  flex: 1;
+  box-shadow: var(--shadow-md);
+  min-height: calc(100vh - var(--header-height) - var(--spacing-sm) * 2);
+  overflow-x: hidden;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 800;
+  padding: var(--spacing-md);
+  max-width: calc(100vw - var(--sidebar-width) - var(--spacing-sm));
+}
+
+/* Asegura que el sidebar está perfectamente alineado */
+.sidebarModern {
+  margin-right: 0;
+  padding-right: 0;
+}
+
+/* Ajustes para móviles */
+@media (max-width: 900px) {
+  .main-content {
+    margin-left: var(--spacing-sm);
+    max-width: calc(100vw - var(--spacing-sm) * 2);
+    padding: var(--spacing-md);
+  }
+}
+
+/* Estilo unificado para todas las páginas */
+section, 
+.content-section, 
+.dashboard-container,
+.gastosContainer,
+div[class*="gastos"],
+div[class*="historial"] {
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+/* Estilo unificado para títulos de sección */
+section h2,
+.gastosTitle,
+div[class*="Title"] {
+  font-size: 28px !important;
+  font-weight: 700 !important;
+  color: #111827 !important;
+  margin-bottom: 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+/* Formularios más compactos y consistentes */
+form,
+.card {
+  padding: var(--spacing-md) !important;
+  margin-bottom: var(--spacing-md) !important;
+  background-color: var(--color-bg-secondary) !important;
+  border-radius: var(--border-radius-md) !important;
+  border: 1px solid var(--color-border) !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+} 

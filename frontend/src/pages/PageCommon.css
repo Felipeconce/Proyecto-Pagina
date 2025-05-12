@@ -1,0 +1,110 @@
+/* 
+ * PageCommon.css
+ * Estilos comunes para todas las páginas de la aplicación
+ */
+
+/* Estilos base para todas las páginas */
+.documentos-page,
+.gastos-page,
+.pagos-page,
+.fechas-page,
+.historial-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 28px 20px;
+}
+
+/* Título principal de cada página */
+.page-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Subtítulos de secciones */
+.section-subtitle {
+  margin-bottom: 20px;
+  font-size: 18px;
+  color: #4b5563;
+  font-weight: 600;
+}
+
+/* Cards/contenedores */
+.card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  padding: 24px;
+  margin-bottom: 24px;
+  border: 1px solid #e5e7eb;
+}
+
+/* Errores de permisos */
+.permission-error {
+  color: #b91c1c;
+  padding: 16px;
+  font-weight: 500;
+}
+
+/* Resumen de pagos */
+.pagos-resumen {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 32px;
+  background: #e0e7ff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.resumen-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.resumen-label {
+  font-weight: 600;
+  font-size: 14px;
+  color: #4b5563;
+}
+
+.resumen-value {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.resumen-value-primary {
+  color: #2563eb;
+}
+
+.resumen-value-success {
+  color: #22c55e;
+}
+
+.resumen-value-danger {
+  color: #ef4444;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 24px;
+  }
+  
+  .card {
+    padding: 16px;
+  }
+  
+  .pagos-resumen {
+    flex-direction: column;
+  }
+} 

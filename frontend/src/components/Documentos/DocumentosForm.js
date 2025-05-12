@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useToast } from '../Layout/ToastProvider';
-import { FaUpload, FaFileAlt, FaFileWord, FaFilePdf, FaFileExcel, FaImage } from 'react-icons/fa';
+import { FaPlus, FaUpload, FaFileAlt, FaFileWord, FaFilePdf, FaFileExcel, FaImage } from 'react-icons/fa';
+import styles from './DocumentosForm.module.css';
+import '../CommonStyles.css';
 
 export default function DocumentosForm({ user }) {
   const [nombre, setNombre] = useState('');
@@ -79,158 +81,60 @@ export default function DocumentosForm({ user }) {
   };
 
   return (
-    <div className="content-section" style={{ 
-      backgroundColor: '#fff', 
-      borderRadius: '16px',
-      padding: '24px',
-      boxShadow: '0 2px 12px rgba(0, 0, 0, 0.06)',
-      marginBottom: '32px'
-    }}>
-      <h3 style={{ 
-        fontSize: '20px', 
-        fontWeight: '700', 
-        color: '#374151',
-        marginBottom: '16px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '10px'
-      }}>
-        <FaUpload color="#4f46e5" /> Subir Documento
-      </h3>
+    <form onSubmit={handleSubmit} className={styles.documentosFormGrid}>
+      <div className={styles.formGroupNombre}>
+        <label htmlFor="docNombre">Nombre</label>
+        <input
+          id="docNombre"
+          type="text"
+          placeholder="Nombre del documento"
+          value={nombre}
+          onChange={e => setNombre(e.target.value)}
+          required
+          className={styles.input}
+        />
+      </div>
       
-      <form onSubmit={handleSubmit} style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '16px',
-        maxWidth: '700px'
-      }}>
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: '1fr 1fr',
-          gap: '16px'
-        }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <label htmlFor="docNombre" style={{ fontWeight: '600', fontSize: '14px', color: '#4b5563' }}>Nombre</label>
-            <input
-              id="docNombre"
-              type="text"
-              placeholder="Nombre del documento"
-              value={nombre}
-              onChange={e => setNombre(e.target.value)}
-              required
-              style={{
-                padding: '8px 12px',
-                borderRadius: '6px',
-                border: '1px solid #d1d5db',
-                fontSize: '15px',
-                width: '100%'
-              }}
-            />
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <label htmlFor="docDescripcion" style={{ fontWeight: '600', fontSize: '14px', color: '#4b5563' }}>Descripción</label>
-            <input
-              id="docDescripcion"
-              type="text"
-              placeholder="Breve descripción"
-              value={descripcion}
-              onChange={e => setDescripcion(e.target.value)}
-              required
-              style={{
-                padding: '8px 12px',
-                borderRadius: '6px',
-                border: '1px solid #d1d5db',
-                fontSize: '15px',
-                width: '100%'
-              }}
-            />
+      <div className={styles.formGroupDescripcion}>
+        <label htmlFor="docDescripcion">Descripción</label>
+        <input
+          id="docDescripcion"
+          type="text"
+          placeholder="Breve descripción"
+          value={descripcion}
+          onChange={e => setDescripcion(e.target.value)}
+          required
+          className={styles.input}
+        />
+      </div>
+      
+      <div className={styles.formGroupArchivo}>
+        <label htmlFor="docFile">Archivo</label>
+        <div className={styles.fileInputContainer}>
+          <input
+            id="docFile"
+            type="file"
+            onChange={handleFileChange}
+            required
+            className={styles.hiddenFileInput}
+          />
+          <label htmlFor="docFile" className={styles.fileInputLabel}>
+            <FaUpload size={14} /> Seleccionar
+          </label>
+          <div className={styles.fileName}>
+            {getFileIcon()}
+            <span>
+              {fileName || 'Ningún archivo seleccionado'}
+            </span>
           </div>
         </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-          <label htmlFor="docFile" style={{ fontWeight: '600', fontSize: '14px', color: '#4b5563' }}>Archivo</label>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px',
-            position: 'relative'
-          }}>
-            <input
-              id="docFile"
-              type="file"
-              onChange={handleFileChange}
-              required
-              style={{
-                width: '0.1px',
-                height: '0.1px',
-                opacity: 0,
-                overflow: 'hidden',
-                position: 'absolute',
-                zIndex: -1
-              }}
-            />
-            <label htmlFor="docFile" style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '6px',
-              padding: '8px 14px',
-              backgroundColor: '#e0e7ff',
-              color: '#4f46e5',
-              borderRadius: '6px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              transition: 'all 0.2s',
-              fontSize: '14px',
-              whiteSpace: 'nowrap'
-            }}>
-              <FaUpload size={14} /> Seleccionar
-            </label>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              fontSize: '14px',
-              color: fileName ? '#374151' : '#9ca3af',
-              flex: 1,
-              minWidth: 0
-            }}>
-              {getFileIcon()}
-              <span style={{ 
-                overflow: 'hidden', 
-                textOverflow: 'ellipsis', 
-                whiteSpace: 'nowrap',
-                maxWidth: '100%'
-              }}>
-                {fileName || 'Ningún archivo seleccionado'}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '8px' }}>
-          <button type="submit" style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '6px',
-            padding: '8px 16px',
-            backgroundColor: '#4f46e5',
-            color: 'white',
-            borderRadius: '6px',
-            border: 'none',
-            fontWeight: '600',
-            fontSize: '14px',
-            cursor: 'pointer',
-            transition: 'all 0.2s',
-            width: 'auto',
-            minWidth: '100px'
-          }}>
-            <FaUpload size={14} /> Agregar
-          </button>
-        </div>
-      </form>
-    </div>
+      </div>
+      
+      <div className={styles.formGroupBoton}>
+        <button type="submit" className="btn-standard">
+          <FaPlus /> Agregar
+        </button>
+      </div>
+    </form>
   );
 }

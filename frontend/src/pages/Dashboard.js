@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaMoneyBillWave, FaReceipt, FaFileAlt, FaCalendarAlt, FaCheckCircle, FaHourglassHalf, FaExclamationTriangle, FaUserCircle, FaEnvelope, FaIdBadge, FaArrowRight, FaChartLine, FaBalanceScale, FaArrowUp, FaArrowDown } from 'react-icons/fa';
+import { FaMoneyBillWave, FaReceipt, FaFileAlt, FaCalendarAlt, FaCheckCircle, FaExclamationTriangle, FaUserCircle, FaEnvelope, FaIdBadge, FaArrowRight, FaChartLine, FaBalanceScale, FaArrowUp, FaArrowDown } from 'react-icons/fa';
+import styles from '../components/Documentos/DocumentosForm.module.css';
 
 export default function Dashboard({ user }) {
   const [loading, setLoading] = useState(true);
@@ -258,48 +259,6 @@ export default function Dashboard({ user }) {
     return atrasadosMap;
   };
 
-  // Estilo común para los botones de navegación
-  const linkButtonStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '0.5rem',
-    padding: '0.75rem',
-    borderRadius: '8px',
-    fontWeight: '600',
-    textDecoration: 'none',
-    textAlign: 'center',
-    fontSize: '0.9rem',
-    transition: 'all 0.2s ease',
-    width: '100%'
-  };
-  
-  // Estilo común para tarjetas
-  const cardStyle = {
-    background: 'white',
-    borderRadius: 12,
-    boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-    overflow: 'hidden',
-    border: '1px solid #e5e7eb',
-    display: 'flex',
-    flexDirection: 'column',
-    height: '100%'
-  };
-  
-  // Estilo para el contenido de la tarjeta
-  const cardContentStyle = {
-    padding: '1rem',
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column'
-  };
-  
-  // Estilo para el footer de la tarjeta
-  const cardFooterStyle = {
-    marginTop: 'auto',
-    padding: '0'
-  };
-
   if (loading) {
     return (
       <div className="dashboard-loading" style={{
@@ -313,390 +272,457 @@ export default function Dashboard({ user }) {
   }
 
   return (
-    <div className="dashboard-container">
-      <h2 style={{
-        fontSize: '28px',
-        fontWeight: '700',
-        color: '#111827',
-        marginBottom: '24px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '12px'
-      }}>
-        <FaChartLine color="#3366cc" /> Dashboard
+    <div className={styles.dashboardContainer}>
+      <h2 className={styles.dashboardTitle}>
+        <FaChartLine color="#2563eb" /> Dashboard
       </h2>
       
-      {/* Tarjeta de bienvenida */}
-      <div className="card-blur bienvenida" style={{
-      background: 'rgba(255,255,255,0.92)',
-      borderRadius: 18,
-      boxShadow: '0 2px 8px rgba(34,51,102,0.08)',
-        padding: '1.5rem',
-        margin: '0 0 1.5rem 0',
-      color: '#223366',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center'
-    }}>
-      <div style={{ fontSize: 48, marginBottom: 16 }}>
-          <FaUserCircle style={{ color: '#3366cc' }}/>
-      </div>
-        <h2 style={{ fontWeight: 700, fontSize: '1.5rem', marginBottom: 8 }}>
-        ¡Bienvenido, {user.nombre}!
-      </h2>
-        <div style={{ fontSize: '1rem', marginBottom: 12, color: '#254a91', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <FaEnvelope /> {user.email}
-      </div>
-      <div style={{
-        background: 'linear-gradient(90deg, #3366cc 0%, #254a91 100%)',
-        color: '#fff',
-        borderRadius: 8,
-        padding: '0.4rem 1.2rem',
-        fontWeight: 600,
-          marginBottom: 12,
-          fontSize: '1rem',
-          boxShadow: '0 1px 4px rgba(34,51,102,0.08)',
-          display: 'flex', 
-          alignItems: 'center', 
-          gap: '0.5rem'
+      {/* Cabecera con tarjeta de bienvenida y saldo, una al lado de la otra */}
+      <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', marginBottom: '24px' }}>
+        {/* Tarjeta de bienvenida */}
+        <div style={{ 
+          flex: '1', 
+          minWidth: '300px', 
+          padding: '20px',
+          borderRadius: '16px',
+          background: 'linear-gradient(135deg, #e0e7ff 0%, #f8fafc 100%)',
+          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
         }}>
-          <FaIdBadge /> {roles[user.rol_id] || user.rol_id}
-        </div>
-      </div>
-
-      {/* Nueva tarjeta de Saldo */}
-      <div className="saldo-card" style={{
-        background: 'white',
-        borderRadius: 12,
-        boxShadow: '0 2px 12px rgba(0,0,0,0.1)',
-        overflow: 'hidden',
-        border: '1px solid #e5e7eb',
-        marginBottom: '1.5rem'
-      }}>
-        <div className="card-header" style={{
-          background: '#f1f5f9',
-          padding: '1rem',
-          borderBottom: '1px solid #e5e7eb',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '0.5rem',
-          fontSize: '1.25rem',
-          fontWeight: 700,
-          color: '#334155'
-        }}>
-          <FaBalanceScale /> Saldo Actual
-        </div>
-        <div className="saldo-content" style={{
-          padding: '1.5rem',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}>
-          <div className="saldo-amount" style={{
-            fontSize: '2.5rem',
-            fontWeight: 800,
-            color: saldoData.esPositivo ? '#16a34a' : '#ef4444',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem'
-          }}>
-            {saldoData.esPositivo ? <FaArrowUp color="#16a34a" /> : <FaArrowDown color="#ef4444" />}
-            ${Math.abs(saldoData.saldo).toLocaleString('es-CL', { maximumFractionDigits: 0 })}
-          </div>
-          <div className="saldo-description" style={{
-            fontSize: '1rem',
-            color: '#64748b',
-            marginTop: '0.5rem',
-            textAlign: 'center'
-          }}>
-            {saldoData.esPositivo 
-              ? 'Diferencia positiva entre ingresos y gastos' 
-              : 'Diferencia negativa entre ingresos y gastos'}
-          </div>
-          <div className="saldo-details" style={{
-            display: 'flex',
-            justifyContent: 'space-around',
-            width: '100%',
-            marginTop: '1.5rem',
-            padding: '1rem',
-            background: '#f8fafc',
-            borderRadius: '8px'
-          }}>
-            <div className="detail-item" style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center'
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <div style={{ 
+              color: '#2563eb',
+              fontSize: '2.5rem',
             }}>
-              <div style={{ fontSize: '0.875rem', color: '#64748b' }}>Ingresos</div>
-              <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#16a34a' }}>
-                ${pagosData.totalPagado.toLocaleString('es-CL', { maximumFractionDigits: 0 })}
-              </div>
+              <FaUserCircle />
             </div>
-            <div className="detail-item" style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center'
-            }}>
-              <div style={{ fontSize: '0.875rem', color: '#64748b' }}>Gastos</div>
-              <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ef4444' }}>
-                ${gastosData.totalGastos.toLocaleString('es-CL', { maximumFractionDigits: 0 })}
+            <div>
+              <h2 style={{ 
+                margin: '0 0 8px 0', 
+                fontSize: '1.4rem',
+                fontWeight: '700',
+                color: '#1e40af'
+              }}>
+                ¡Bienvenido, {user.nombre}!
+              </h2>
+              <div style={{ 
+                fontSize: '0.9rem', 
+                margin: '0',
+                color: '#4b5563',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                marginBottom: '4px'
+              }}>
+                <FaEnvelope /> {user.email}
+              </div>
+              <div style={{ 
+                fontSize: '0.9rem',
+                color: '#4b5563',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                background: 'rgba(219, 234, 254, 0.5)',
+                padding: '4px 10px',
+                borderRadius: '12px',
+                display: 'inline-flex'
+              }}>
+                <FaIdBadge /> {roles[user.rol_id] || user.rol_id}
               </div>
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="dashboard-grid" style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-        gap: '1.5rem'
-      }}>
-        {/* Tarjeta de Pagos */}
-        <div className="dashboard-card" style={cardStyle}>
-          <div className="card-header" style={{
-            background: '#e0e7ff',
-            color: '#2563eb',
-            padding: '1rem',
-            borderBottom: '1px solid #c7d2fe',
+        
+        {/* Tarjeta de Saldo Actual con información completa */}
+        <div style={{ 
+          flex: '2', 
+          minWidth: '320px', 
+          padding: '20px',
+          borderRadius: '16px',
+          background: 'white',
+          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
+        }}>
+          <div style={{ 
+            fontSize: '1.1rem', 
+            marginBottom: '16px',
+            padding: '8px 12px',
+            borderRadius: '8px',
+            background: 'linear-gradient(90deg, #f0f9ff 0%, #e0f2fe 100%)',
+            color: '#0c4a6e',
+            fontWeight: '600',
             display: 'flex',
             alignItems: 'center',
-            gap: '0.5rem',
-            fontSize: '1.25rem',
-            fontWeight: 700
+            gap: '8px'
           }}>
-            <FaMoneyBillWave /> Pagos
+            <FaBalanceScale size={22} color="#0369a1" /> Saldo Actual
           </div>
-          <div className="card-content" style={cardContentStyle}>
-            <div className="stats-grid" style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(2, 1fr)',
-              gap: '1rem',
-              marginBottom: '1rem'
+          
+          <div style={{ marginBottom: '16px' }}>
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              gap: '12px',
+              margin: '0 0 20px 0'
             }}>
-              <div className="stat-item">
-                <div className="stat-label" style={{ fontSize: '0.875rem', color: '#6b7280' }}>Total Recaudado</div>
-                <div className="stat-value" style={{ fontSize: '1.25rem', fontWeight: 700, color: '#2563eb' }}>
+              <div style={{ 
+                fontSize: '2.2rem', 
+                fontWeight: '700',
+                color: saldoData.esPositivo ? '#059669' : '#dc2626',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}>
+                {saldoData.esPositivo ? <FaArrowUp size={26} /> : <FaArrowDown size={26} />} ${Math.abs(saldoData.saldo).toLocaleString('es-CL', { maximumFractionDigits: 0 })}
+              </div>
+            </div>
+          </div>
+          
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(2, 1fr)', 
+            gap: '16px'
+          }}>
+            {/* Ingresos */}
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'space-between',
+              background: 'linear-gradient(90deg, #f0fdf4 0%, #dcfce7 100%)',
+              borderRadius: '12px',
+              padding: '16px'
+            }}>
+              <div>
+                <div style={{ fontSize: '0.9rem', color: '#166534', marginBottom: '6px', fontWeight: '500' }}>Ingresos</div>
+                <div style={{ fontSize: '1.3rem', color: '#059669', fontWeight: '700' }}>
                   ${pagosData.totalPagado.toLocaleString('es-CL', { maximumFractionDigits: 0 })}
                 </div>
-              </div>
-              <div className="stat-item">
-                <div className="stat-label" style={{ fontSize: '0.875rem', color: '#6b7280' }}>Pagos Completados</div>
-                <div className="stat-value" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '1.25rem', fontWeight: 700, color: '#22c55e' }}>
-                  {pagosData.pagosCompletados} <FaCheckCircle size={16} />
+                <div style={{ fontSize: '0.9rem', color: '#059669', marginTop: '4px' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <FaCheckCircle size={14} /> {pagosData.pagosCompletados} pagos
+                  </span>
                 </div>
               </div>
-              <div className="stat-item">
-                <div className="stat-label" style={{ fontSize: '0.875rem', color: '#6b7280' }}>Pagos Atrasados</div>
-                <div className="stat-value" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '1.25rem', fontWeight: 700, color: '#ef4444' }}>
-                  {pagosData.pagosAtrasados} <FaExclamationTriangle size={16} />
-                </div>
-              </div>
-              <div className="stat-item">
-                <div className="stat-label" style={{ fontSize: '0.875rem', color: '#6b7280' }}>Total Atrasado</div>
-                <div className="stat-value" style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ef4444' }}>
-                  ${pagosData.totalAtrasado.toLocaleString('es-CL', { maximumFractionDigits: 0 })}
-                </div>
-              </div>
-            </div>
-            <div style={cardFooterStyle}>
-              <Link to="/pagos" style={{
-                ...linkButtonStyle,
-                background: '#e0e7ff',
-                color: '#2563eb'
+              <div style={{ 
+                color: '#059669', 
+                fontSize: '2rem',
+                alignSelf: 'center' 
               }}>
-                Ir a Pagos <FaArrowRight size={14} />
-              </Link>
+                <FaArrowUp />
+              </div>
             </div>
-          </div>
-        </div>
-
-        {/* Tarjeta de Gastos */}
-        <div className="dashboard-card" style={cardStyle}>
-          <div className="card-header" style={{
-            background: '#dcfce7',
-            color: '#16a34a',
-            padding: '1rem',
-            borderBottom: '1px solid #bbf7d0',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            fontSize: '1.25rem',
-            fontWeight: 700
-          }}>
-            <FaReceipt /> Gastos
-          </div>
-          <div className="card-content" style={cardContentStyle}>
-            <div className="stats-grid" style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(2, 1fr)',
-              gap: '1rem',
-              marginBottom: '1rem'
+            
+            {/* Gastos */}
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'space-between',
+              background: 'linear-gradient(90deg, #fef2f2 0%, #fee2e2 100%)',
+              borderRadius: '12px',
+              padding: '16px'
             }}>
-              <div className="stat-item">
-                <div className="stat-label" style={{ fontSize: '0.875rem', color: '#6b7280' }}>Total Gastado</div>
-                <div className="stat-value" style={{ fontSize: '1.25rem', fontWeight: 700, color: '#16a34a' }}>
+              <div>
+                <div style={{ fontSize: '0.9rem', color: '#991b1b', marginBottom: '6px', fontWeight: '500' }}>Gastos</div>
+                <div style={{ fontSize: '1.3rem', color: '#dc2626', fontWeight: '700' }}>
                   ${gastosData.totalGastos.toLocaleString('es-CL', { maximumFractionDigits: 0 })}
                 </div>
-              </div>
-              <div className="stat-item">
-                <div className="stat-label" style={{ fontSize: '0.875rem', color: '#6b7280' }}>Cantidad Gastos</div>
-                <div className="stat-value" style={{ fontSize: '1.25rem', fontWeight: 700, color: '#16a34a' }}>
-                  {gastosData.cantidadGastos}
+                <div style={{ fontSize: '0.9rem', color: '#dc2626', marginTop: '4px' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <FaReceipt size={14} /> {gastosData.cantidadGastos} gastos
+                  </span>
                 </div>
               </div>
-            </div>
-            {gastosData.ultimosGastos.length > 0 ? (
-              <div className="ultimos-gastos" style={{ marginBottom: '1rem' }}>
-                <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#6b7280', marginBottom: '0.5rem' }}>Últimos Gastos</div>
-                {gastosData.ultimosGastos.map((gasto, index) => (
-                  <div key={index} style={{ 
-                    fontSize: '0.875rem', 
-                    padding: '0.5rem',
-                    marginBottom: '0.25rem',
-                    background: '#f9fafb',
-                    borderRadius: 6,
-                    display: 'flex',
-                    justifyContent: 'space-between'
-                  }}>
-                    <div className="gasto-desc" style={{ fontWeight: 500 }}>{gasto.descripcion}</div>
-                    <div className="gasto-monto" style={{ fontWeight: 600 }}>
-                      ${Number(gasto.monto).toLocaleString('es-CL', { maximumFractionDigits: 0 })}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div style={{ textAlign: 'center', color: '#6b7280', marginBottom: '1rem', fontSize: '0.875rem' }}>No hay gastos registrados</div>
-            )}
-            <div style={cardFooterStyle}>
-              <Link to="/gastos" style={{
-                ...linkButtonStyle,
-                background: '#dcfce7',
-                color: '#16a34a'
+              <div style={{ 
+                color: '#dc2626', 
+                fontSize: '2rem',
+                alignSelf: 'center' 
               }}>
-                Ir a Gastos <FaArrowRight size={14} />
-              </Link>
+                <FaArrowDown />
+              </div>
             </div>
-          </div>
-        </div>
-
-        {/* Tarjeta de Documentos */}
-        <div className="dashboard-card" style={cardStyle}>
-          <div className="card-header" style={{
-            background: '#fef3c7',
-            color: '#d97706',
-            padding: '1rem',
-            borderBottom: '1px solid #fde68a',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            fontSize: '1.25rem',
-            fontWeight: 700
-          }}>
-            <FaFileAlt /> Documentos
-          </div>
-          <div className="card-content" style={cardContentStyle}>
-            <div className="stats-grid" style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(1, 1fr)',
-              gap: '1rem',
-              marginBottom: '1rem'
+            
+            {/* Información adicional de pagos atrasados */}
+            <div style={{
+              gridColumn: '1 / 3',
+              background: 'linear-gradient(90deg, #eff6ff 0%, #dbeafe 100%)',
+              borderRadius: '12px',
+              padding: '16px',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
             }}>
-              <div className="stat-item">
-                <div className="stat-label" style={{ fontSize: '0.875rem', color: '#6b7280' }}>Total Documentos</div>
-                <div className="stat-value" style={{ fontSize: '1.25rem', fontWeight: 700, color: '#d97706' }}>
-                  {documentosData.totalDocumentos}
+              <div>
+                <div style={{ fontSize: '0.9rem', color: '#1e40af', marginBottom: '6px', fontWeight: '500' }}>Pagos Atrasados</div>
+                <div style={{ fontSize: '1.1rem', color: '#2563eb', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span style={{ color: '#dc2626' }}>{pagosData.pagosAtrasados}</span> pagos por <span style={{ color: '#dc2626' }}>${pagosData.totalAtrasado.toLocaleString('es-CL', { maximumFractionDigits: 0 })}</span>
                 </div>
               </div>
-            </div>
-            {documentosData.ultimosDocumentos.length > 0 ? (
-              <div className="ultimos-documentos" style={{ marginBottom: '1rem' }}>
-                <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#6b7280', marginBottom: '0.5rem' }}>Últimos Documentos</div>
-                {documentosData.ultimosDocumentos.map((doc, index) => (
-                  <div key={index} style={{ 
-                    fontSize: '0.875rem', 
-                    padding: '0.5rem',
-                    marginBottom: '0.25rem',
-                    background: '#f9fafb',
-                    borderRadius: 6
-                  }}>
-                    <div className="doc-nombre" style={{ fontWeight: 600 }}>{doc.nombre}</div>
-                    <div className="doc-fecha" style={{ fontSize: '0.75rem', color: '#6b7280' }}>
-                      {new Date(doc.fecha_subida).toLocaleDateString('es-CL')}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div style={{ textAlign: 'center', color: '#6b7280', marginBottom: '1rem', fontSize: '0.875rem' }}>No hay documentos registrados</div>
-            )}
-            <div style={cardFooterStyle}>
-              <Link to="/documentos" style={{
-                ...linkButtonStyle,
-                background: '#fef3c7',
-                color: '#d97706'
+              <div style={{
+                color: '#dc2626',
+                fontSize: '1.5rem'
               }}>
-                Ir a Documentos <FaArrowRight size={14} />
-              </Link>
+                <FaExclamationTriangle />
+              </div>
             </div>
           </div>
         </div>
-
-        {/* Tarjeta de Fechas Importantes */}
-        <div className="dashboard-card" style={cardStyle}>
-          <div className="card-header" style={{
-            background: '#dbeafe',
-            color: '#2563eb',
-            padding: '1rem',
-            borderBottom: '1px solid #bfdbfe',
+      </div>
+      
+      {/* Grid principal con 3 tarjetas */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
+        {/* Tarjeta de Gastos */}
+        <div style={{ 
+          padding: '20px',
+          borderRadius: '16px',
+          background: 'white',
+          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+          border: '1px solid #e5e7eb'
+        }}>
+          <div style={{ 
+            fontSize: '1.1rem', 
+            marginBottom: '16px',
             display: 'flex',
             alignItems: 'center',
-            gap: '0.5rem',
-            fontSize: '1.25rem',
-            fontWeight: 700
+            gap: '10px',
+            color: '#166534',
+            fontWeight: '600'
           }}>
-            <FaCalendarAlt /> Calendario
+            <FaReceipt size={22} color="#059669" />
+            <span>Resumen de Gastos</span>
           </div>
-          <div className="card-content" style={cardContentStyle}>
-            {fechasData.proximasFechas.length > 0 ? (
-              <div className="proximas-fechas" style={{ marginBottom: '1rem' }}>
-                <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#6b7280', marginBottom: '0.5rem' }}>Próximas Fechas</div>
-                {fechasData.proximasFechas.map((fecha, index) => (
-                  <div key={index} style={{ 
-                    fontSize: '0.875rem', 
-                    padding: '0.5rem',
-                    marginBottom: '0.25rem',
-                    background: '#f9fafb',
-                    borderRadius: 6,
+          
+          {/* Sección principal de gastos */}
+          <div style={{
+            background: 'linear-gradient(90deg, #f0fdf4 0%, #dcfce7 100%)',
+            borderRadius: '12px',
+            padding: '16px',
+            marginBottom: '16px'
+          }}>
+            <div style={{ fontSize: '0.9rem', color: '#166534', marginBottom: '6px', fontWeight: '500' }}>Total Gastado</div>
+            <div style={{ fontSize: '1.4rem', color: '#059669', fontWeight: '700' }}>
+              ${gastosData.totalGastos.toLocaleString('es-CL', { maximumFractionDigits: 0 })}
+            </div>
+          </div>
+          
+          {/* Listado de últimos gastos */}
+          {gastosData.ultimosGastos.length > 0 ? (
+            <div style={{ 
+              background: 'linear-gradient(90deg, #f8fafc 0%, #f1f5f9 100%)',
+              borderRadius: '12px',
+              padding: '16px'
+            }}>
+              <div style={{ 
+                fontSize: '0.95rem', 
+                fontWeight: '600', 
+                marginBottom: '12px',
+                color: '#334155',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}>
+                <FaReceipt size={14} color="#059669" /> Últimos Gastos:
+              </div>
+              {gastosData.ultimosGastos.slice(0, 3).map((gasto, index) => (
+                <div key={index} style={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between', 
+                  fontSize: '0.9rem', 
+                  padding: '8px 0',
+                  borderBottom: index < gastosData.ultimosGastos.slice(0, 3).length - 1 ? '1px solid #e2e8f0' : 'none'
+                }}>
+                  <div style={{ 
+                    overflow: 'hidden', 
+                    textOverflow: 'ellipsis', 
+                    whiteSpace: 'nowrap', 
+                    maxWidth: '70%',
+                    color: '#475569'
+                  }}>
+                    {gasto.descripcion}
+                  </div>
+                  <div style={{ fontWeight: '600', color: '#059669' }}>
+                    ${Number(gasto.monto).toLocaleString('es-CL', { maximumFractionDigits: 0 })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div style={{ 
+              fontSize: '0.9rem', 
+              color: '#64748b', 
+              textAlign: 'center', 
+              padding: '16px 0',
+              background: '#f8fafc',
+              borderRadius: '8px' 
+            }}>
+              No hay gastos registrados
+            </div>
+          )}
+        </div>
+        
+        {/* Tarjeta de Documentos */}
+        <div style={{ 
+          padding: '20px',
+          borderRadius: '16px',
+          background: 'white',
+          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+          border: '1px solid #e5e7eb'
+        }}>
+          <div style={{ 
+            fontSize: '1.1rem', 
+            marginBottom: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            color: '#854d0e',
+            fontWeight: '600'
+          }}>
+            <FaFileAlt size={22} color="#ca8a04" />
+            <span>Documentos</span>
+          </div>
+          
+          {/* Sección principal de documentos */}
+          <div style={{
+            background: 'linear-gradient(90deg, #fefce8 0%, #fef9c3 100%)',
+            borderRadius: '12px',
+            padding: '16px',
+            marginBottom: '16px'
+          }}>
+            <div style={{ fontSize: '0.9rem', color: '#854d0e', marginBottom: '6px', fontWeight: '500' }}>Total Documentos</div>
+            <div style={{ fontSize: '1.4rem', color: '#ca8a04', fontWeight: '700' }}>
+              {documentosData.totalDocumentos}
+            </div>
+          </div>
+          
+          {/* Listado de últimos documentos */}
+          {documentosData.ultimosDocumentos.length > 0 ? (
+            <div style={{ 
+              background: 'linear-gradient(90deg, #f8fafc 0%, #f1f5f9 100%)',
+              borderRadius: '12px',
+              padding: '16px'
+            }}>
+              <div style={{ 
+                fontSize: '0.95rem', 
+                fontWeight: '600', 
+                marginBottom: '12px',
+                color: '#334155',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}>
+                <FaFileAlt size={14} color="#ca8a04" /> Últimos Documentos:
+              </div>
+              {documentosData.ultimosDocumentos.map((doc, index) => (
+                <div key={index} style={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between', 
+                  fontSize: '0.9rem', 
+                  padding: '8px 0',
+                  borderBottom: index < documentosData.ultimosDocumentos.length - 1 ? '1px solid #e2e8f0' : 'none'
+                }}>
+                  <div style={{ 
+                    overflow: 'hidden', 
+                    textOverflow: 'ellipsis', 
+                    whiteSpace: 'nowrap', 
+                    maxWidth: '70%',
+                    color: '#475569'
+                  }}>
+                    {doc.nombre}
+                  </div>
+                  <div style={{ fontSize: '0.85rem', color: '#64748b' }}>
+                    {new Date(doc.fecha_subida).toLocaleDateString('es-CL')}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div style={{ 
+              fontSize: '0.9rem', 
+              color: '#64748b', 
+              textAlign: 'center', 
+              padding: '16px 0',
+              background: '#f8fafc',
+              borderRadius: '8px' 
+            }}>
+              No hay documentos registrados
+            </div>
+          )}
+        </div>
+        
+        {/* Tarjeta de Fechas Importantes */}
+        <div style={{ 
+          padding: '20px',
+          borderRadius: '16px',
+          background: 'white',
+          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+          border: '1px solid #e5e7eb'
+        }}>
+          <div style={{ 
+            fontSize: '1.1rem', 
+            marginBottom: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            color: '#1e40af',
+            fontWeight: '600'
+          }}>
+            <FaCalendarAlt size={22} color="#2563eb" />
+            <span>Próximas Fechas</span>
+          </div>
+          
+          {/* Listado de fechas próximas */}
+          {fechasData.proximasFechas.length > 0 ? (
+            <div style={{ 
+              background: 'linear-gradient(90deg, #eff6ff 0%, #dbeafe 100%)',
+              borderRadius: '12px',
+              padding: '16px'
+            }}>
+              {fechasData.proximasFechas.map((fecha, index) => (
+                <div key={index} style={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-start',
+                  marginBottom: index < fechasData.proximasFechas.length - 1 ? '14px' : '0',
+                  paddingBottom: index < fechasData.proximasFechas.length - 1 ? '14px' : '0',
+                  borderBottom: index < fechasData.proximasFechas.length - 1 ? '1px solid #bfdbfe' : 'none'
+                }}>
+                  <div style={{
                     display: 'flex',
                     flexDirection: 'column'
                   }}>
-                    <div className="fecha-desc" style={{ fontWeight: 600 }}>{fecha.descripcion}</div>
-                    <div className="fecha-fecha" style={{ 
-                      fontSize: '0.875rem',
-                      fontWeight: 500,
-                      color: '#3b82f6'
+                    <div style={{ 
+                      fontWeight: '600', 
+                      color: '#1e40af',
+                      fontSize: '0.95rem',
+                      marginBottom: '6px'
                     }}>
-                      {new Date(fecha.fecha).toLocaleDateString('es-CL', {day: '2-digit', month: '2-digit', year: 'numeric'}).replace(/\//g, '-')}
+                      {fecha.descripcion}
+                    </div>
+                    <div style={{ 
+                      fontSize: '0.85rem', 
+                      color: '#3b82f6',
+                      background: 'rgba(219, 234, 254, 0.5)',
+                      padding: '3px 10px',
+                      borderRadius: '12px',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '6px'
+                    }}>
+                      <FaCalendarAlt size={12} color="#3b82f6" /> {new Date(fecha.fecha).toLocaleDateString('es-CL')}
                     </div>
                   </div>
-                ))}
-              </div>
-            ) : (
-              <div style={{ textAlign: 'center', color: '#6b7280', marginBottom: '1rem', fontSize: '0.875rem' }}>No hay fechas importantes próximas</div>
-            )}
-            <div style={cardFooterStyle}>
-              <Link to="/fechas" style={{
-                ...linkButtonStyle,
-                background: '#dbeafe',
-                color: '#2563eb'
-              }}>
-                Ir a Calendario <FaArrowRight size={14} />
-              </Link>
+                </div>
+              ))}
             </div>
-          </div>
+          ) : (
+            <div style={{ 
+              fontSize: '0.9rem', 
+              color: '#64748b', 
+              textAlign: 'center', 
+              padding: '30px 0',
+              background: '#f8fafc',
+              borderRadius: '8px',
+              border: '1px dashed #e2e8f0'
+            }}>
+              No hay fechas importantes próximas
+            </div>
+          )}
         </div>
       </div>
     </div>

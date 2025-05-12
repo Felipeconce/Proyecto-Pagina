@@ -5,20 +5,18 @@ import { FaCalendarAlt } from 'react-icons/fa';
 
 export default function FechasPage({ user }) {
   return (
-    <section>
-      <h2 style={{
-        fontSize: '28px',
-        fontWeight: '700',
-        color: '#111827',
-        marginBottom: '24px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '12px'
-      }}>
+    <section className="fechas-page">
+      <h2 className="page-title">
         <FaCalendarAlt color="#3b82f6" /> Calendario
       </h2>
-      <FechasForm user={user} />
-      <FechasList user={user} />
+      <div className="card">
+        <h3 className="section-subtitle">Agregar fecha importante</h3>
+        <FechasForm user={user} />
+      </div>
+      <div className="card">
+        <h3 className="section-subtitle">Próximas fechas</h3>
+        <FechasList user={user} />
+      </div>
     </section>
   );
 }

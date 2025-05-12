@@ -3,48 +3,57 @@
  * Permite que dos contenedores se desplacen de manera sincronizada
  */
 
-// Configurar las barras de desplazamiento sincronizadas
+// Función para sincronizar las barras de desplazamiento entre dos elementos
 export const setupScrollSync = (topScrollRef, mainScrollRef) => {
-  if (!topScrollRef?.current || !mainScrollRef?.current) return null;
-  
-  const topScroll = topScrollRef.current;
-  const mainScroll = mainScrollRef.current;
-  
-  // Manejador para cuando se desplaza la barra superior
-  const handleTopScroll = () => {
-    if (mainScroll) {
-      mainScroll.scrollLeft = topScroll.scrollLeft;
+  if (!topScrollRef?.current || !mainScrollRef?.current) {
+    return () => {}; // No-op si las referencias no existen
+  }
+
+  const topScrollEl = topScrollRef.current;
+  const mainScrollEl = mainScrollRef.current;
+
+  // Función para sincronizar el desplazamiento horizontal
+  const handleScroll = (e) => {
+    const scrollingEl = e.target;
+    
+    if (scrollingEl === topScrollEl) {
+      mainScrollEl.scrollLeft = scrollingEl.scrollLeft;
+    } else if (scrollingEl === mainScrollEl) {
+      topScrollEl.scrollLeft = scrollingEl.scrollLeft;
     }
   };
-  
-  // Manejador para cuando se desplaza la barra principal
-  const handleMainScroll = () => {
-    if (topScroll) {
-      topScroll.scrollLeft = mainScroll.scrollLeft;
-    }
-  };
-  
-  // Añadir oyentes de eventos
-  topScroll.addEventListener('scroll', handleTopScroll);
-  mainScroll.addEventListener('scroll', handleMainScroll);
-  
-  // Devolver una función de limpieza para eliminar los oyentes
+
+  // Añadir event listeners
+  topScrollEl.addEventListener('scroll', handleScroll);
+  mainScrollEl.addEventListener('scroll', handleScroll);
+
+  // Devolver función de limpieza
   return () => {
-    topScroll.removeEventListener('scroll', handleTopScroll);
-    mainScroll.removeEventListener('scroll', handleMainScroll);
+    topScrollEl.removeEventListener('scroll', handleScroll);
+    mainScrollEl.removeEventListener('scroll', handleScroll);
   };
 };
 
 // Aplicar estilos para que las celdas reflejen su estado correcto
 export const fixStickyColumn = () => {
   try {
+    // Asegurarse de que la tabla misma no tenga fondo rojo
+    const table = document.querySelector('.pagos-table');
+    if (table) {
+      table.style.backgroundColor = 'transparent';
+      
+      // Limpiar todos los fondos de filas
+      const allRows = table.querySelectorAll('tr');
+      allRows.forEach(row => {
+        row.style.backgroundColor = 'transparent';
+      });
+    }
+    
     // Primero, obtener todas las celdas con la clase sticky-col
-    const stickyCells = document.querySelectorAll('.sticky-col');
+    const stickyCells = document.querySelectorAll('.pagos-table .sticky-col');
     
     // Recorrer cada celda y aplicar estilos directamente
     stickyCells.forEach(cell => {
-      // NO eliminar las clases de estado, solo asegurar que la celda tiene los estilos sticky correctos
-      
       // Aplicar estilos inline para garantizar que se apliquen
       cell.style.position = 'sticky';
       cell.style.left = '0';
@@ -61,16 +70,20 @@ export const fixStickyColumn = () => {
       cell.style.borderRight = '2px solid #e5e7eb';
     });
     
-    // Asegurar que las celdas normales (no sticky) mantengan sus estilos originales
-    const normalCells = document.querySelectorAll('.pagos-table td:not(.sticky-col), .pagos-table th:not(.sticky-col)');
-    normalCells.forEach(cell => {
-      // Eliminar cualquier estilo sticky
+    // Configurar estilos para todas las celdas TD que no son sticky
+    const allCells = document.querySelectorAll('.pagos-table td:not(.sticky-col)');
+    allCells.forEach(cell => {
+      // Eliminar completamente todos los estilos inline antes de aplicar nuevos
+      cell.removeAttribute('style');
+      
+      // Aplicar estilos básicos
       cell.style.position = 'static';
       cell.style.left = 'auto';
       cell.style.zIndex = '1';
-      
-      // Restablecer box-shadow y border-right
       cell.style.boxShadow = 'none';
+      
+      // Fondo por defecto debe ser blanco
+      cell.style.backgroundColor = 'white';
       
       // Asegurarse de que mantiene sus clases de estado
       if (cell.classList.contains('pago-completado')) {
@@ -82,9 +95,15 @@ export const fixStickyColumn = () => {
       }
     });
     
-    console.log('Estilos de columna fija aplicados correctamente');
+    // Configurar ancho adecuado para la tabla
+    if (table) {
+      const columns = table.querySelector('thead tr').childElementCount;
+      // Calcular ancho total necesario: columna alumno (200px) + resto de columnas (120px cada una)
+      const totalWidth = 200 + ((columns - 1) * 120);
+      table.style.width = `${Math.max(totalWidth, 1800)}px`;
+    }
   } catch (error) {
-    console.error('Error al aplicar estilos a la columna fija:', error);
+    console.error("Error al aplicar estilos fijos:", error);
   }
 };
 

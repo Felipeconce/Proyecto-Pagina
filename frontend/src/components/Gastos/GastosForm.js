@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useToast } from '../Layout/ToastProvider';
-import { useFetchList } from '../../hooks/useFetchList';
+import styles from './GastosPage.module.css';
+import '../CommonStyles.css';
+import { FaPlus } from 'react-icons/fa';
 
-export default function GastosForm({ user }) {
-  const { data: cursos, loading, error } = useFetchList(`${process.env.REACT_APP_API_URL}/cursos`);
-  const [cursoId, setCursoId] = useState('');
+export default function GastosForm({ user, onGastoAdded }) {
   const [descripcion, setDescripcion] = useState('');
   const [monto, setMonto] = useState('');
   const [fecha, setFecha] = useState('');
@@ -12,33 +12,22 @@ export default function GastosForm({ user }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     // Validaciones
-    if (!cursoId) {
-      showToast('Selecciona un curso', 'error');
-      return;
-    }
-    
     if (!descripcion.trim()) {
       showToast('Ingresa una descripción', 'error');
       return;
     }
-    
-    // Validar que monto sea un número válido
     const montoNum = parseFloat(monto);
     if (isNaN(montoNum) || montoNum <= 0) {
       showToast('El monto debe ser un número mayor a 0', 'error');
       return;
     }
-    
     if (!fecha) {
       showToast('Selecciona una fecha', 'error');
       return;
     }
-    
     try {
       const token = localStorage.getItem('token');
-      
       const response = await fetch(`${process.env.REACT_APP_API_URL}/gastos`, {
         method: 'POST',
         headers: {
@@ -46,14 +35,13 @@ export default function GastosForm({ user }) {
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-          curso_id: parseInt(cursoId, 10),
+          curso_id: user.curso_id,
           descripcion,
           monto: montoNum,
           fecha,
           usuario_id: user.id,
           usuario_nombre: user.nombre,
           rol_id: user.rol_id,
-          curso_id: user.curso_id,
           colegio_id: user.colegio_id
         })
       });
@@ -61,12 +49,13 @@ export default function GastosForm({ user }) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.message || 'Error al agregar gasto');
       }
-      setCursoId('');
       setDescripcion('');
       setMonto('');
       setFecha('');
       showToast('Gasto agregado correctamente', 'success');
-      // Opcional: podrías recargar la lista de gastos aquí si lo deseas
+      if (typeof onGastoAdded === 'function') {
+        onGastoAdded();
+      }
     } catch (err) {
       showToast(err.message || 'Error de red al agregar gasto', 'error');
     }
@@ -75,28 +64,8 @@ export default function GastosForm({ user }) {
   if (user.rol_id !== 3) return null;
 
   return (
-    <form onSubmit={handleSubmit} className="form-grid">
-      <h3>Agregar Gasto</h3>
-
-      <div className="form-group">
-        <label htmlFor="cursoGasto">Curso</label>
-        <select
-          id="cursoGasto"
-          value={cursoId}
-          onChange={e => setCursoId(e.target.value)}
-          required
-          disabled={loading}
-        >
-          <option value="">Selecciona Curso</option>
-          {cursos.map(c => (
-            <option key={c.id} value={c.id}>{c.nombre}</option>
-          ))}
-        </select>
-        {loading && <div>Cargando cursos...</div>}
-        {error && <div style={{color:'red'}}>Error: {error}</div>}
-      </div>
-
-      <div className="form-group">
+    <form onSubmit={handleSubmit} className={styles.formGrid + ' ' + styles.formCompact}>
+      <div className={styles.formGroup}>
         <label htmlFor="descripcionGasto">Descripción</label>
         <input
           id="descripcionGasto"
@@ -105,10 +74,10 @@ export default function GastosForm({ user }) {
           value={descripcion}
           onChange={e => setDescripcion(e.target.value)}
           required
+          className={styles.input}
         />
       </div>
-
-      <div className="form-group">
+      <div className={styles.formGroup}>
         <label htmlFor="montoGasto">Monto</label>
         <input
           id="montoGasto"
@@ -117,10 +86,10 @@ export default function GastosForm({ user }) {
           value={monto}
           onChange={e => setMonto(e.target.value)}
           required
+          className={styles.input}
         />
       </div>
-
-      <div className="form-group">
+      <div className={styles.formGroup}>
         <label htmlFor="fechaGasto">Fecha</label>
         <input
           id="fechaGasto"
@@ -128,11 +97,13 @@ export default function GastosForm({ user }) {
           value={fecha}
           onChange={e => setFecha(e.target.value)}
           required
+          className={styles.input}
         />
       </div>
-
-      <div className="form-group form-group-submit">
-        <button type="submit"><i className="fa fa-plus"></i> Agregar</button>
+      <div className={styles.formGroup} style={{alignSelf:'end', marginTop: '22px'}}>
+        <button type="submit" className="btn-standard">
+          <FaPlus /> Agregar
+        </button>
       </div>
     </form>
   );

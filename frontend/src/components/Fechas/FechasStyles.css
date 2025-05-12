@@ -1,0 +1,206 @@
+/* 
+ * FechasStyles.css
+ * Estilos específicos para los componentes de Fechas/Calendario
+ */
+
+/* Estilos para el formulario */
+.fechas-form {
+  width: 100%;
+  max-width: 100%;
+}
+
+.fechas-form .form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-end;
+}
+
+.fechas-form .form-group {
+  flex: 1;
+  min-width: 180px;
+}
+
+.fechas-form .description-group {
+  flex: 2;
+}
+
+.fechas-form .button-group {
+  align-self: flex-end;
+  min-width: 120px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.fechas-form .form-label {
+  font-weight: 600;
+  font-size: 14px;
+  color: #4b5563;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.fechas-form .input-with-icon {
+  position: relative;
+}
+
+.fechas-form .input-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #60a5fa;
+  font-size: 14px;
+}
+
+.fechas-form .form-input {
+  padding: 10px 14px;
+  padding-left: 36px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 15px;
+  width: 100%;
+  height: 40px;
+  background: #f8fafc;
+  transition: border 0.2s;
+}
+
+.fechas-form .form-input:focus {
+  border-color: #2563eb;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* Estilos para el listado de fechas */
+.fechas-list-container {
+  background-color: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.fechas-list-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #374151;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fechas-loading,
+.fechas-empty {
+  padding: 20px;
+  text-align: center;
+  color: #6b7280;
+}
+
+.fechas-error {
+  padding: 20px;
+  text-align: center;
+  color: #ef4444;
+}
+
+.fechas-debug {
+  padding: 15px;
+  background-color: #f3f4f6;
+  border-radius: 8px;
+  margin-top: 20px;
+  font-size: 12px;
+  overflow: auto;
+}
+
+.fechas-table-container {
+  overflow-x: auto;
+}
+
+.fechas-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+  color: #374151;
+}
+
+.fechas-table thead tr {
+  background-color: #dbeafe;
+  border-bottom: 2px solid #bfdbfe;
+  text-align: left;
+}
+
+.fechas-table th {
+  padding: 12px 16px;
+  font-weight: 600;
+}
+
+.fechas-table .col-estado {
+  text-align: center;
+}
+
+.fechas-table tbody tr {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.fechas-table td {
+  padding: 12px 16px;
+}
+
+.fecha-cell {
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.estado-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.estado-pasado {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.estado-hoy {
+  background-color: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
+}
+
+.estado-semana {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+}
+
+.estado-futuro {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  .fechas-form .form-row {
+    flex-direction: column;
+  }
+  
+  .fechas-form .form-group {
+    width: 100%;
+  }
+  
+  .fechas-form .button-group {
+    align-self: stretch;
+    margin-top: 8px;
+  }
+  
+  .fechas-list-container {
+    padding: 16px;
+  }
+  
+  .fechas-table th,
+  .fechas-table td {
+    padding: 8px;
+  }
+} 

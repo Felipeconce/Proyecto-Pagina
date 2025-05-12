@@ -1,0 +1,80 @@
+/* 
+ * DocumentosAlignments.css
+ * Estilos específicos para alinear correctamente los elementos en la página de documentos
+ */
+
+/* Asegurar que los elementos del formulario tengan la misma altura */
+input, 
+select, 
+button, 
+.file-selector, 
+[class*="fileInputLabel"] {
+  height: 40px !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+}
+
+/* Alinear los textos de las etiquetas */
+label {
+  margin-bottom: 8px !important;
+  display: block !important;
+  font-weight: 500 !important;
+}
+
+/* Ajustar el ancho de los contenedores */
+.card {
+  padding: 20px !important;
+}
+
+/* Estilo consistente para todas las listas */
+[class*="list"] {
+  margin-top: 16px !important;
+}
+
+/* Asegurar que el selector de archivos tenga un espacio adecuado */
+[class*="fileInputContainer"] {
+  display: flex !important;
+  align-items: center !important;
+  height: 40px !important;
+}
+
+/* Ajustar el espaciado del botón de envío */
+button[type="submit"] {
+  height: 40px !important;
+  min-width: 120px !important;
+}
+
+/* Alinear horizontalmente los elementos del formulario */
+.documentos-form-container {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-end !important;
+  gap: 16px !important;
+  width: 100% !important;
+}
+
+/* Contenedor de archivo más ancho para ajustarse mejor */
+[class*="formGroupArchivo"] {
+  flex: 1.5 !important;
+}
+
+/* Alinear el botón de subida */
+[class*="formGroupBoton"] {
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: flex-end !important;
+  min-width: 150px !important;
+}
+
+/* Control espaciado para móviles */
+@media (max-width: 768px) {
+  .documentos-form-container {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  
+  [class*="formGroup"] {
+    width: 100% !important;
+    margin-bottom: 16px !important;
+  }
+} 
