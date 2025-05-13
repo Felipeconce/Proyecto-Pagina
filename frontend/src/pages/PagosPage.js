@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PagosList from '../components/Pagos/PagosList';
 import ConceptosForm from '../components/Pagos/ConceptosForm';
-import { FaMoneyBillWave, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
+import { Wallet } from 'lucide-react';
 import { useToast } from '../components/Layout/ToastProvider';
 
 export default function PagosPage({ user }) {
@@ -283,13 +283,13 @@ export default function PagosPage({ user }) {
   return (
     <section className="pagos-page">
       <h2 className="page-title">
-        <FaMoneyBillWave color="#2563eb" /> Pagos
+        <Wallet color="var(--color-primary)" size={28} /> Pagos
       </h2>
       
       {/* Resumen destacado */}
       <div className="pagos-resumen">
         <div className="resumen-item">
-          <FaMoneyBillWave color="#2563eb" size={24} />
+          <span className="resumen-icon icon-primary"><Wallet size={24} /></span>
           <div>
             <div className="resumen-label">Total recaudado</div>
             <div className="resumen-value resumen-value-primary">${estadisticas.totalPagado.toLocaleString('es-CL', formatoMoneda)}</div>
@@ -297,7 +297,7 @@ export default function PagosPage({ user }) {
         </div>
         
         <div className="resumen-item">
-          <FaCheckCircle color="#22c55e" size={24} />
+          <span className="resumen-icon icon-success"><Wallet size={24} /></span>
           <div>
             <div className="resumen-label">Pagos completados</div>
             <div className="resumen-value resumen-value-success">{estadisticas.pagosCompletados}</div>
@@ -305,7 +305,7 @@ export default function PagosPage({ user }) {
         </div>
         
         <div className="resumen-item">
-          <FaExclamationTriangle color="#ef4444" size={24} />
+          <span className="resumen-icon icon-error"><Wallet size={24} /></span>
           <div>
             <div className="resumen-label">Atrasados</div>
             <div className="resumen-value resumen-value-danger">{estadisticas.pagosAtrasados} (${estadisticas.totalAtrasado.toLocaleString('es-CL', formatoMoneda)})</div>

@@ -30,8 +30,8 @@
   --spacing-xl: 2rem;     /* 32px */
   
   /* Dimensiones fijas */
-  --header-height: 64px;
-  --sidebar-width: 200px;
+  --header-height: 56px;
+  --sidebar-width: 220px;
   
   /* Sombras */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -44,36 +44,48 @@
   --border-radius-lg: 12px;
 }
 
+/* 
+  A CONTINUACIÓN, LA MAYORÍA DE LAS REGLAS HAN SIDO COMENTADAS TEMPORALMENTE 
+  PARA DEPURAR EL LAYOUT BASE CONTROLADO POR App.css y index.css.
+*/
+
 /* RESET GENERAL */
+/* 
 * {
   outline: none !important;
   box-sizing: border-box;
 }
+*/
 
 /* PREVENIR MOVIMIENTO VERTICAL - Solución para el problema de subir y bajar */
+/*
 html {
-  overflow-y: scroll !important; /* Forzar siempre barra de desplazamiento */
-  scrollbar-width: thin; /* Para Firefox */
+  overflow-y: scroll !important; 
+  scrollbar-width: thin; 
   height: 100%;
-  margin-right: 0 !important; /* Evitar ajustes de margen */
+  margin-right: 0 !important; 
 }
 
 body {
   position: relative;
   height: 100%;
   overflow-x: hidden;
-  overscroll-behavior: none; /* Prevenir rebote en móviles */
-  -webkit-overflow-scrolling: touch; /* Mejor desplazamiento en iOS */
+  overscroll-behavior: none; 
+  -webkit-overflow-scrolling: touch; 
 }
+*/
 
 /* Fijar tamaño mínimo para evitar cambios de dimensiones */
+/*
 .app-container {
   min-height: 100vh !important;
   width: 100% !important;
-  overflow: hidden !important;
+  overflow: visible !important;
 }
+*/
 
 /* CORRECCIÓN DE FONDOS ROJOS */
+/*
 [style*="background-color: rgb(255, 0, 0)"],
 [style*="background-color: rgb(255,0,0)"],
 [style*="background-color: rgba(255, 0, 0,"],
@@ -83,8 +95,10 @@ body {
   background-color: transparent !important;
   background: none !important;
 }
+*/
 
 /* Tabla principal */
+/*
 .tabla-contenedor {
   background-color: var(--color-bg) !important;
   border-radius: var(--border-radius-md) !important;
@@ -105,8 +119,10 @@ body {
   background-image: none !important;
   background: none !important;
 }
+*/
 
 /* TABLA DE PAGOS */
+/*
 .pagos-table {
   background-color: transparent !important;
   border-collapse: separate !important;
@@ -134,8 +150,10 @@ body {
   text-align: center !important;
   border-bottom: 1px solid var(--color-border) !important;
 }
+*/
 
 /* ESTADOS DE PAGOS */
+/*
 .pagos-table td.pago-completado {
   background-color: var(--color-success-bg) !important;
   color: var(--color-success) !important;
@@ -153,8 +171,10 @@ body {
   color: var(--color-error) !important;
   font-weight: 600 !important;
 }
+*/
 
 /* STICKY COLUMN */
+/*
 .pagos-table .sticky-col {
   position: sticky !important;
   left: 0 !important;
@@ -169,8 +189,10 @@ body {
   background-color: var(--color-bg-secondary) !important;
   z-index: 21 !important;
 }
+*/
 
 /* ESTADOS STICKY COLUMNS */
+/*
 .pagos-table td.sticky-col.pago-completado {
   background-color: var(--color-success-bg) !important;
 }
@@ -182,8 +204,10 @@ body {
 .pagos-table td.sticky-col.pago-pendiente {
   background-color: var(--color-warning-bg) !important;
 }
+*/
 
 /* Z-INDEX FIXES */
+/*
 header, 
 [role="banner"],
 [class*="navbar"],
@@ -199,8 +223,10 @@ aside,
   position: relative !important;
   padding-top: 0 !important;
 }
+*/
 
 /* SIDEBAR LINKS */
+/*
 aside a, 
 [role="navigation"] a,
 [class*="sidebar"] a,
@@ -217,8 +243,10 @@ aside button,
   padding-top: 0.5rem !important;
   padding-bottom: 0.5rem !important;
 }
+*/
 
 /* MAIN CONTENT */
+/*
 main, 
 [role="main"],
 [class*="content"],
@@ -226,10 +254,12 @@ main,
   z-index: 1 !important;
   position: relative !important;
   margin-top: 0 !important;
-  padding-top: var(--spacing-md) !important;
-}
+  /* padding-top: var(--spacing-md) !important; */ /* Comentado para evitar conflicto con App.css */
+/*}
+*/
 
 /* LEYENDA DE COLORES */
+/*
 .pagos-leyenda {
   display: flex !important;
   gap: 20px !important;
@@ -247,8 +277,10 @@ main,
   align-items: center !important;
   gap: 8px !important;
 }
+*/
 
 /* ELIMINAR BORDES DE DESARROLLO */
+/*
 [style*="border-color: green"],
 [style*="border: 1px solid green"],
 [style*="border: 1px dashed blue"],
@@ -257,22 +289,28 @@ main,
   border: none !important;
   outline: none !important;
 }
+*/
 
 /* Estilos adicionales para corregir problemas de menu e iconos */
 
 /* Asegurar que los SVG sean visibles */
+/*
 svg {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
 }
+*/
 
 /* Estilos para el menú móvil */
+/*
 [class*="SimpleMenu"] {
   display: none;
 }
+*/
 
-@media (max-width: 900px) {
+/* @media (max-width: 900px) { */
+  /*
   [class*="SimpleMenu"] {
     display: flex !important;
     visibility: visible !important;
@@ -292,24 +330,37 @@ svg {
     color: white !important;
     fill: currentColor !important;
   }
+  */
   
   /* Ocultar sidebar en móvil */
+  /*
   .sidebar-modern {
     display: none !important;
   }
-}
+  */
+/* } */
 
 /* Estilos para desktop */
-@media (min-width: 901px) {
+/* @media (min-width: 901px) { */
+  /*
   [class*="SimpleMenu"] {
     display: none !important;
   }
+  */
   
+  /*
   .sidebar-modern {
-    display: block !important;
+    display: flex !important;
+    position: fixed !important;
+    left: 0 !important;
+    top: var(--header-height) !important;
+    height: calc(100vh - var(--header-height)) !important;
+    width: var(--sidebar-width) !important;
   }
+  */
   
   /* Estilos para el botón hamburguesa en desktop */
+  /*
   .hamburger {
     display: flex !important;
     visibility: visible !important;
@@ -323,9 +374,29 @@ svg {
     color: #2563eb !important;
     fill: currentColor !important;
   }
-}
+  */
+/* } */
 
 /* Corrección para el contenido principal */
+/*
 .main-content {
-  padding-top: 70px !important;
+  /* padding-top: 70px !important; */ /* Comentado para permitir que App.css controle el padding superior */
+  /* background-color: lightcoral !important; */ /* Eliminado color de depuración */
+  /* margin-left: calc(var(--sidebar-width) + var(--spacing-md)) !important; */ /* Eliminado margen forzado */
+/*}
+*/
+
+/* ELIMINADO TEMPORALMENTE:
+svg {
+  display: inline-block !important;
+  vertical-align: middle !important;
+  fill: currentColor !important; 
+}
+*/
+
+/* Fix para SimpleMenu y botón hamburguesa */
+/*
+[class*="SimpleMenu"] {
+  display: none;
 } 
+*/ 

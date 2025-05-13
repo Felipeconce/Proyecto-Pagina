@@ -2,29 +2,32 @@
 
 /* Variables CSS para mantener consistencia en colores y espaciados */
 :root {
-  /* Colores primarios - Paleta mejorada */
-  --color-primary: #3b82f6;       /* Azul más vibrante */
-  --color-primary-hover: #2563eb;
-  --color-primary-light: #dbeafe;
-  --color-secondary: #8b5cf6;     /* Violeta para acentos */
-  --color-secondary-hover: #7c3aed;
+  /* Colores primarios - Nueva paleta Teal */
+  --color-primary: #14b8a6;       /* Teal 500 */
+  --color-primary-rgb: 20, 184, 166; /* Componentes RGB de --color-primary */
+  --color-primary-hover: #0d9488; /* Teal 600 */
+  --color-primary-light: #ccfbf1; /* Teal 100 */
+  --color-secondary: #6366f1;     /* Indigo 500 */
+  --color-secondary-hover: #4f46e5; /* Indigo 600 */
+  --color-secondary-light: #e0e7ff; /* Indigo 100 - Nuevo */
   
   /* Colores de estado */
-  --color-success: #10b981;       /* Verde más moderno */
+  --color-success: #10b981;       /* Verde esmeralda 500 */
   --color-success-bg: #d1fae5;
-  --color-warning: #f59e0b;       /* Ámbar más vibrante */
+  --color-warning: #f59e0b;       /* Ambar 500 */
   --color-warning-bg: #fef3c7;
-  --color-error: #ef4444;
+  --color-error: #ef4444;         /* Rojo 500 */
   --color-error-bg: #fee2e2;
   
-  /* Colores neutrales - Paleta mejorada */
+  /* Colores neutrales - Mantener paleta gris actual */
   --color-bg: #ffffff;
-  --color-bg-secondary: #f8fafc;   /* Gris azulado más suave */
+  --color-bg-secondary: #f8fafc;   /* Cool Gray 50 */
+  --color-bg-secondary-rgb: 248, 250, 252; /* Componentes RGB de --color-bg-secondary */
   --color-card-bg: #ffffff;
-  --color-text: #1e293b;           /* Gris azulado oscuro */
-  --color-text-secondary: #64748b; /* Gris medio */
-  --color-border: #e2e8f0;         /* Borde más suave */
-  --color-accent: #f0f9ff;         /* Acento suave para fondos */
+  --color-text: #1e293b;           /* Cool Gray 800 */
+  --color-text-secondary: #64748b; /* Cool Gray 500 */
+  --color-border: #e2e8f0;         /* Cool Gray 200 */
+  --color-accent: #f0f9ff;         /* Sky 50 (Podría ajustarse si no encaja con teal) */
   
   /* Espaciados */
   --spacing-xs: 0.25rem;  /* 4px */
@@ -34,7 +37,7 @@
   --spacing-xl: 1.75rem;  /* 28px */
   
   /* Dimensiones fijas */
-  --header-height: 64px;
+  --header-height: 56px;
   --sidebar-width: 220px;  /* Sidebar un poco más ancha */
   
   /* Sombras mejoradas */
@@ -202,6 +205,30 @@ button:active, .btn-principal:active {
   transform: translateY(0);
 }
 
+/* Botón secundario */
+.btn-secondary {
+  display: inline-flex; /* Asegurar alineación de icono y texto */
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem; /* Espacio entre icono y texto, similar a btn-principal */
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+  padding: 0.5rem 1rem; /* Padding más pequeño que el principal */
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: 1px solid var(--color-primary-light);
+  border-radius: var(--border-radius-md);
+  box-shadow: none; /* Sin sombra por defecto */
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
 /* Estilos para inputs mejorados */
 input[type="text"],
 input[type="number"],
@@ -221,7 +248,7 @@ select {
 
 input:focus, select:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb, 20, 184, 166), 0.25);
 }
 
 /* Scrollbar personalizada */
@@ -287,3 +314,45 @@ tr:last-child td {
 tbody tr:hover {
   background-color: rgba(226, 232, 240, 0.3);
 }
+
+/* Estilos básicos para tablas */
+table.table-modern {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+table.table-modern th {
+  text-align: left;
+  font-weight: 600;
+  background-color: var(--color-primary-light); /* Fondo claro para header */
+  color: var(--color-primary);
+  border-bottom: 2px solid var(--color-border);
+}
+
+/* Comentar o eliminar las siguientes reglas para #custom-menu-mobile */
+
+/* 
+@media (max-width: 900px) { 
+  #custom-menu-mobile { 
+    display: flex !important; 
+  }
+}
+
+#custom-menu-mobile {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 10001; // Era 10001, pero el de SimpleMenu es 10000 para el container, 10001 para el botón interno
+  display: flex; // Originalmente flex, pero SimpleMenu lo controla
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background-color: #2563eb; // Este es el azul problemático
+  border: none;
+  border-radius: 8px; // SimpleMenu usa var(--border-radius-sm)
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+*/

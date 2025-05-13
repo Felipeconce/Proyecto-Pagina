@@ -116,6 +116,11 @@ Centro de Apoderados - [email@example.com](mailto:email@example.com)
 
 *Agregar aquí cada cambio importante realizado en el sistema.*
 
+- **[2024-06-13]** Refactorización visual: Ajustes en Header y menú móvil.
+    - Eliminado icono conflictivo (`.header-logo`) del título del header.
+    - Centrado horizontal y vertical del título "Gestión Curso" en el header.
+    - Corregida la visibilidad del botón de menú móvil (`SimpleMenu.js`) para que se oculte correctamente en la vista de escritorio, eliminando la manipulación de `display` por JS y confiando en CSS.
+
 ---
 
 ## Notas Técnicas y Decisiones de Implementación

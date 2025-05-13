@@ -349,7 +349,7 @@ export default function ConceptosForm({ user, onConceptoAgregado }) {
               />
             </div>
             <div className={styles.formGroup} style={{alignSelf:'end', marginTop: '22px'}}>
-              <button type="submit" className={styles.btnPrimary}>
+              <button type="submit" className="btn-principal">
                 <i className="fa fa-plus"></i> Agregar
               </button>
             </div>

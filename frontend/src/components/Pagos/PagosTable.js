@@ -70,9 +70,9 @@ const PagosTable = ({ alumnos, conceptos, pagos, user, onCellClick }) => {
   }
   
   return (
-    <div className="tabla-contenedor">
+    <div className="table-container">
       <div className="tabla-scroll-main">
-        <table className="pagos-table">
+        <table className="table-modern">
           <thead>
             <tr>
               <th className="sticky-col">

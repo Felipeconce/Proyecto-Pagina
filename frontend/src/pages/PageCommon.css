@@ -26,14 +26,19 @@
 }
 
 /* Subtítulos de secciones */
+/* Comentar para usar la definición de index.css */
+/*
 .section-subtitle {
   margin-bottom: 20px;
   font-size: 18px;
   color: #4b5563;
   font-weight: 600;
 }
+*/
 
 /* Cards/contenedores */
+/* Quitar .card de aquí para usar el de index.css */
+/* 
 .card {
   background: #fff;
   border-radius: 16px;
@@ -42,6 +47,7 @@
   margin-bottom: 24px;
   border: 1px solid #e5e7eb;
 }
+*/
 
 /* Errores de permisos */
 .permission-error {
@@ -54,11 +60,12 @@
 .pagos-resumen {
   display: flex;
   gap: 20px;
-  margin-bottom: 32px;
-  background: #e0e7ff;
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  margin-bottom: var(--spacing-lg);
+  background: var(--color-card-bg);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--color-border);
   flex-wrap: wrap;
   justify-content: space-between;
 }
@@ -82,16 +89,30 @@
   font-weight: 700;
 }
 
-.resumen-value-primary {
-  color: #2563eb;
+/* Estilos para iconos de resumen */
+.resumen-icon {
+  /* Podríamos añadir un fondo ligero si queremos */
+  /* background-color: rgba(var(--color-primary-rgb), 0.1); */ 
+  /* padding: 8px; */
+  /* border-radius: 50%; */
+  display: inline-flex; /* Para centrar el icono si añadimos padding */
+  align-items: center;
+  justify-content: center;
 }
 
-.resumen-value-success {
-  color: #22c55e;
+.resumen-icon.icon-primary,
+.resumen-item .resumen-value-primary { /* Aplicar color también al valor */
+  color: var(--color-primary);
 }
 
-.resumen-value-danger {
-  color: #ef4444;
+.resumen-icon.icon-success,
+.resumen-item .resumen-value-success { /* Aplicar color también al valor */
+  color: var(--color-success);
+}
+
+.resumen-icon.icon-error,
+.resumen-item .resumen-value-danger { /* Aplicar color también al valor */
+  color: var(--color-error);
 }
 
 /* Responsividad */

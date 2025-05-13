@@ -11,10 +11,11 @@
   - Fuente: 'Inter', 'Segoe UI', 'Arial', sans-serif
 */
 
-/* Variables globales */
+/* Variables globales - ELIMINADAS PARA USAR LAS DE index.css */
+/*
 :root {
-  --header-height: 60px;
-  --sidebar-width: 200px;
+  --header-height: 64px;
+  --sidebar-width: 220px;
   --color-primary: #3b82f6;
   --color-primary-light: #eff6ff;
   --color-primary-dark: #2563eb;
@@ -32,6 +33,7 @@
   --border-radius-lg: 0.5rem;
   --transition-fast: 0.2s ease;
 }
+*/
 
 /* Estilos base - evitar scrollbar duplicado */
 html, body {
@@ -44,48 +46,43 @@ html, body {
 }
 
 body {
-  background: linear-gradient(135deg, #f0f9ff 0%, #f8fafc 100%);
+  /* background: linear-gradient(135deg, #f0f9ff 0%, #f8fafc 100%); */
+  background-color: var(--color-bg-secondary); /* Usar variable global */
   font-family: 'Inter', 'Segoe UI', 'Arial', sans-serif;
-  color: var(--color-text);
+  color: var(--color-text); /* Usar variable global y unificar */
   margin: 0;
   padding: 0;
   position: relative;
+  font-smooth: always;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-variant-ligatures: common-ligatures;
+  font-feature-settings: "liga" 1;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.6;
+  /* Resto de propiedades de fuente se mantienen */
+  font-style: normal;
+  font-kerning: normal;
+  font-variant-numeric: lining-nums;
+  font-variant-east-asian: proportional-width;
+  font-variant-caps: normal;
+  font-variant-alternates: normal;
+  font-variant-position: normal;
+  font-variant-ligatures: normal;
+  font-variant: normal;
+  font-synthesis: weight style;
+  font-stretch: normal;
+  font-optical-sizing: auto;
 }
 
 /* Header modernizado */
-header.header-pro {
-  background: #fff;
-  color: var(--color-text);
-  padding: 0 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  border-bottom: 1px solid var(--color-border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: var(--header-height);
-  z-index: 1000;
-  box-sizing: border-box;
-}
+/* ELIMINADO: header.header-pro { ... } */
 
-header.header-pro h1 {
-  color: var(--color-text);
-  margin: 0;
-  font-size: 1.4rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-}
+/* ELIMINADO: header.header-pro h1 { ... } */
 
-header.header-pro .header-logo {
-  color: var(--color-primary);
-  font-size: 1.6rem;
-}
+/* ELIMINADO: header.header-pro .header-logo { ... } */ /* Eliminamos también esta por si acaso */
 
 .header-left {
   display: flex;
@@ -102,6 +99,7 @@ header.header-pro .header-logo {
 .header-user-name {
   font-size: 0.9rem;
   font-weight: 500;
+  color: var(--color-text); /* Asegurar consistencia */
 }
 
 .btn-logout {
@@ -110,108 +108,116 @@ header.header-pro .header-logo {
   gap: 0.5rem;
   background: transparent;
   border: none;
-  color: #ef4444;
+  color: var(--color-error); /* Usar variable */
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
   padding: 0.5rem 0.8rem;
-  border-radius: 4px;
-  transition: background-color 0.2s;
+  border-radius: 4px; /* Restaurado */
+  transition: background-color 0.2s; /* Restaurado */
 }
 
 .btn-logout:hover {
-  background-color: rgba(239, 68, 68, 0.1);
+  background-color: var(--color-error-bg); /* Usar variable */
 }
 
 /* Botón hamburguesa - Estilo mejorado */
-.hamburger {
-  background: transparent;
-  border: none;
-  color: var(--color-primary);
-  padding: 0.5rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  transition: background-color 0.2s;
-}
-
-.hamburger:hover {
-  background-color: var(--color-primary-light);
-}
-
-/* Desktop hamburger específico */
-.desktop-hamburger {
-  display: flex !important;
-}
+/* ELIMINADO: .hamburger { ... } */
+/* ELIMINADO: .hamburger:hover { ... } */
+/* ELIMINADO: .desktop-hamburger { ... } */
 
 /* Sidebar moderna con gradiente sutil */
 .sidebar-modern {
-  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  /* background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); */
+  background-color: var(--color-bg);
   color: var(--color-text);
   border-right: 1px solid var(--color-border);
   width: var(--sidebar-width);
-  padding: 1.5rem 1rem;
+  padding-top: 0;
+  padding-bottom: 1.5rem;
+  padding-left: 1.5rem;
+  padding-right: 1rem;
   box-shadow: 1px 0 2px rgba(0, 0, 0, 0.02);
   position: fixed;
   top: var(--header-height);
-  left: 0;
+  left: 0 !important;
+  right: auto !important;
   height: calc(100vh - var(--header-height));
-  display: flex;
+  display: flex !important;
   flex-direction: column;
-  align-items: stretch;
   box-sizing: border-box;
   z-index: 900;
   overflow-y: auto;
 }
 
-.sidebar-modern .sidebar-list {
+.sidebar-modern .sidebar-list { /* Asumimos que .sidebarList es el ul */
   list-style: none;
-  padding: 0;
-  margin: 1rem 0;
+  padding: 0; /* Resetear padding de la lista */
+  margin: 0; /* Resetear margen de la lista */
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: 0.3rem; /* Gap original de App.css, el inline en Sidebar.js es 12px */
+  width: 100%; /* Asegurar ancho completo */
+}
+
+.sidebar-modern .sidebar-list > li:first-child .sidebar-link {
+  margin-top: 0; /* Si el padding de .sidebar-modern es suficiente, mantener 0, sino, probar 1.5rem */
 }
 
 .sidebar-modern .sidebar-link {
   display: flex;
-  align-items: center;
-  gap: 0.8rem;
+  align-items: center !important; /* Forzar alineación vertical */
+  gap: 1rem !important; /* Aumentado y añadido !important */
   color: var(--color-text-secondary);
   background: transparent;
   border-radius: var(--border-radius-md);
-  padding: 0.8rem 1rem;
+  /* padding: 0.8rem 1rem; */ /* Controlar padding para altura */
+  padding-top: 0.7rem;    /* Padding específico para altura */
+  padding-bottom: 0.7rem;
+  padding-left: 1rem; 
+  padding-right: 1rem;
   font-size: 0.95rem;
   font-weight: 500;
   text-decoration: none;
   transition: all var(--transition-fast);
+  /* line-height: 1.3; */ /* Quitar si no ayuda */
+  min-height: 44px; 
+  box-sizing: border-box; /* Asegurar box-sizing */
 }
 
 .sidebar-modern .sidebar-link:hover {
-  background: rgba(226, 232, 240, 0.5);
+  background: var(--color-border); /* Usar --color-border para el hover */
   color: var(--color-text);
 }
 
 .sidebar-modern .sidebar-link.active {
-  background: var(--color-primary-light);
-  color: var(--color-primary);
+  /* background: var(--color-primary-light); */
+  background-color: var(--color-primary); /* Fondo con color primario */
+  color: #fff; /* Texto blanco */
   font-weight: 600;
 }
 
 .sidebar-modern .sidebar-link .sidebar-icon {
   color: var(--color-text-secondary);
-  font-size: 1.2rem;
+  font-size: 1.1rem; 
   transition: color var(--transition-fast);
-  display: flex;
-  align-items: center;
+  align-items: center;  
   justify-content: center;
+  line-height: 1;
+  padding: 0; 
+  margin: 0; 
+  flex-shrink: 0; 
+  box-sizing: border-box; /* Asegurar box-sizing */
 }
 
 .sidebar-modern .sidebar-link:hover .sidebar-icon,
 .sidebar-modern .sidebar-link.active .sidebar-icon {
-  color: var(--color-primary);
+  color: #fff; /* Icono blanco en estado activo */
+}
+
+/* Añadir regla específica para el texto activo */
+.sidebar-modern .sidebar-link.active .sidebarText {
+  color: #fff;
 }
 
 .sidebar-category {
@@ -239,15 +245,25 @@ header.header-pro .header-logo {
 .main-content {
   background: var(--color-bg);
   border-radius: var(--border-radius-lg);
-  margin: var(--spacing-lg);
-  margin-left: calc(var(--sidebar-width) + var(--spacing-md));
-  flex: 1;
+  margin: 0;
+  margin-left: calc(var(--sidebar-width) + var(--spacing-md)) !important;
+  flex: 1; /* flex-grow: 1, flex-shrink: 1, flex-basis: 0% */
+  /* width: auto; */ /* Asegurarse de que no haya un width fijo que impida a flex-grow actuar */
   padding: var(--spacing-lg);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   min-height: calc(100vh - var(--header-height) - 2 * var(--spacing-lg));
-  overflow-y: auto;
+  overflow-y: auto; /* Permitir scroll vertical para el contenido */
+  overflow-x: hidden; /* Evitar que el contenido interno cause scroll horizontal en este contenedor */
   box-sizing: border-box;
   transition: margin-left 0.3s ease;
+  padding-top: 0 !important;
+  gap: 1.5rem !important;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content > *:first-child {
+  margin-top: 0 !important;
 }
 
 /* Estilo mejorado para formularios */
@@ -350,7 +366,7 @@ label {
 }
 
 .table-modern tr:hover td {
-  background-color: rgba(241, 245, 249, 0.5);
+  background-color: rgba(var(--color-bg-secondary-rgb), 0.5); /* Usar variable con opacidad */
 }
 
 .table-modern tr:last-child td {
@@ -359,34 +375,57 @@ label {
 
 /* Estilo para notificaciones y alertas */
 .alert {
-  padding: 1rem;
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
   border-radius: var(--border-radius-md);
-  margin-bottom: var(--spacing-md);
+  border: 1px solid transparent;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: var(--spacing-sm);
+  box-shadow: var(--shadow-sm);
 }
 
 .alert-success {
+  /* background-color: #dcfce7; */
   background-color: var(--color-success-bg);
-  color: var(--color-success);
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  /* border-color: #86efac; */
+  border-color: var(--color-success); /* Usar color base para borde */
+  /* color: #166534; */
+  color: var(--color-text); /* Usar color de texto normal para contraste */
 }
 
 .alert-warning {
+  /* background-color: #fef3c7; */
   background-color: var(--color-warning-bg);
-  color: var(--color-warning);
-  border: 1px solid rgba(245, 158, 11, 0.2);
+  /* border-color: #fcd34d; */
+  border-color: var(--color-warning);
+  /* color: #92400e; */
+  color: var(--color-text);
 }
 
 .alert-error {
+  /* background-color: #fee2e2; */
   background-color: var(--color-error-bg);
-  color: var(--color-error);
-  border: 1px solid rgba(239, 68, 68, 0.2);
+  /* border-color: #fca5a5; */
+  border-color: var(--color-error);
+  /* color: #991b1b; */
+  color: var(--color-text);
 }
 
 .alert-icon {
-  font-size: 1.2rem;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+/* Ajustar color de icono según tipo de alerta */
+.alert-success .alert-icon {
+  color: var(--color-success);
+}
+.alert-warning .alert-icon {
+  color: var(--color-warning);
+}
+.alert-error .alert-icon {
+  color: var(--color-error);
 }
 
 /* Componentes de tarjetas para dashboard */
@@ -463,32 +502,85 @@ html.sidebar-open {
 @media (max-width: 900px) {
   /* Ajustes para layout en dispositivos móviles */
   .main-content {
-    margin-left: var(--spacing-lg);
+    margin-left: var(--spacing-md) !important; /* Ajustar para móvil, o 0 si no hay sidebar visible */
     padding: var(--spacing-md);
     margin-bottom: var(--spacing-lg);
     min-height: calc(100vh - var(--header-height) - 2 * var(--spacing-lg));
   }
   
   /* Ocultar desktop hamburger en móvil */
-  .desktop-hamburger {
-    display: none !important;
-  }
+  /* ELIMINADO: .desktop-hamburger { ... } */
   
   /* Ajustar el header */
-  header.header-pro {
-    padding: 0 1rem;
-  }
+  /* ELIMINADO: header.header-pro { ... } */
   
-  header.header-pro h1 {
-    font-size: 1.2rem;
-  }
+  /* ELIMINADO: header.header-pro h1 { ... } */
   
-  .header-user-name {
-    font-size: 0.8rem;
-  }
+  /* ELIMINADO: .header-user-name { ... } */
   
   /* Evitar doble scroll */
   body.sidebar-open .main-content {
     pointer-events: none;
   }
+}
+
+/* Espaciado entre secciones y tarjetas */
+.main-content, .dashboardContent, .dashboardGrid, .dashboard-row, .tarjetasGrid, .dashboardContainer {
+  gap: 1.5rem !important;
+  display: flex;
+  flex-direction: column;
+}
+
+.space-y-4 > * + * {
+  margin-top: 1rem !important;
+}
+
+.gap-6 {
+  gap: 1.5rem !important;
+}
+
+/* Añadir estilos de alineación para el span del texto */
+.sidebarText { /* Clase global para el span del texto */
+  align-items: center;
+  padding: 0; 
+  margin: 0; 
+  font-size: 0.95rem; 
+  box-sizing: border-box; /* Asegurar box-sizing */
+}
+
+/* Backdrop para la Sidebar */
+.sidebar-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 899; /* Detrás de .sidebar-modern (900) */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transition-normal), visibility var(--transition-normal);
+  pointer-events: none; /* Por defecto no es interactivo */
+}
+
+.sidebar-backdrop.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto; /* Permitir clics para cerrar */
+}
+
+/* Header modernizado */
+/* ELIMINADO: header.header-pro { ... } */
+
+/* ELIMINADO: header.header-pro h1 { ... } */
+
+/* ELIMINADO: header.header-pro .header-logo { ... } */ /* Eliminamos también esta por si acaso */
+
+/* Añadir estilos para los nuevos classNames de Sidebar.js */
+.sidebar-modern .sidebar-nav {
+  width: 100%;
+}
+
+.sidebar-modern .sidebar-item {
+  width: 100%;
 }

@@ -1,14 +1,14 @@
 // Componente MobileMenu - Menú móvil independiente
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { FaChartLine, FaMoneyBillWave, FaReceipt, FaFileAlt, FaCalendarAlt, FaHistory, FaSignOutAlt } from 'react-icons/fa';
+import { FaChartLine, FaWallet, FaFileInvoiceDollar, FaFileAlt, FaCalendarAlt, FaHistory, FaSignOutAlt } from 'react-icons/fa';
 import './MobileMenu.css';
 
 // Items de navegación
 const menuItems = [
   { nombre: 'Dashboard', ruta: '/', icono: <FaChartLine size={20} /> },
-  { nombre: 'Pagos', ruta: '/pagos', icono: <FaMoneyBillWave size={20} /> },
-  { nombre: 'Gastos', ruta: '/gastos', icono: <FaReceipt size={20} /> },
+  { nombre: 'Pagos', ruta: '/pagos', icono: <FaWallet size={20} /> },
+  { nombre: 'Gastos', ruta: '/gastos', icono: <FaFileInvoiceDollar size={20} /> },
   { nombre: 'Documentos', ruta: '/documentos', icono: <FaFileAlt size={20} /> },
   { nombre: 'Calendario', ruta: '/fechas', icono: <FaCalendarAlt size={20} /> },
 ];
@@ -59,19 +59,6 @@ function MobileMenu({ isOpen, onClose, user }) {
               </Link>
             </li>
           ))}
-          
-          <li className="mobile-menu-logout">
-            <a 
-              href="#logout" 
-              className="mobile-menu-link"
-              onClick={handleLogout}
-            >
-              <div className="mobile-menu-icon">
-                <FaSignOutAlt size={20} />
-              </div>
-              <span>Cerrar sesión</span>
-            </a>
-          </li>
         </ul>
       </div>
     </>

@@ -117,6 +117,8 @@
 }
 
 /* Estilos para contenedor de tabla mejorado */
+/* Quitar estilos conflictivos con .table-container */
+/* 
 .tabla-contenedor {
   overflow-x: auto;
   width: 100%;
@@ -126,6 +128,7 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   max-width: 100%;
 }
+*/
 
 /* Barra de desplazamiento principal con la tabla */
 .tabla-scroll-main {
@@ -155,7 +158,8 @@
   background-color: #64748b;
 }
 
-/* Estilos para la tabla de pagos */
+/* Estilos para la tabla de pagos - Usar .table-modern de App.css */
+/* 
 .pagos-table {
   width: 100%;
   border-collapse: collapse;
@@ -165,91 +169,61 @@
   table-layout: fixed;
   font-size: 0.9rem;
 }
+*/
 
-/* Mantener la columna de Alumno fija */
+/* Mantener la columna de Alumno fija - Simplificar */
 .sticky-col {
   position: sticky !important;
   left: 0 !important;
-  z-index: 20 !important;
-  background-color: white !important;
-  box-shadow: 3px 0 5px rgba(0, 0, 0, 0.1) !important;
+  z-index: 2 !important; /* Reducir z-index, probar */
   min-width: 200px !important;
   width: 200px !important;
   text-align: left !important;
   padding: 12px !important;
-  border-bottom: 1px solid #e5e7eb !important;
   font-weight: 500 !important;
+  /* Asegurar que el fondo se herede o establecer explícitamente si es necesario */
+  /* background-color: var(--color-bg); */
 }
 
-/* Estilo para columnas de conceptos */
+/* Estilo para columnas de conceptos - Quitar !important */
 .concepto-col {
-  min-width: 80px !important;
-  width: 80px !important;
-  max-width: 80px !important;
-  text-align: center !important;
-  padding: 10px 8px !important;
-  border-bottom: 1px solid #e5e7eb !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-  font-size: 0.85rem !important;
+  min-width: 80px;
+  width: 80px;
+  max-width: 80px;
+  text-align: center;
+  padding: 10px 8px; /* Ajustar padding si es necesario */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.85rem;
 }
 
-thead .sticky-col {
-  background-color: #f1f5f9 !important;
-  z-index: 21 !important;
-  font-weight: 600 !important;
-  position: sticky !important;
-  top: 0 !important;
-  padding: 12px !important;
-  text-align: left !important;
-  border-bottom: 1px solid #e5e7eb !important;
-}
-
-.pagos-table th {
-  background-color: #f1f5f9 !important;
-  font-weight: 600 !important;
-  color: #334155 !important;
-  text-transform: uppercase !important;
-  font-size: 0.75rem !important;
-  letter-spacing: 0.025em !important;
-  padding: 10px 8px !important;
-  position: sticky !important;
-  top: 0 !important;
-  z-index: 10 !important;
-  border-bottom: 1px solid #e5e7eb !important;
-}
-
-/* Estilos para estados de pagos */
+/* Estilos para estados de pagos - Usar variables */
 .pago-completado {
-  color: #22c55e !important; 
-  font-weight: 600 !important;
-  background-color: #dcfce7 !important;
+  color: var(--color-text); /* Ajustar color de texto */
+  font-weight: 500; /* Quitar important */
+  background-color: var(--color-success-bg) !important; /* Usar variable */
 }
 
 .pago-pendiente {
-  color: #f97316 !important;
-  font-weight: 600 !important;
-  background-color: #fff7ed !important;
+  color: var(--color-text); /* Ajustar color de texto */
+  font-weight: 500; /* Quitar important */
+  background-color: var(--color-warning-bg) !important; /* Usar variable */
 }
 
 .pago-atrasado {
-  color: #ef4444 !important;
-  font-weight: 600 !important;
+  color: var(--color-text); /* Ajustar color de texto */
+  font-weight: 500; /* Quitar important */
   background-color: #fee2e2 !important;
 }
 
 /* Ajuste para estados de celda en columna fija */
 .sticky-col.pago-completado {
-  background-color: #dcfce7 !important;
+  background-color: var(--color-success-bg) !important; /* Usar variable */
 }
 
 .sticky-col.pago-atrasado {
-  background-color: #fee2e2 !important;
-}
-
-.sticky-col.pago-pendiente {
-  background-color: #fff7ed !important;
+  background-color: var(--color-error-bg) !important; /* Usar variable */
 }
 
 /* Contenedor de la tabla de pagos */

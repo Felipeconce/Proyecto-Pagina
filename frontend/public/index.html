@@ -65,61 +65,6 @@
       .main-content {
         padding-top: 70px !important;
       }
-
-      /* Botones personalizados para móvil y desktop */
-      #custom-menu-mobile {
-        position: fixed;
-        top: 15px;
-        left: 15px;
-        z-index: 10001;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 44px;
-        height: 44px;
-        background-color: #2563eb;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-      }
-
-      #custom-menu-desktop {
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 40px;
-        height: 40px;
-        background-color: transparent;
-        color: #2563eb;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        margin-right: 10px;
-      }
-
-      #custom-menu-desktop:hover {
-        background-color: #eff6ff;
-      }
-
-      @media (max-width: 900px) {
-        #custom-menu-mobile {
-          display: flex !important;
-        }
-        #custom-menu-desktop, .hamburger, .desktop-hamburger {
-          display: none !important;
-        }
-      }
-
-      @media (min-width: 901px) {
-        #custom-menu-desktop {
-          display: flex !important;
-        }
-        #custom-menu-mobile {
-          display: none !important;
-        }
-      }
       
       /* Estado del body con sidebar abierto */
       body.sidebar-open {
@@ -128,13 +73,6 @@
       
       html.sidebar-open {
         overflow-y: hidden !important;
-      }
-      
-      /* Hacer que los botones estándar queden ocultos */
-      .hamburger, .desktop-hamburger {
-        opacity: 0 !important;
-        visibility: hidden !important;
-        position: absolute !important;
       }
     </style>
     

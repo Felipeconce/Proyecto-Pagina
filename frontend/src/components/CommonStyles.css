@@ -5,7 +5,8 @@
 
 /* Botón principal estandarizado */
 .btn-standard {
-  background: #2563eb;
+  /* background: #2563eb; */
+  background-color: var(--color-primary);
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -14,7 +15,8 @@
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
+  /* box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08); */
+  box-shadow: 0 2px 8px rgba(var(--color-primary-rgb, 20, 184, 166), 0.08); /* Usar variable o fallback RGB */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -37,9 +39,11 @@
 }
 
 .btn-standard:hover {
-  background: #1d4ed8;
+  /* background: #1d4ed8; */
+  background-color: var(--color-primary-hover);
   transform: translateY(-1px);
-  box-shadow: 0 3px 10px rgba(37, 99, 235, 0.15);
+  /* box-shadow: 0 3px 10px rgba(37, 99, 235, 0.15); */
+  box-shadow: 0 3px 10px rgba(var(--color-primary-rgb, 20, 184, 166), 0.15);
 }
 
 /* Contenedor estándar para formularios */
@@ -88,9 +92,11 @@
 }
 
 .form-input:focus {
-  border-color: #2563eb;
+  /* border-color: #2563eb; */
+  border-color: var(--color-primary);
   outline: none;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  /* box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); */
+  box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb, 20, 184, 166), 0.15);
 }
 
 /* Ajuste responsive para móviles */

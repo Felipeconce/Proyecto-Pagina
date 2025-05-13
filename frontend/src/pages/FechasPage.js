@@ -1,13 +1,13 @@
 import React from 'react';
 import FechasList from '../components/Fechas/FechasList';
 import FechasForm from '../components/Fechas/FechasForm';
-import { FaCalendarAlt } from 'react-icons/fa';
+import { Calendar } from 'lucide-react';
 
 export default function FechasPage({ user }) {
   return (
     <section className="fechas-page">
       <h2 className="page-title">
-        <FaCalendarAlt color="#3b82f6" /> Calendario
+        <Calendar color="var(--color-primary)" size={28} /> Calendario
       </h2>
       <div className="card">
         <h3 className="section-subtitle">Agregar fecha importante</h3>

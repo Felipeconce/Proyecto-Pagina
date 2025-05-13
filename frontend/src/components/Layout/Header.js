@@ -23,39 +23,15 @@ export default function Header({ onHamburgerClick, user, onLogout }) {
     }
   };
   
-  // Manejador específico para el botón hamburguesa
-  const handleHamburgerClick = (e) => {
-    // Detener la propagación para evitar que se cierre inmediatamente
-    e.preventDefault();
-    e.stopPropagation();
-    
-    console.log("Hamburguesa clickeada en Header");
-    
-    // Llamar a la función proporcionada desde el componente padre
-    if (onHamburgerClick) {
-      onHamburgerClick();
-    }
-  };
-  
   // Comprobación de si estamos en un dispositivo móvil
-  const isMobileDevice = window.innerWidth <= 900;
+  // const isMobileDevice = window.innerWidth <= 900; // Ya no es necesario aquí
   
   return (
     <header className="header-pro">
-      <div className="header-left">
-        {isMobileDevice && (
-          <button 
-            className="hamburger desktop-hamburger" 
-            onClick={handleHamburgerClick}
-            aria-label="Menú"
-            type="button"
-          >
-            <HiMenu size={24} />
-          </button>
-        )}
-        <h1>
-          <HiOutlineUserGroup className="header-logo" size={30} />
-          Centro de Apoderados
+      <div className="header-title-wrapper">
+        <h1 className="font-semibold text-lg">
+          {/* <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f3eb.svg" alt="Edificio escolar" className="header-logo" /> */}
+          Gestión Curso
         </h1>
       </div>
       <div className="header-user-section">

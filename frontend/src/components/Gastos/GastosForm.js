@@ -101,7 +101,7 @@ export default function GastosForm({ user, onGastoAdded }) {
         />
       </div>
       <div className={styles.formGroup} style={{alignSelf:'end', marginTop: '22px'}}>
-        <button type="submit" className="btn-standard">
+        <button type="submit" className="btn-principal">
           <FaPlus /> Agregar
         </button>
       </div>

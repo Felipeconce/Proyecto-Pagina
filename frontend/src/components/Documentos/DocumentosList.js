@@ -65,49 +65,15 @@ export default function DocumentosList() {
 
   if (loading) {
     return (
-      <div className="content-section" style={{
-        backgroundColor: '#fff',
-        borderRadius: '16px',
-        padding: '24px',
-        boxShadow: '0 2px 12px rgba(0, 0, 0, 0.06)'
-      }}>
-        <h3 style={{
-          fontSize: '20px',
-          fontWeight: '700',
-          color: '#374151',
-          marginBottom: '16px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px'
-        }}>
-          <FaList color="#4f46e5" /> Listado de Documentos
-        </h3>
-        <div style={{ padding: '20px', textAlign: 'center', color: '#6b7280' }}>
-          Cargando documentos...
-        </div>
+      <div style={{ padding: '20px', textAlign: 'center', color: '#6b7280' }}>
+        Cargando documentos...
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="content-section" style={{
-        backgroundColor: '#fff',
-        borderRadius: '16px',
-        padding: '24px',
-        boxShadow: '0 2px 12px rgba(0, 0, 0, 0.06)'
-      }}>
-        <h3 style={{
-          fontSize: '20px',
-          fontWeight: '700',
-          color: '#374151',
-          marginBottom: '16px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px'
-        }}>
-          <FaList color="#4f46e5" /> Listado de Documentos
-        </h3>
+      <>
         <div style={{ padding: '20px', textAlign: 'center', color: '#ef4444' }}>
           {error}
         </div>
@@ -123,88 +89,51 @@ export default function DocumentosList() {
             <pre>{JSON.stringify(debug, null, 2)}</pre>
           </div>
         )}
-      </div>
+      </>
     );
   }
 
   return (
-    <div className="content-section" style={{
-      backgroundColor: '#fff',
-      borderRadius: '16px',
-      padding: '24px',
-      boxShadow: '0 2px 12px rgba(0, 0, 0, 0.06)'
-    }}>
-      <h3 style={{
-        fontSize: '20px',
-        fontWeight: '700',
-        color: '#374151',
-        marginBottom: '16px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '10px'
-      }}>
-        <FaList color="#4f46e5" /> Listado de Documentos
-      </h3>
-
+    <>
       {documentos.length === 0 ? (
         <div style={{ padding: '20px', textAlign: 'center', color: '#6b7280' }}>
           No hay documentos disponibles.
         </div>
       ) : (
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ 
-            width: '100%', 
-            borderCollapse: 'collapse',
-            fontSize: '15px',
-            color: '#374151'
-          }}>
+        <div className="table-container">
+          <table className="table-modern">
             <thead>
-              <tr style={{ 
-                backgroundColor: '#e0e7ff',
-                borderBottom: '2px solid #d1d5db',
-                textAlign: 'left'
-              }}>
-                <th style={{ padding: '12px 16px', fontWeight: '600' }}>Nombre</th>
-                <th style={{ padding: '12px 16px', fontWeight: '600' }}>Descripción</th>
-                <th style={{ padding: '12px 16px', fontWeight: '600' }}>Fecha</th>
-                <th style={{ padding: '12px 16px', fontWeight: '600', textAlign: 'center' }}>Documento</th>
+              <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Fecha</th>
+                <th style={{textAlign: 'center'}}>Documento</th>
               </tr>
             </thead>
             <tbody>
               {documentos.map(doc => (
-                <tr key={doc.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
-                  <td style={{ padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    {getFileIcon(doc.url)}
+                <tr key={doc.id}>
+                  <td style={{ verticalAlign: 'middle' }}>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', marginRight: '8px' }}>
+                      {getFileIcon(doc.url)}
+                    </span>
                     {doc.nombre}
                   </td>
-                  <td style={{ padding: '12px 16px' }}>{doc.descripcion}</td>
-                  <td style={{ padding: '12px 16px' }}>
+                  <td>{doc.descripcion}</td>
+                  <td>
                     {new Date(doc.fecha_subida).toLocaleDateString('es-CL', { 
                       day: '2-digit', 
                       month: '2-digit', 
                       year: 'numeric' 
                     })}
                   </td>
-                  <td style={{ padding: '12px 16px', textAlign: 'center' }}>
+                  <td style={{textAlign: 'center'}}>
                     <a
                       href={`${process.env.REACT_APP_API_URL}${doc.url}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       download
-                      style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '6px',
-                        padding: '6px 12px',
-                        backgroundColor: '#e0e7ff',
-                        color: '#4f46e5',
-                        borderRadius: '8px',
-                        fontWeight: '600',
-                        textDecoration: 'none',
-                        fontSize: '14px',
-                        transition: 'all 0.2s'
-                      }}
+                      className="btn-secondary"
                     >
                       <FaDownload /> Descargar
                     </a>
@@ -215,6 +144,6 @@ export default function DocumentosList() {
           </table>
         </div>
       )}
-    </div>
+    </>
   );
 }

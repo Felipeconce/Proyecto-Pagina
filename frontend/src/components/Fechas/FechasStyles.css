@@ -49,7 +49,8 @@
   left: 12px;
   top: 50%;
   transform: translateY(-50%);
-  color: #60a5fa;
+  /* color: #60a5fa; */
+  color: var(--color-text-secondary); /* Usar variable */
   font-size: 14px;
 }
 
@@ -71,29 +72,22 @@
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
-/* Estilos para el listado de fechas */
+/* Estilos para el listado de fechas - Comentados por usar clases globales */
+/*
 .fechas-list-container {
   background-color: #fff;
   border-radius: 16px;
   padding: 24px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
 }
-
-.fechas-list-title {
-  font-size: 20px;
-  font-weight: 700;
-  color: #374151;
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+*/
 
 .fechas-loading,
 .fechas-empty {
   padding: 20px;
   text-align: center;
   color: #6b7280;
+  overflow: auto;
 }
 
 .fechas-error {
@@ -108,9 +102,10 @@
   border-radius: 8px;
   margin-top: 20px;
   font-size: 12px;
-  overflow: auto;
 }
 
+/* Estilos de tabla - Comentados por usar clases globales */
+/*
 .fechas-table-container {
   overflow-x: auto;
 }
@@ -121,6 +116,7 @@
   font-size: 15px;
   color: #374151;
 }
+*/
 
 .fechas-table thead tr {
   background-color: #dbeafe;
@@ -161,23 +157,31 @@
 }
 
 .estado-pasado {
-  background-color: rgba(239, 68, 68, 0.1);
-  color: #ef4444;
+  /* background-color: rgba(239, 68, 68, 0.1); */
+  background-color: var(--color-error-bg);
+  /* color: #ef4444; */
+  color: var(--color-error);
 }
 
 .estado-hoy {
-  background-color: rgba(245, 158, 11, 0.1);
-  color: #f59e0b;
+  /* background-color: rgba(245, 158, 11, 0.1); */
+  background-color: var(--color-warning-bg);
+  /* color: #f59e0b; */
+  color: var(--color-warning);
 }
 
 .estado-semana {
-  background-color: rgba(59, 130, 246, 0.1);
-  color: #3b82f6;
+  /* background-color: rgba(59, 130, 246, 0.1); */
+  background-color: var(--color-primary-light); /* Usar primary light */
+  /* color: #3b82f6; */
+  color: var(--color-primary);
 }
 
 .estado-futuro {
-  background-color: rgba(16, 185, 129, 0.1);
-  color: #10b981;
+  /* background-color: rgba(16, 185, 129, 0.1); */
+  background-color: var(--color-success-bg);
+  /* color: #10b981; */
+  color: var(--color-success);
 }
 
 /* Estilos responsivos */

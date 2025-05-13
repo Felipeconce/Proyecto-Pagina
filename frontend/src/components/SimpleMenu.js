@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { FaChartLine, FaMoneyBillWave, FaReceipt, FaFileAlt, FaCalendarAlt, FaHistory, FaSignOutAlt } from 'react-icons/fa';
+import { Home, Wallet, FileStack, FileText, Calendar, History, LogOut } from 'lucide-react';
 import { HiMenu, HiX } from 'react-icons/hi';
 
 // Función para detectar si estamos en un dispositivo móvil con más precisión
@@ -27,10 +27,10 @@ const styles = {
     justifyContent: 'center',
     width: '44px',
     height: '44px',
-    backgroundColor: '#2563eb',
+    backgroundColor: '#14b8a6 !important', // Forzar Teal con !important
     color: 'white',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: 'var(--border-radius-sm)',
     cursor: 'pointer',
     boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
     zIndex: 10001,
@@ -47,57 +47,82 @@ const styles = {
   },
   menu: {
     position: 'fixed',
-    top: '60px',
+    top: '0',
     left: 0,
-    width: '275px',
-    height: 'calc(100vh - 60px)',
-    backgroundColor: 'white',
-    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+    width: '250px',
+    height: '100vh',
+    backgroundColor: 'var(--color-bg)',
+    boxShadow: 'var(--shadow-lg)',
     overflow: 'auto',
-    zIndex: 9999
+    zIndex: 9999,
+    paddingTop: '60px',
+    boxSizing: 'border-box'
   },
   menuList: {
     listStyle: 'none',
     margin: 0,
-    padding: 0,
+    padding: '1rem 0',
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    gap: '12px'
   },
   menuItem: {
     display: 'flex',
     alignItems: 'center',
-    padding: '14px 16px',
-    color: '#1e293b',
+    padding: '0.75rem 1.5rem',
+    color: 'var(--color-text-secondary)',
     textDecoration: 'none',
-    borderBottom: '1px solid #e2e8f0',
-    transition: 'background-color 0.2s',
-    fontSize: '16px',
-    fontWeight: 500
+    transition: 'background-color 0.2s, color 0.2s',
+    fontSize: '1rem',
+    fontWeight: 500,
+    borderRadius: 'var(--border-radius-md)',
+    margin: '0 1rem'
+  },
+  menuItemHover: {
+    backgroundColor: 'var(--color-bg-hover)',
+    color: 'var(--color-text)',
   },
   menuItemActive: {
-    backgroundColor: '#e0e7ff',
-    color: '#2563eb',
+    backgroundColor: 'var(--color-primary)',
+    color: '#fff',
     fontWeight: 600
   },
   icon: {
-    marginRight: '12px',
-    color: '#2563eb',
-    display: 'flex',
+    marginRight: '1rem',
+    color: 'inherit',
+    display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    width: '20px',
-    height: '20px'
+    width: '22px',
+    height: '22px',
+    flexShrink: 0
+  },
+  menuItemText: {
+    display: 'inline-block'
   },
   logoutItem: {
     display: 'flex',
     alignItems: 'center',
-    padding: '14px 16px',
+    padding: '0.75rem 1.5rem',
     color: '#ef4444',
     textDecoration: 'none',
     cursor: 'pointer',
-    fontSize: '16px',
+    fontSize: '1rem',
     fontWeight: 500,
-    marginTop: '10px'
+    marginTop: 'auto',
+    marginBottom: '1rem',
+    borderRadius: 'var(--border-radius-md)',
+    margin: '0 1rem'
+  },
+  logoutIcon: {
+    marginRight: '1rem',
+    color: 'inherit',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '22px',
+    height: '22px',
+    flexShrink: 0
   },
   overlay: {
     position: 'fixed',
@@ -113,62 +138,40 @@ const styles = {
 // Componente simple de menú móvil
 function SimpleMenu({ user }) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isMobileDevice, setIsMobileDevice] = useState(false);
+  const [isMobileDevice, setIsMobileDevice] = useState(isMobile()); // Inicializar con la función
   const location = useLocation();
   const navigate = useNavigate();
   const menuRef = useRef(null);
-  const menuContentRef = useRef(null);
+  // const menuContentRef = useRef(null); // No se usa, se puede quitar
   
-  // Detectar cambios de tamaño de la ventana para mostrar/ocultar el menú
+  // Efecto para manejar la visibilidad basada en el tamaño de la pantalla
   useEffect(() => {
-    // Función que verifica y actualiza la visibilidad
     const handleResize = () => {
-      const mobileDevice = isMobile();
-      setIsMobileDevice(mobileDevice);
+      const mobile = isMobile();
+      setIsMobileDevice(mobile);
       
-      // Actualizar el estilo directamente - solo mostrar en móvil
       if (menuRef.current) {
-        if (mobileDevice) {
-          // En móvil, mostrar y posicionar correctamente
-          menuRef.current.style.display = 'flex';
-        } else {
-          // En desktop, ocultar completamente
-          menuRef.current.style.display = 'none';
-          
-          // Si cambiamos a desktop y el menú está abierto, cerrarlo
-          if (menuOpen) {
-            setMenuOpen(false);
-            document.body.style.overflow = '';
-          }
+        if (!mobile && menuOpen) { // Si cambia a desktop y el menú estaba abierto
+          setMenuOpen(false); // Ciérralo
         }
       }
     };
-    
-    // Ejecutar inmediatamente para configurar el estado inicial
-    handleResize();
-    
-    // Añadir el listener para cambios de tamaño
+
+    handleResize(); // Llamada inicial para establecer el estado correcto
     window.addEventListener('resize', handleResize);
-    
-    // Limpiar al desmontar
     return () => {
       window.removeEventListener('resize', handleResize);
-      document.body.style.overflow = '';
     };
-  }, [menuOpen]);
-  
-  // Cuando el menú está abierto, evitar scroll del body - solo en móvil
+  }, [menuOpen]); // Mantener menuOpen aquí para el caso de cerrar si se pasa a desktop
+
+  // Efecto para el scroll del body cuando el menú está abierto
   useEffect(() => {
     if (menuOpen && isMobileDevice) {
-      // Solo bloqueamos el scroll cuando el menú está abierto en móvil
       document.body.style.overflow = 'hidden';
     } else {
-      // En cualquier otro caso, permitimos el scroll normal
       document.body.style.overflow = '';
     }
-    
     return () => {
-      // Asegurarnos de restaurar el scroll al desmontar
       document.body.style.overflow = '';
     };
   }, [menuOpen, isMobileDevice]);
@@ -214,18 +217,24 @@ function SimpleMenu({ user }) {
   
   // Opciones del menú basadas en el rol del usuario
   const menuItems = [
-    { name: 'Dashboard', path: '/', icon: <FaChartLine size={18} /> },
-    { name: 'Pagos', path: '/pagos', icon: <FaMoneyBillWave size={18} /> },
-    { name: 'Gastos', path: '/gastos', icon: <FaReceipt size={18} /> },
-    { name: 'Documentos', path: '/documentos', icon: <FaFileAlt size={18} /> },
-    { name: 'Calendario', path: '/fechas', icon: <FaCalendarAlt size={18} /> },
+    { name: 'Dashboard', path: '/', icon: <Home size={22} /> },
+    { name: 'Pagos', path: '/pagos', icon: <Wallet size={22} /> },
+    { name: 'Gastos', path: '/gastos', icon: <FileStack size={22} /> },
+    { name: 'Documentos', path: '/documentos', icon: <FileText size={22} /> },
+    { name: 'Calendario', path: '/fechas', icon: <Calendar size={22} /> },
   ];
   
   // Agregar historial solo para roles administrativos
-  if (user.rol_id === 1 || user.rol_id === 2 || user.rol_id === 3) {
-    menuItems.push({ name: 'Historial', path: '/historial', icon: <FaHistory size={18} /> });
+  if (user && (user.rol_id === 1 || user.rol_id === 2 || user.rol_id === 3)) {
+    menuItems.push({ name: 'Historial', path: '/historial', icon: <History size={22} /> });
   }
   
+  if (!isMobileDevice && !menuOpen) { // No renderizar nada en desktop si el menú no está forzado a abrirse
+      // O, si el botón es solo para mobile, y el menuRef.current.style.display='none' lo oculta
+      // entonces este if (!isMobileDevice) return null; podría ser más simple. 
+      // Dejemos que el display:none del useEffect haga su trabajo primero.
+  }
+
   return (
     <div ref={menuRef} style={styles.container}>
       <button 
@@ -248,40 +257,32 @@ function SimpleMenu({ user }) {
       {menuOpen && isMobileDevice && (
         <>
           <div style={styles.overlay} onClick={closeMenu} />
-          <div ref={menuContentRef} style={styles.menu}>
+          <nav /*ref={menuContentRef}*/ style={styles.menu}> {/* menuContentRef no se usa */}
             <ul style={styles.menuList}>
-              {menuItems.map((item) => (
-                <li key={item.path}>
-                  <Link
-                    to={item.path}
-                    style={{
-                      ...styles.menuItem,
-                      ...(location.pathname === item.path ? styles.menuItemActive : {})
-                    }}
-                    onClick={closeMenu}
-                  >
-                    <span style={styles.icon}>{item.icon}</span>
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
+              {menuItems.map((item) => {
+                const isActive = location.pathname === item.path;
+                const itemStyle = isActive 
+                  ? { ...styles.menuItem, ...styles.menuItemActive }
+                  : styles.menuItem;
+                const iconStyle = styles.icon; 
+
+                return (
+                  <li key={item.name}>
+                    <Link to={item.path} style={itemStyle} onClick={closeMenu}> {/* Cerrar menú al hacer clic */}
+                      <span style={iconStyle}>{item.icon}</span>
+                      <span style={styles.menuItemText}>{item.name}</span>
+                    </Link>
+                  </li>
+                );
+              })}
               <li>
-                <a
-                  href="#logout"
-                  style={styles.logoutItem}
-                  onClick={(e) => {
-                    closeMenu();
-                    handleLogout(e);
-                  }}
-                >
-                  <span style={styles.icon}>
-                    <FaSignOutAlt size={18} style={{ color: '#ef4444' }} />
-                  </span>
-                  Cerrar sesión
-                </a>
+                <div onClick={(e) => { closeMenu(); handleLogout(e); }} style={styles.logoutItem}> {/* Cerrar menú antes de logout */}
+                  <span style={styles.logoutIcon}><LogOut size={22}/></span>
+                  <span style={styles.menuItemText}>Cerrar sesión</span>
+                </div>
               </li>
             </ul>
-          </div>
+          </nav>
         </>
       )}
     </div>

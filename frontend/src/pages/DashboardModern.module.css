@@ -1,0 +1,198 @@
+.dashboardBg {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--color-secondary-light) 0%, var(--color-bg-secondary) 100%);
+  padding: 0;
+}
+
+.dashboardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 32px 0 32px;
+}
+.logoSection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.logoIcon {
+  font-size: 2.2rem;
+  background: var(--color-bg);
+  border-radius: 50%;
+  padding: 6px;
+  box-shadow: var(--shadow-sm);
+}
+.logoText {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-secondary);
+}
+.logoutBtn {
+  background: var(--color-bg);
+  color: var(--color-secondary);
+  border: none;
+  border-radius: var(--border-radius-sm);
+  padding: 10px 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: background 0.2s, color 0.2s;
+}
+.logoutBtn:hover {
+  background: var(--color-secondary);
+  color: var(--color-bg);
+}
+.bannerNotificacion {
+  background: var(--color-secondary-light);
+  color: var(--color-secondary-hover);
+  font-size: 1.1rem;
+  font-weight: 500;
+  padding: 16px 32px;
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-sm);
+}
+.bannerIcon {
+  font-size: 1.2rem;
+}
+.dashboardContent {
+  max-width: 900px;
+  margin: 0 auto 0 auto;
+  padding: 0 16px 32px 16px;
+  margin-top: 0;
+  padding-top: 0;
+  gap: 2rem !important;
+  padding-bottom: 2rem !important;
+  color: var(--color-text);
+}
+.saludoSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+}
+.saludo {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 12px 0;
+}
+.ilustracion img {
+  max-height: 120px;
+  width: auto;
+  margin-left: 24px;
+}
+.tarjetasGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 2rem !important;
+  padding-bottom: 2rem !important;
+}
+.tarjeta {
+  background: var(--color-bg);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 32px 22px !important;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem !important;
+  transition: box-shadow 0.2s, transform 0.2s;
+  cursor: pointer;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+.tarjeta:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px) scale(1.02);
+}
+.tarjetaIcon {
+  font-size: 2.2rem;
+  border-radius: 50%;
+  padding: 10px;
+}
+.tarjetaResumen .tarjetaIcon {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+}
+.tarjetaPagos .tarjetaIcon {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+.tarjetaGastos .tarjetaIcon {
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+.tarjetaCalendario .tarjetaIcon {
+  background: var(--color-secondary-light);
+  color: var(--color-secondary);
+}
+.tarjetaDocumentos .tarjetaIcon {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+.tarjetaComunicaciones .tarjetaIcon {
+  background: var(--color-secondary-light);
+  color: var(--color-secondary);
+}
+.tarjetaTitulo {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 2px;
+}
+.tarjetaDesc {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+}
+@media (max-width: 600px) {
+  .dashboardHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 18px 10px 0 10px;
+  }
+  .bannerNotificacion {
+    padding: 10px 10px;
+    font-size: 1rem;
+  }
+  .dashboardContent {
+    padding: 0 2px 18px 2px;
+  }
+  .saludoSection {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .ilustracion img {
+    margin-left: 0;
+    margin-top: 12px;
+    max-width: 100%;
+  }
+  .tarjetasGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dashboardCard {
+  animation: fadeInUp 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.dashboardBanner {
+  animation: fadeInUp 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+} 

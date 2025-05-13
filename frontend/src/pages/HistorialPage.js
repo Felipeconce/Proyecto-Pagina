@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useToast } from '../components/Layout/ToastProvider';
-import { FaHistory } from 'react-icons/fa';
+import { History } from 'lucide-react';
 
 export default function HistorialPage({ user }) {
   const [logs, setLogs] = useState([]);
@@ -46,7 +46,7 @@ export default function HistorialPage({ user }) {
     return (
       <section className="historial-page">
         <h2 className="page-title">
-          <FaHistory color="#2563eb" /> Historial
+          <History color="var(--color-primary)" size={28} /> Historial
         </h2>
         <div className="card">
           <div className="permission-error">No tienes permiso para ver el historial.</div>
@@ -58,7 +58,7 @@ export default function HistorialPage({ user }) {
   return (
     <section className="historial-page">
       <h2 className="page-title">
-        <FaHistory color="#2563eb" /> Historial de Cambios
+        <History color="var(--color-primary)" size={28} /> Historial
       </h2>
       
       <div className="card">
@@ -68,7 +68,7 @@ export default function HistorialPage({ user }) {
           <div className="loading-text">No hay registros de historial para tu curso/colegio.</div>
         ) : (
           <div className="table-container">
-            <table>
+            <table className="table-modern">
               <thead>
                 <tr>
                   <th>Fecha</th>

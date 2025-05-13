@@ -1,16 +1,16 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
-import './SidebarReset.css';
-import styles from './Sidebar.module.css';
-import { FaChartLine, FaMoneyBillWave, FaReceipt, FaFileAlt, FaCalendarAlt, FaHistory, FaSignOutAlt } from 'react-icons/fa';
+/* import './SidebarReset.css'; */ /* ELIMINADO - Causa conflictos con !important */
+/* import styles from './Sidebar.module.css'; */ /* ELIMINADO */
+import { Home, Wallet, FileText, FileStack, Calendar, History, LogOut } from 'lucide-react';
 
 // Items de navegación
 const menuItems = [
-  { nombre: 'Dashboard', ruta: '/', icono: <FaChartLine size={20} /> },
-  { nombre: 'Pagos', ruta: '/pagos', icono: <FaMoneyBillWave size={20} /> },
-  { nombre: 'Gastos', ruta: '/gastos', icono: <FaReceipt size={20} /> },
-  { nombre: 'Documentos', ruta: '/documentos', icono: <FaFileAlt size={20} /> },
-  { nombre: 'Calendario', ruta: '/fechas', icono: <FaCalendarAlt size={20} /> },
+  { nombre: 'Dashboard', ruta: '/', icono: <Home size={22} /> },
+  { nombre: 'Pagos', ruta: '/pagos', icono: <Wallet size={22} /> },
+  { nombre: 'Gastos', ruta: '/gastos', icono: <FileStack size={22} /> },
+  { nombre: 'Documentos', ruta: '/documentos', icono: <FileText size={22} /> },
+  { nombre: 'Calendario', ruta: '/fechas', icono: <Calendar size={22} /> },
 ];
 
 // Función para detectar si estamos en un dispositivo móvil
@@ -51,18 +51,6 @@ export default function Sidebar({ open, setOpen, user }) {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
   
-  // Efecto para gestionar el backdrop
-  useEffect(() => {
-    if (!backdropRef.current) return;
-    
-    // Solo mostrar backdrop en desktop cuando el sidebar está abierto
-    if (open && !isMobile) {
-      backdropRef.current.style.display = 'block';
-    } else {
-      backdropRef.current.style.display = 'none';
-    }
-  }, [open, isMobile]);
-  
   // No renderizar en dispositivos móviles
   if (isMobile) {
     return null;
@@ -74,7 +62,7 @@ export default function Sidebar({ open, setOpen, user }) {
     (user.rol_id === 1 || user.rol_id === 2 || user.rol_id === 3) && {
       nombre: 'Historial',
       ruta: '/historial',
-      icono: <FaHistory size={20} />,
+      icono: <History size={22} />,
     },
   ].filter(Boolean);
   
@@ -83,44 +71,31 @@ export default function Sidebar({ open, setOpen, user }) {
       {/* Backdrop para cuando el sidebar está abierto */}
       <div 
         ref={backdropRef} 
-        className={styles.sidebarBackdrop} 
+        className={`sidebar-backdrop ${open && !isMobile ? 'open' : ''}`}
         onClick={handleOverlayClick}
-        style={{ display: 'none' }}
+        /* style={{ display: 'none' }} */ /* ELIMINADO */
       />
       
       {/* Sidebar para desktop */}
       <aside 
         ref={sidebarRef}
-        className={`${styles.sidebar} ${open ? styles.sidebarOpen : ''}`}
+        className={`sidebar-modern ${!open && !isMobile ? 'sidebar-closed-placeholder' : ''}`}
       >
-        <nav className={styles.sidebarNav}>
-          <ul className={styles.sidebarList}>
+        <nav className="sidebar-nav">
+          <ul className="sidebar-list" style={{gap: '12px'}}>
             {filteredItems.map((item) => (
-              <li key={item.ruta} className={styles.sidebarItem}>
+              <li key={item.ruta} className="sidebar-item">
                 <Link
                   to={item.ruta}
-                  className={`${styles.sidebarLink} ${
-                    location.pathname === item.ruta ? styles.active : ''
+                  className={`sidebar-link ${
+                    location.pathname === item.ruta ? ' active' : ''
                   }`}
                 >
-                  <span className={styles.sidebarIcon}>{item.icono}</span>
-                  <span className={styles.sidebarText}>{item.nombre}</span>
+                  <span className="sidebar-icon">{item.icono}</span>
+                  <span className="sidebarText">{item.nombre}</span>
                 </Link>
               </li>
             ))}
-            
-            <li className={styles.sidebarItem}>
-              <a 
-                href="#logout" 
-                className={styles.sidebarLinkLogout}
-                onClick={handleLogout}
-              >
-                <span className={styles.sidebarIcon}>
-                  <FaSignOutAlt size={20} />
-                </span>
-                <span className={styles.sidebarText}>Cerrar sesión</span>
-              </a>
-            </li>
           </ul>
         </nav>
       </aside>

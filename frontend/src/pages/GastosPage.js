@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import GastosList from '../components/Gastos/GastosList';
 import GastosForm from '../components/Gastos/GastosForm';
-import { FaReceipt } from 'react-icons/fa';
+import { FileStack } from 'lucide-react';
 
 export default function GastosPage({ user }) {
   // Estado para forzar actualizaciones
@@ -26,7 +26,7 @@ export default function GastosPage({ user }) {
   return (
     <section className="gastos-page">
       <h2 className="page-title">
-        <FaReceipt color="#16a34a" /> Gastos
+        <FileStack color="var(--color-primary)" size={28}/> Gastos
       </h2>
       
       <div className="card">

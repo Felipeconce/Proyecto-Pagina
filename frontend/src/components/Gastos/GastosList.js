@@ -120,7 +120,7 @@ const GastosList = forwardRef(({ user }, ref) => {
     return (
       <div>
         <p className={styles.errorMsg}>{error}</p>
-        <button onClick={reloadGastos} className={styles.btnPrimary}>Reintentar</button>
+        <button onClick={reloadGastos} className="btn-principal">Reintentar</button>
       </div>
     );
   }
@@ -130,14 +130,14 @@ const GastosList = forwardRef(({ user }, ref) => {
       {gastos.length === 0 ? (
         <div>
           <p className={styles.successMsg}>No hay gastos registrados</p>
-          <button onClick={reloadGastos} className={styles.btnPrimary}>Actualizar</button>
+          <button onClick={reloadGastos} className="btn-principal">Actualizar</button>
         </div>
       ) : (
-        <div style={{overflowX:'auto'}}>
-          <button onClick={reloadGastos} className={styles.btnPrimary} style={{marginBottom:12}}>
+        <div className="table-container">
+          <button onClick={reloadGastos} className="btn-principal" style={{marginBottom:12}}>
             <i className="fa fa-refresh"></i> Actualizar listado
           </button>
-          <table className={styles.gastosTable}>
+          <table className="table-modern">
             <thead>
               <tr>
                 <th>ID</th>

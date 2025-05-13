@@ -109,7 +109,6 @@ export default function DocumentosForm({ user }) {
       </div>
       
       <div className={styles.formGroupArchivo}>
-        <label htmlFor="docFile">Archivo</label>
         <div className={styles.fileInputContainer}>
           <input
             id="docFile"
@@ -122,16 +121,21 @@ export default function DocumentosForm({ user }) {
             <FaUpload size={14} /> Seleccionar
           </label>
           <div className={styles.fileName}>
-            {getFileIcon()}
-            <span>
-              {fileName || 'Ningún archivo seleccionado'}
-            </span>
+            {/* Solo mostrar icono y nombre si hay un archivo seleccionado */}
+            {fileName && (
+              <>
+                {getFileIcon()}
+                <span>
+                  {fileName}
+                </span>
+              </>
+            )}
           </div>
         </div>
       </div>
       
       <div className={styles.formGroupBoton}>
-        <button type="submit" className="btn-standard">
+        <button type="submit" className="btn-principal">
           <FaPlus /> Agregar
         </button>
       </div>

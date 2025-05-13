@@ -90,7 +90,7 @@ export default function FechasForm({ user }) {
         </div>
         
         <div className="form-group button-group">
-          <button type="submit" className="btn-standard">
+          <button type="submit" className="btn-principal">
             <FaPlus /> Agregar
           </button>
         </div>

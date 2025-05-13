@@ -1,55 +1,65 @@
+/* Mantener solo estilos globales o de otros componentes si es necesario */
+
+/* --- LIMPIEZA TOTAL DE ESTILOS DEL HEADER --- */
+/*
+.header-pro {}
+.header-left {}
+.header-user-section {}
+.header-user-name {}
+.btn-logout {}
+.header-logo {}
+.desktop-hamburger {}
+.hamburger {}
+.sidebar-open .hamburger {}
+.header-pro h1 {}
+.header-user-name {}
+.btn-logout {}
+.btn-logout:hover {}
+*/
+
 /* Estilos para el Header */
 
 .header-pro {
-  background-color: #ffffff;
-  height: 60px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 2rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  padding: 0 var(--spacing-md);
+  height: var(--header-height);
+  background-color: var(--color-bg);
+  box-shadow: var(--shadow-sm);
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  z-index: 100;
-  border-bottom: 1px solid #e5e7eb;
+  width: 100%;
+  z-index: 1000;
 }
 
-/* Contenedor izquierdo del header */
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+.header-title-wrapper {
+  flex-grow: 1;
+  text-align: center;
 }
 
-/* Por defecto, oculto */
+/* Ocultar .desktop-hamburger por defecto (en desktop) */
 .desktop-hamburger {
-  display: none !important;
+  display: none;
+  /* Estilos base del botón (color, padding, etc.) */
+  background-color: transparent;
+  border: none;
+  color: var(--color-text); /* Usar variable */
+  cursor: pointer;
+  padding: 8px;
+  border-radius: var(--border-radius-sm);
+  transition: background-color 0.2s;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px; /* Espacio a la derecha */
+}
+
+.desktop-hamburger:hover {
+  background-color: var(--color-bg-hover);
 }
 
 /* SOLO y EXCLUSIVAMENTE en desktop - NO en móvil */
 @media (min-width: 901px) {
-  header .hamburger, 
-  .header-pro .hamburger {
-    display: flex !important;
-    background-color: transparent;
-    border: none;
-    color: #3b82f6;
-    cursor: pointer;
-    padding: 8px;
-    font-size: 1.8rem;
-    border-radius: 8px;
-    transition: all 0.2s ease;
-    margin-right: 10px;
-    width: 40px;
-    height: 40px;
-    position: relative;
-    align-items: center;
-    justify-content: center;
-    z-index: 1050;
-  }
-  
   /* Garantizar que el icono sea visible */
   .hamburger svg,
   header .hamburger svg,
@@ -65,23 +75,10 @@
 
 /* EXCLUSIVAMENTE para móvil - NO en desktop */
 @media (max-width: 900px) {
-  .hamburger, 
-  header .hamburger, 
-  .header-pro .hamburger {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    width: 0 !important;
-    height: 0 !important;
-    position: absolute !important;
-    left: -9999px !important;
-    top: -9999px !important;
-    pointer-events: none !important;
-  }
-  
   .header-pro h1 {
     font-size: 1.2rem;
-    margin-left: 0;
+    margin-left: 0 !important; /* Quitar margen, el centrado lo hace el wrapper */
+    /* gap: 0.5rem;  Mantenido si se necesita entre logo (si vuelve) y texto */
   }
   
   .header-user-name {
@@ -92,8 +89,10 @@
     padding: 0 1rem;
   }
   
+  /* Mostrar y estilizar .desktop-hamburger en móvil */
   .desktop-hamburger {
-    display: flex !important;
+    display: flex !important; /* Mostrar */
+    /* Hereda estilos base definidos arriba */
   }
 }
 
@@ -131,23 +130,24 @@ body.sidebar-open .hamburger {
 .header-pro h1 {
   color: var(--color-text);
   margin: 0;
+  padding: 0;
   font-size: 1.5rem;
   font-weight: 700;
   letter-spacing: normal;
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
+  line-height: 1;
 }
 
 .header-logo {
-  color: #2563eb;
-  margin-right: 0.5rem;
+  /* ELIMINADO TEMPORALMENTE O AJUSTAR SI VUELVE */
+  /* color: #2563eb; */
+  /* margin-right: 0.5rem; */
 }
 
 .header-user-section {
   display: flex;
   align-items: center;
   gap: 1rem;
+  flex-shrink: 0;
 }
 
 .header-user-name {
