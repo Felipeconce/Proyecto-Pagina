@@ -1,8 +1,9 @@
 import React, { useState, Fragment } from 'react';
-import './PagosStyles.css';
+import './PagosStyles.css'; // Descomentado
+// import './TableScroll.css'; // Sigue comentado por ahora
 
 // Componente de tabla completamente nuevo con implementación simple
-const PagosTable = ({ alumnos, conceptos, pagos, user, onCellClick }) => {
+const PagosTable = ({ alumnos, conceptos, pagos, user, onCellClick, atrasadosMap }) => {
   // Preparar datos para mostrar
   const pagosMap = {};
   const estadosMap = {};
@@ -39,12 +40,29 @@ const PagosTable = ({ alumnos, conceptos, pagos, user, onCellClick }) => {
   
   // Obtener clase CSS según estado
   const getCellClass = (alumnoId, conceptoId) => {
-    if (estadosMap[alumnoId]?.[conceptoId] === 'pagado') {
+    const estadoOriginal = estadosMap[alumnoId]?.[conceptoId]; 
+    // Mantener el console.log original por si acaso, pero añadir uno más específico.
+    // console.log(`DEBUG PagosTable -> Alumno: ${alumnoId}, Concepto: ${conceptoId}, Estado RECIBIDO: '${estadoOriginal}'`); 
+
+    if (estadoOriginal === 'pagado') {
+      // console.log(`DEBUG PagosTable -> Alumno: ${alumnoId}, Concepto: ${conceptoId}, Clase: pago-completado (por estadoOriginal)`);
       return 'pago-completado';
-    } else if (pagosMap[alumnoId]?.[conceptoId]) {
+    }
+
+    // Nueva lógica: Primero chequear el atrasadosMap
+    if (atrasadosMap && atrasadosMap[alumnoId]?.[conceptoId]) {
+      // console.log(`DEBUG PagosTable -> Alumno: ${alumnoId}, Concepto: ${conceptoId}, Clase: pago-atrasado (por atrasadosMap)`);
+      return 'pago-atrasado';
+    }
+    
+    // Si no está pagado y no está en atrasadosMap, ver si el estado original es 'pendiente'
+    if (estadoOriginal === 'pendiente') { 
+      // console.log(`DEBUG PagosTable -> Alumno: ${alumnoId}, Concepto: ${conceptoId}, Clase: pago-pendiente (por estadoOriginal)`);
       return 'pago-pendiente';
     }
-    return '';
+    
+    // console.log(`DEBUG PagosTable -> Alumno: ${alumnoId}, Concepto: ${conceptoId}, Clase: '' (ninguna condición cumplida)`);
+    return ''; 
   };
   
   // Ordenar conceptos

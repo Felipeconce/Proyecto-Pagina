@@ -2,14 +2,14 @@
 
 /* Contenedor principal */
 .tabla-contenedor {
-  position: relative !important;
-  overflow: hidden !important;
-  width: 100% !important;
-  background-color: white !important;
-  border-radius: 12px !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
-  margin-bottom: 1.5rem !important;
-  border: 1px solid #e5e7eb !important;
+  position: relative;
+  /* overflow: hidden !important; */ /* Eliminado para probar sticky-col */
+  width: 100%;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  margin-bottom: 1.5rem;
+  border: 1px solid #e5e7eb;
 }
 
 /* Reset agresivo para todos los elementos de la tabla */
@@ -19,17 +19,17 @@
 .pagos-table thead,
 .pagos-table th,
 .pagos-table td {
-  background-color: transparent !important;
+  /* background-color: transparent; */ /* Eliminada esta línea */
 }
 
 /* Scroll principal con tabla */
 .tabla-scroll-main {
-  overflow-x: auto !important;
-  overflow-y: auto !important;
-  width: 100% !important;
-  display: block !important;
-  max-height: 500px !important; /* Altura máxima para permitir scroll vertical */
-  background-color: white !important;
+  overflow-x: auto;
+  overflow-y: auto;
+  width: 100%;
+  display: block;
+  max-height: 500px !important;
+  background-color: white;
 }
 
 /* Scroll superior */
@@ -56,8 +56,9 @@
 .pagos-table .sticky-col {
   position: sticky !important;
   left: 0 !important;
-  z-index: 1000 !important;
+  z-index: 9999 !important;
   background-color: white !important;
+  opacity: 1 !important;
   border-right: 2px solid #e5e7eb !important;
   box-shadow: 4px 0 8px -4px rgba(0, 0, 0, 0.15) !important;
   min-width: 180px !important;
@@ -67,7 +68,8 @@
 /* Encabezado de la columna fija */
 .pagos-table thead .sticky-col {
   background-color: #f1f5f9 !important;
-  z-index: 1001 !important;
+  opacity: 1 !important;
+  z-index: 10000 !important;
   font-weight: 600 !important;
 }
 
@@ -83,34 +85,21 @@
 
 /* Tabla */
 .pagos-table {
-  width: max-content !important;
-  min-width: 100% !important;
-  border-collapse: separate !important;
-  border-spacing: 0 !important;
-  table-layout: auto !important;
-  background-color: transparent !important; /* Fondo transparente para la tabla */
+  width: max-content;
+  min-width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: auto;
+  background-color: transparent;
 }
 
 /* IMPORTANTE: Estilos específicos para celdas no sticky con alta especificidad */
 body .pagos-table th:not(.sticky-col), 
 body .pagos-table td:not(.sticky-col) {
-  position: static !important;
-  min-width: 100px !important;
-  z-index: 1 !important;
-  background-color: white !important; /* Color de fondo por defecto para todas las celdas */
-}
-
-/* Asegurarse de aplicar colores correctos para estados con alta especificidad */
-body .pagos-table td.pago-completado {
-  background-color: #dcfce7 !important;
-}
-
-body .pagos-table td.pago-pendiente {
-  background-color: #fff7ed !important;
-}
-
-body .pagos-table td.pago-atrasado {
-  background-color: #fee2e2 !important;
+  position: static;
+  min-width: 100px;
+  z-index: 1;
+  background-color: white;
 }
 
 /* Estilos para las barras de desplazamiento */
@@ -138,6 +127,6 @@ body .pagos-table td.pago-atrasado {
 .tabla-scroll-container {
   scrollbar-width: thin;
   scrollbar-color: #94a3b8 #f1f5f9;
-  overflow-x: auto !important;
-  width: 100% !important;
+  overflow-x: auto;
+  width: 100%;
 } 

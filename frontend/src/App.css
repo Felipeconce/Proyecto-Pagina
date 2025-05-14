@@ -347,7 +347,7 @@ label {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .table-modern th {

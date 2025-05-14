@@ -334,6 +334,7 @@ export default function PagosList({ user, refresh, onPagosChange, isPagoAtrasado
               pagos={pagos} 
               user={user} 
               onCellClick={handleCellClick} 
+              atrasadosMap={pagosAtrasadosMap}
             />
           </div>
           

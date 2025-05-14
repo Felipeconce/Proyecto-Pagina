@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sticky Test</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+        }
+        .table-container {
+            width: 500px; /* Ancho fijo para forzar scroll */
+            overflow-x: auto;
+            border: 1px solid #ccc;
+            margin-top: 20px;
+        }
+        table {
+            width: 100%; /* Que la tabla intente ocupar el contenedor */
+            min-width: 800px; /* Ancho mínimo mayor que el contenedor para asegurar scroll */
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            min-width: 120px; /* Ancho mínimo para celdas */
+            text-align: left;
+        }
+        .sticky-col {
+            position: -webkit-sticky; /* Safari */
+            position: sticky;
+            left: 0;
+            background-color: white; /* Fondo opaco esencial */
+            z-index: 2;
+            /* Un borde para ver claramente la separación */
+            border-right: 2px solid black !important; 
+        }
+        thead .sticky-col {
+            background-color: #f0f0f0; /* Un color ligeramente diferente para el header fijo */
+            z-index: 3; /* Encima de las celdas fijas del body */
+        }
+        /* Fondo para celdas que se desplazan, para asegurar que no sean transparentes */
+        th:not(.sticky-col),
+        td:not(.sticky-col) {
+            background-color: #e9e9e9; /* Un gris claro diferente */
+        }
+    </style>
+</head>
+<body>
+    <h1>Prueba de Columna Fija (Sticky)</h1>
+    <p>Haz scroll horizontal en la tabla de abajo. La primera columna ("Nombre") debería permanecer fija.</p>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th class="sticky-col">Nombre</th>
+                    <th>Columna 2</th>
+                    <th>Columna 3</th>
+                    <th>Columna 4</th>
+                    <th>Columna 5</th>
+                    <th>Columna 6</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td class="sticky-col">Fila 1, Celda Fija</td><td>F1C2</td><td>F1C3</td><td>F1C4</td><td>F1C5</td><td>F1C6</td></tr>
+                <tr><td class="sticky-col">Fila 2, Celda Fija</td><td>F2C2</td><td>F2C3</td><td>F2C4</td><td>F2C5</td><td>F2C6</td></tr>
+                <tr><td class="sticky-col">Fila 3, Celda Fija</td><td>F3C2</td><td>F3C3</td><td>F3C4</td><td>F3C5</td><td>F3C6</td></tr>
+                <tr><td class="sticky-col">Fila 4, Celda Fija</td><td>F4C2</td><td>F4C3</td><td>F4C4</td><td>F4C5</td><td>F4C6</td></tr>
+                <tr><td class="sticky-col">Fila 5, Celda Fija</td><td>F5C2</td><td>F5C3</td><td>F5C4</td><td>F5C5</td><td>F5C6</td></tr>
+                <tr><td class="sticky-col">Fila 6, Celda Fija</td><td>F6C2</td><td>F6C3</td><td>F6C4</td><td>F6C5</td><td>F6C6</td></tr>
+                <tr><td class="sticky-col">Fila 7, Celda Fija</td><td>F7C2</td><td>F7C3</td><td>F7C4</td><td>F7C5</td><td>F7C6</td></tr>
+                <tr><td class="sticky-col">Fila 8, Celda Fija</td><td>F8C2</td><td>F8C3</td><td>F8C4</td><td>F8C5</td><td>F8C6</td></tr>
+                <tr><td class="sticky-col">Fila 9, Celda Fija</td><td>F9C2</td><td>F9C3</td><td>F9C4</td><td>F9C5</td><td>F9C6</td></tr>
+                <tr><td class="sticky-col">Fila 10, Celda Fija</td><td>F10C2</td><td>F10C3</td><td>F10C4</td><td>F10C5</td><td>F10C6</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html> 
