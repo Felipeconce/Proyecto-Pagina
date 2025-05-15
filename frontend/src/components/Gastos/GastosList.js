@@ -140,8 +140,8 @@ const GastosList = forwardRef(({ user }, ref) => {
           <table className="table-modern">
             <thead>
               <tr>
-                <th>ID</th>
-                <th>Curso</th>
+                {/* <th>ID</th> */}
+                {/* <th>Curso</th> */}
                 <th>Descripción</th>
                 <th>Monto</th>
                 <th>Fecha</th>
@@ -151,8 +151,8 @@ const GastosList = forwardRef(({ user }, ref) => {
             <tbody>
               {gastos.map(gasto => (
                 <tr key={gasto.id}>
-                  <td>{gasto.id}</td>
-                  <td>{gasto.curso}</td>
+                  {/* <td>{gasto.id}</td> */}
+                  {/* <td>{gasto.curso}</td> */}
                   <td>
                     {editId === gasto.id ? (
                       <input

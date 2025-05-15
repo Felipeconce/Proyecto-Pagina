@@ -21,6 +21,7 @@ div[class*="Container"] {
 }
 
 /* Estilo unificado para títulos de sección */
+/*
 section h2,
 .gastosTitle,
 h2[class*="Title"],
@@ -33,6 +34,7 @@ div[class*="Title"] {
   align-items: center !important;
   gap: 12px !important;
 }
+*/
 
 /* Estilo unificado para cards y contenedores de contenido */
 .card,

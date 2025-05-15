@@ -1,0 +1,20 @@
+
+<svg width="768" height="768" viewBox="0 0 768 768" xmlns="http://www.w3.org/2000/svg">
+  <g fill="none" stroke="#1C4DA1" stroke-width="20">
+    <path d="M384 20 C552 20 728 80 728 384 C728 688 552 748 384 748 C216 748 40 688 40 384 C40 80 216 20 384 20 Z" fill="white" stroke="#1C4DA1" stroke-width="20"/>
+  </g>
+  <g fill="#1C4DA1">
+    <!-- Book icon -->
+    <path d="M304 200 h40 a20 20 0 0 1 20 20 v40 a20 20 0 0 1 -20 20 h-40 a20 20 0 0 1 -20 -20 v-40 a20 20 0 0 1 20 -20 z M424 200 h40 a20 20 0 0 1 20 20 v40 a20 20 0 0 1 -20 20 h-40 a20 20 0 0 1 -20 -20 v-40 a20 20 0 0 1 20 -20 z"/>
+    
+    <!-- Family heads -->
+    <circle cx="288" cy="360" r="36"/>
+    <circle cx="480" cy="360" r="36"/>
+    <circle cx="384" cy="336" r="40"/>
+
+    <!-- Body arcs -->
+    <path d="M240 408 Q288 480 336 520" stroke="#1C4DA1" stroke-width="20" fill="none"/>
+    <path d="M528 408 Q480 480 432 520" stroke="#1C4DA1" stroke-width="20" fill="none"/>
+    <path d="M384 384 Q384 480 384 560" stroke="#1C4DA1" stroke-width="20" fill="none"/>
+  </g>
+</svg>

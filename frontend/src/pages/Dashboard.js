@@ -293,7 +293,7 @@ export default function Dashboard({ user }) {
           </div>
           <div className={styles.ilustracion}>
             {/* Aquí podrías poner un SVG decorativo o una imagen */}
-            <img src="https://www.svgrepo.com/show/521000/working-on-laptop.svg" alt="Ilustración" height={120} />
+            {/* <img src="https://www.svgrepo.com/show/521000/working-on-laptop.svg" alt="Ilustración" height={120} /> */}
           </div>
         </div>
         <div className={styles.tarjetasGrid}>

@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Estilos globales para la aplicación - Centro de Apoderados */
 
 /* Variables CSS para mantener consistencia en colores y espaciados */
@@ -236,7 +240,7 @@ input[type="email"],
 input[type="password"],
 input[type="date"],
 select {
-  padding: 0.75rem 1rem;
+  /* padding: 0.75rem 1rem; */ /* Comentado para probar si interfiere con Tailwind */
   border: 1px solid var(--color-border);
   border-radius: var(--border-radius-md);
   font-size: 0.95rem;
@@ -354,5 +358,12 @@ table.table-modern th {
   border-radius: 8px; // SimpleMenu usa var(--border-radius-sm)
   cursor: pointer;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+*/
+
+/* Forzar ocultación del menú móvil si el body no tiene .sidebar-open (ej. en HomePage) */
+/*
+body:not(.sidebar-open) #simple-mobile-menu-container {
+  display: none !important;
 }
 */

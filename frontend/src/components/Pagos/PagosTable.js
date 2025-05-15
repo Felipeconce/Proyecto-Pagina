@@ -4,22 +4,31 @@ import './PagosStyles.css'; // Descomentado
 
 // Componente de tabla completamente nuevo con implementación simple
 const PagosTable = ({ alumnos, conceptos, pagos, user, onCellClick, atrasadosMap }) => {
+  console.log('[PagosTable] Props recibidas:', { alumnos, conceptos, pagos, user, atrasadosMap });
+
   // Preparar datos para mostrar
   const pagosMap = {};
   const estadosMap = {};
   
   // Organizar pagos en formato de mapa para acceso rápido
   pagos.forEach(p => {
-    if (!pagosMap[p.usuario_id]) {
-      pagosMap[p.usuario_id] = {};
-      estadosMap[p.usuario_id] = {};
+    // Volvemos a la lógica de usar p.usuario_id, asumiendo que el backend lo proveerá
+    if (p.usuario_id !== undefined) { // Verificar que la propiedad exista
+      if (!pagosMap[p.usuario_id]) {
+        pagosMap[p.usuario_id] = {};
+        estadosMap[p.usuario_id] = {};
+      }
+      pagosMap[p.usuario_id][p.concepto_id] = p.monto;
+      estadosMap[p.usuario_id][p.concepto_id] = p.estado;
+    } else {
+      console.warn('[PagosTable] Objeto de pago SIN usuario_id definido:', p);
     }
-    pagosMap[p.usuario_id][p.concepto_id] = p.monto;
-    estadosMap[p.usuario_id][p.concepto_id] = p.estado;
   });
+  console.log('[PagosTable] pagosMap construido esperando p.usuario_id:', pagosMap);
   
   // Formatear montos
   const formatearMonto = (monto) => {
+    console.log('[PagosTable] formatearMonto recibiendo:', monto);
     if (!monto) return '—';
     const montoNumero = Number(monto);
     if (isNaN(montoNumero)) return '—';
@@ -115,9 +124,9 @@ const PagosTable = ({ alumnos, conceptos, pagos, user, onCellClick, atrasadosMap
                 {conceptosOrdenados.map(concepto => {
                   const cellClass = getCellClass(alumno.id, concepto.id);
                   return (
-                    <td 
+                    <td
                       key={concepto.id}
-                      onClick={() => user.rol_id === 3 && onCellClick(alumno.id, concepto.id)}
+                      onClick={(e) => user.rol_id === 3 && onCellClick(e, alumno.id, concepto.id)}
                       className={`concepto-col ${cellClass}`}
                       style={{
                         cursor: user.rol_id === 3 ? 'pointer' : 'default'

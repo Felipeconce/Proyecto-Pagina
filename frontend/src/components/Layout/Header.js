@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { HiOutlineUserGroup, HiMenu } from 'react-icons/hi';
 import { FiLogOut } from 'react-icons/fi';
 import './Header.css';
@@ -15,11 +15,15 @@ function getRolName(rol_id) {
 }
 
 export default function Header({ onHamburgerClick, user, onLogout }) {
+  // const navigate = useNavigate(); // Ya no es necesario aquí
+
   if (!user) return null;
   
-  const handleLogout = () => {
+  const handleLogoutClick = () => {
     if (window.confirm('¿Estás seguro que deseas cerrar sesión?')) {
-      onLogout();
+      onLogout(); // Esto llamará a handleLogout en AppContent, que ahora navega
+      // console.log("Navegando a / desde Header.js tras llamar a onLogout"); // Eliminado
+      // navigate('/', { replace: true }); // Eliminado
     }
   };
   
@@ -39,7 +43,7 @@ export default function Header({ onHamburgerClick, user, onLogout }) {
           {user.nombre} | {getRolName(user.rol_id)}
         </span>
         <button
-          onClick={handleLogout}
+          onClick={handleLogoutClick}
           className="btn-logout"
           title="Cerrar sesión"
           type="button"

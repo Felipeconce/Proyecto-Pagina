@@ -19,6 +19,7 @@
 
 /* Estilos para el contenedor principal de pagos */
 .pagos-container {
+  position: relative;
   background-color: white;
   border-radius: 12px;
   padding: 20px;
@@ -781,4 +782,116 @@
 /* Por ejemplo, la sombra que tenías en .sticky-col en PagosStyles.css original: */
 /* .table-modern .sticky-col {
     box-shadow: 4px 0 8px -4px rgba(0, 0, 0, 0.15);
-   } */ 
+   } */
+
+/* Estilos para el Popup de Edición de Pago */
+.edit-pago-popup {
+  position: absolute; /* Asegurar que position sea absolute */
+  z-index: 1050;      /* Asegurar un z-index alto */
+  background-color: #ffffff; /* Fondo blanco, puedes cambiarlo */
+  border: 1px solid #dee2e6; /* Borde sutil, similar a Bootstrap */
+  border-radius: 0.3rem; /* Bordes redondeados */
+  padding: 1rem; /* Espaciado interno */
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15); /* Sombra más pronunciada */
+  /* min-width: 250px; /* Un ancho mínimo para que no sea demasiado pequeño */ 
+  /* El minWidth se establece dinámicamente en el style inline, pero puedes tener uno base aquí */
+  /* position: absolute; Ya se establece inline */
+  /* z-index: 1050; Ya se establece inline */
+}
+
+.edit-pago-popup h3 {
+  font-size: 1.25rem; /* Tamaño de fuente para el título */
+  color: #343a40; /* Color de texto oscuro */
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.edit-pago-popup input[type="number"],
+.edit-pago-popup input.modal-input /* Si usa esta clase específicamente */ {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  box-sizing: border-box; /* Para que el padding no aumente el ancho total */
+  margin-bottom: 1rem;
+}
+
+.edit-pago-popup input[type="number"]:focus,
+.edit-pago-popup input.modal-input:focus {
+  color: #495057;
+  background-color: #fff;
+  border-color: #80bdff; /* Color de borde al enfocar, similar a Bootstrap */
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Sombra al enfocar */
+}
+
+.edit-pago-popup .modal-actions {
+  display: flex;
+  justify-content: flex-end; /* Alinea los botones a la derecha */
+  gap: 0.5rem; /* Espacio entre botones */
+}
+
+.edit-pago-popup button {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 0.25rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+  font-weight: 500;
+}
+
+/* Estilo para el botón de Guardar (btn-guardar o similar) */
+.edit-pago-popup button.btn-guardar {
+  color: #fff;
+  background-color: #28a745; /* Verde */
+  border-color: #28a745;
+}
+
+.edit-pago-popup button.btn-guardar:hover {
+  background-color: #218838;
+  border-color: #1e7e34;
+}
+
+/* Estilo para el botón de Cancelar (btn-cancelar o similar) */
+.edit-pago-popup button.btn-cancelar {
+  color: #fff;
+  background-color: #dc3545; /* Rojo */
+  border-color: #dc3545;
+}
+
+.edit-pago-popup button.btn-cancelar:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+}
+
+/* Si no usas clases btn-guardar/btn-cancelar, puedes usar selectores de tipo si son los únicos botones */
+/* 
+.edit-pago-popup .modal-actions button:nth-of-type(1) { // Asumiendo que Guardar es el primero
+  color: #fff;
+  background-color: #28a745; 
+  border-color: #28a745;
+}
+.edit-pago-popup .modal-actions button:nth-of-type(1):hover {
+  background-color: #218838;
+  border-color: #1e7e34;
+}
+
+.edit-pago-popup .modal-actions button:nth-of-type(2) { // Asumiendo que Cancelar es el segundo
+  color: #fff;
+  background-color: #6c757d; // Gris, o el color que prefieras para cancelar
+  border-color: #6c757d;
+}
+.edit-pago-popup .modal-actions button:nth-of-type(2):hover {
+  background-color: #5a6268;
+  border-color: #545b62;
+}
+*/ 

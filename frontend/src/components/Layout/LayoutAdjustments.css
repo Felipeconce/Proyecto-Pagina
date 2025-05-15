@@ -57,6 +57,7 @@ div[class*="historial"] {
 }
 
 /* Estilo unificado para títulos de sección */
+/*
 section h2,
 .gastosTitle,
 div[class*="Title"] {
@@ -68,6 +69,7 @@ div[class*="Title"] {
   align-items: center !important;
   gap: 12px !important;
 }
+*/
 
 /* Formularios más compactos y consistentes */
 form,

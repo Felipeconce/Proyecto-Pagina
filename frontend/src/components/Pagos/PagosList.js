@@ -7,7 +7,15 @@ export default function PagosList({ user, refresh, onPagosChange, isPagoAtrasado
   const [alumnos, setAlumnos] = useState([]);
   const [conceptos, setConceptos] = useState([]);
   const [pagos, setPagos] = useState([]);
-  const [editCell, setEditCell] = useState({ alumnoId: null, conceptoId: null });
+  const [editCell, setEditCell] = useState({ 
+    alumnoId: null, 
+    conceptoId: null, 
+    top: 0, 
+    left: 0, 
+    cellWidth: 0, 
+    cellHeight: 0, 
+    visible: false 
+  });
   const [editMonto, setEditMonto] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -107,23 +115,48 @@ export default function PagosList({ user, refresh, onPagosChange, isPagoAtrasado
     pagosEstadoMap[p.usuario_id][p.concepto_id] = p.estado;
   });
 
-  const handleCellClick = (alumnoId, conceptoId) => {
+  const handleCellClick = (e, alumnoId, conceptoId) => {
     const token = localStorage.getItem('token');
     if (!token) {
       toast.showToast('Debes iniciar sesión para editar pagos', 'error');
       return;
     }
-    
-    // Si ya estamos editando, guardar ese valor primero
-    if (editCell.alumnoId !== null && editCell.conceptoId !== null) {
-      handleCellCancel();
+
+    const rect = e.currentTarget.getBoundingClientRect();
+    // Intentar obtener el contenedor '.pagos-container' más cercano
+    const pagosContainerElement = e.currentTarget.closest('.pagos-container');
+
+    if (!pagosContainerElement) {
+      console.error("No se pudo encontrar el elemento .pagos-container");
+      // Fallback o manejo de error si no se encuentra el contenedor
+      setEditCell({
+        alumnoId,
+        conceptoId,
+        top: rect.top + window.scrollY, // Comportamiento anterior como fallback
+        left: rect.left + window.scrollX,
+        cellWidth: rect.width,
+        cellHeight: rect.height,
+        visible: true
+      });
+      const pagoExistenteFallback = pagos.find(p => p.usuario_id === alumnoId && p.concepto_id === conceptoId);
+      setEditMonto(pagoExistenteFallback && typeof pagoExistenteFallback.monto !== 'undefined' ? String(pagoExistenteFallback.monto) : '');
+      return;
     }
-    
-    setEditCell({ alumnoId, conceptoId });
-    
-    // Buscar el pago existente
+
+    const containerRect = pagosContainerElement.getBoundingClientRect();
+
+    setEditCell({
+      alumnoId,
+      conceptoId,
+      top: rect.top - containerRect.top, // Relativo al contenedor
+      left: rect.left - containerRect.left, // Relativo al contenedor
+      cellWidth: rect.width,
+      cellHeight: rect.height,
+      visible: true
+    });
+
     const pagoExistente = pagos.find(p => p.usuario_id === alumnoId && p.concepto_id === conceptoId);
-    setEditMonto(pagoExistente ? pagoExistente.monto : '');
+    setEditMonto(pagoExistente && typeof pagoExistente.monto !== 'undefined' ? String(pagoExistente.monto) : '');
   };
 
   const handleCellSave = async () => {
@@ -144,8 +177,6 @@ export default function PagosList({ user, refresh, onPagosChange, isPagoAtrasado
       }
       
       const pagoExistente = pagos.find(p => p.usuario_id === alumnoId && p.concepto_id === conceptoId);
-      
-      // Convertir el monto a entero
       const montoEntero = Math.round(Number(editMonto));
       
       const payload = {
@@ -184,96 +215,132 @@ export default function PagosList({ user, refresh, onPagosChange, isPagoAtrasado
       }
       
       if (!res.ok) {
-        const error = await res.json();
-        toast.showToast(error.message || 'Error al guardar el pago', 'error');
-        return;
+        // El servidor respondió con un error (4xx o 5xx)
+        let errorMessage = `Error del servidor (${res.status})`;
+        try {
+          const contentType = res.headers.get('content-type');
+          if (contentType && contentType.includes('application/json') && res.body) {
+            const errorBody = await res.json();
+            errorMessage = errorBody.message || `${errorMessage}: ${JSON.stringify(errorBody)}`;
+          } else {
+            const errorText = await res.text();
+            if (errorText) errorMessage = `${errorMessage}: ${errorText}`;
+          }
+        } catch (e) {
+          console.warn("No se pudo parsear el cuerpo del error (o no era JSON):", e, res.status);
+        }
+        toast.showToast(errorMessage, 'error');
+        // NO actualizar el estado local si el servidor devuelve un error
+        return; 
       }
       
-      // Obtener la respuesta del servidor para asegurar datos correctos
-      const pagoGuardado = await res.json();
-      console.log("Pago guardado en el servidor:", pagoGuardado);
-      
-      // Actualizar localmente con el dato devuelto por el servidor
+      // Si llegamos aquí, res.ok es true
+      let pagoActualizadoParaEstado = null;
+
+      if (res.status === 204) { 
+        console.log("Pago actualizado en el servidor (204 No Content)");
+        if (pagoExistente) {
+            pagoActualizadoParaEstado = {
+                ...pagoExistente, 
+                monto: montoEntero,    
+                estado: 'pagado',      
+                fecha: payload.fecha, 
+                usuario_nombre: payload.usuario_nombre,
+            };
+        } else {
+            pagoActualizadoParaEstado = {
+                id: Date.now(), 
+                usuario_id: alumnoId,
+                concepto_id: conceptoId,
+                ...payload
+            };
+        }
+      } else { // Para 200 OK con cuerpo JSON
+        const pagoGuardadoDelServidor = await res.json(); 
+        console.log("Pago guardado/actualizado en el servidor (con cuerpo JSON):", pagoGuardadoDelServidor);
+        pagoActualizadoParaEstado = pagoGuardadoDelServidor;
+      }
+
+      // Actualizar localmente el estado de 'pagos'
       let nuevosPagos = [...pagos];
-      const index = nuevosPagos.findIndex(p => p.usuario_id === alumnoId && p.concepto_id === conceptoId);
+      const index = nuevosPagos.findIndex(p => 
+        (pagoExistente && p.id === pagoExistente.id) || 
+        (!pagoExistente && pagoActualizadoParaEstado && pagoActualizadoParaEstado.id && p.id === pagoActualizadoParaEstado.id) 
+      );
       
-      if (index >= 0) {
-        nuevosPagos[index] = {
-          ...nuevosPagos[index],
-          monto: montoEntero,
-          estado: 'pagado'
-        };
+      if (index >= 0 && pagoActualizadoParaEstado) { 
+        nuevosPagos[index] = pagoActualizadoParaEstado;
+      } else if (!pagoExistente && pagoActualizadoParaEstado) { 
+        nuevosPagos.push(pagoActualizadoParaEstado);
       } else {
-        // Usar el ID devuelto por el servidor si es un nuevo pago
-        nuevosPagos.push({
-          id: pagoGuardado?.id || Date.now(), // ID del servidor o temporal
-          usuario_id: alumnoId,
-          concepto_id: conceptoId,
-          monto: montoEntero,
-          fecha: new Date().toISOString().slice(0, 10),
-          estado: 'pagado',
-          usuario_nombre: user.nombre,
-          rol_id: user.rol_id,
-          curso_id: user.curso_id,
-          colegio_id: user.colegio_id
-        });
+        if (pagoExistente) {
+            const fallbackIndex = nuevosPagos.findIndex(p => p.usuario_id === alumnoId && p.concepto_id === conceptoId);
+            if (fallbackIndex >= 0) {
+                nuevosPagos[fallbackIndex] = {
+                    ...nuevosPagos[fallbackIndex],
+                    monto: montoEntero,
+                    estado: 'pagado'
+                };
+            }
+        } else {
+             // Si es un nuevo pago y no tenemos un ID del servidor, añadirlo con los datos del payload
+            nuevosPagos.push({
+                id: Date.now(), // ID Temporal
+                usuario_id: alumnoId,
+                concepto_id: conceptoId,
+                monto: montoEntero,
+                fecha: payload.fecha,
+                estado: 'pagado',
+                usuario_nombre: user.nombre,
+                rol_id: user.rol_id,
+                curso_id: user.curso_id,
+                colegio_id: user.colegio_id
+            });
+        }
+        console.warn("No se pudo actualizar el pago en el estado local de forma ideal, usando fallback si es posible.");
       }
       
-      // Actualizar el estado local
       setPagos(nuevosPagos);
-      setEditCell({ alumnoId: null, conceptoId: null });
+      setEditCell({ ...editCell, visible: false });
       setEditMonto('');
       toast.showToast('Pago guardado correctamente', 'success');
       
-      // IMPORTANTE: Forzar actualización de datos completa con múltiples enfoques
       if (onPagosChange) {
         console.log("Forzando actualización de datos...");
-        
-        // Usar un temporizador escalonado para dar tiempo al backend y a React
+        setTimeout(() => { onPagosChange(); }, 100);
+        setTimeout(() => { onPagosChange(); }, 500);
         setTimeout(() => {
-          onPagosChange(); // Primera llamada
-          
-          // Segunda llamada después de un tiempo para asegurar actualización
-          setTimeout(() => {
-            onPagosChange();
-          }, 500);
-        }, 100);
-        
-        // También recargar después de una transición completa
-        setTimeout(() => {
-          // Verificar si hay cambios pendientes antes de la recarga final
-          const verificarPago = async () => {
-            try {
-              const verificarRes = await fetch(`${process.env.REACT_APP_API_URL}/pagos/${pagoGuardado?.id || ''}`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-              });
-              
-              if (verificarRes.ok) {
-                // Si la verificación es exitosa, forzar actualización final
-                onPagosChange();
-              }
-            } catch (err) {
-              console.error("Error verificando pago:", err);
-            }
-          };
-          
-          // Ejecutar verificación solo si tenemos un ID
-          if (pagoGuardado?.id) {
+            const verificarPago = async () => {
+                try {
+                    const idParaVerificar = pagoExistente ? pagoExistente.id : (pagoActualizadoParaEstado ? pagoActualizadoParaEstado.id : null);
+                    if (idParaVerificar) {
+                        const verificarRes = await fetch(`${process.env.REACT_APP_API_URL}/pagos/${idParaVerificar}`, {
+                            headers: { 'Authorization': `Bearer ${token}` }
+                        });
+                        if (verificarRes.ok) { onPagosChange(); }
+                    }
+                } catch (err) { console.error("Error verificando pago:", err); }
+            };
             verificarPago();
-          } else {
-            // Si no tenemos ID, simplemente actualizar
-            onPagosChange();
-          }
         }, 1000);
       }
     } catch (error) {
-      console.error("Error al guardar:", error);
-      toast.showToast('Error de conexión', 'error');
+      console.error("Error al guardar (catch general):", error);
+      let toastMessage = 'Error de conexión o respuesta inesperada del servidor.';
+      if (error.name === 'TypeError' && error.message.includes('Failed to fetch')){
+        toastMessage = 'Error de red al intentar conectar con el servidor.';
+      } else if (error.message && error.message.toLowerCase().includes('json')) {
+        // Este caso es si res.ok era true, pero res.json() falló (ej. cuerpo vacío con status 200)
+        toastMessage = 'Respuesta del servidor exitosa pero con formato inesperado.';
+      }
+      toast.showToast(toastMessage, 'error');
     }
   };
 
   const handleCellCancel = () => {
-    setEditCell({ alumnoId: null, conceptoId: null });
+    setEditCell({ ...editCell, visible: false }); // Solo ocultar
+    // O resetear completamente:
+    // setEditCell({ alumnoId: null, conceptoId: null, top: 0, left: 0, cellWidth: 0, cellHeight: 0, visible: false });
     setEditMonto('');
   };
 
@@ -314,6 +381,10 @@ export default function PagosList({ user, refresh, onPagosChange, isPagoAtrasado
 
   // Verificar si hay datos para mostrar
   const hayDatos = alumnos.length > 0 && conceptos.length > 0;
+
+  if (editCell.visible) {
+    console.log('[PagosList] Coordenadas y datos para el popup:', editCell);
+  }
 
   return (
     <div className="pagos-container">
@@ -356,36 +427,41 @@ export default function PagosList({ user, refresh, onPagosChange, isPagoAtrasado
         </>
       )}
       
-      {/* Modal de edición de pagos */}
-      {editCell.alumnoId !== null && editCell.conceptoId !== null && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h3>
-              Editar Pago
-            </h3>
-            <input
-              type="number"
-              value={editMonto}
-              onChange={e => setEditMonto(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Monto"
-              className="modal-input"
-              autoFocus
-            />
-            <div className="modal-actions">
-              <button 
-                className="btn-guardar"
-                onClick={handleCellSave}
-              >
-                Guardar
-              </button>
-              <button 
-                className="btn-cancelar"
-                onClick={handleCellCancel}
-              >
-                Cancelar
-              </button>
-            </div>
+      {/* Popup de edición */}
+      {editCell.visible && (
+        <div
+          className="edit-pago-popup"
+          style={{
+            top: `${editCell.top + editCell.cellHeight + 2}px`, // Debajo de la celda + 2px de offset
+            left: `${editCell.left}px`, // Alinear con el borde izquierdo de la celda
+            // minWidth: `${editCell.cellWidth}px`, // Comentamos esto temporalmente para ver el ancho natural del popup
+            // Si el popup tiene un ancho más o menos fijo, podrías establecerlo aquí
+            // width: '250px', // Ejemplo de ancho fijo
+          }}
+        >
+          <h3>Editar Pago</h3>
+          <input
+            type="number"
+            value={editMonto}
+            onChange={e => setEditMonto(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Monto"
+            className="modal-input"
+            autoFocus
+          />
+          <div className="modal-actions">
+            <button 
+              className="btn-guardar"
+              onClick={handleCellSave}
+            >
+              Guardar
+            </button>
+            <button 
+              className="btn-cancelar"
+              onClick={handleCellCancel}
+            >
+              Cancelar
+            </button>
           </div>
         </div>
       )}

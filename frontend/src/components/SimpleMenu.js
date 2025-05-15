@@ -137,34 +137,45 @@ const styles = {
 
 // Componente simple de menú móvil
 function SimpleMenu({ user }) {
+  // --- INICIO DE CONSOLE LOGS PARA DEBUG ---
+  console.log('[SimpleMenu] Props user:', user);
+  const locationForLog = useLocation(); // Necesitas instanciar useLocation aquí si lo usas antes de los otros hooks
+  console.log('[SimpleMenu] Current location.pathname:', locationForLog.pathname);
+  // --- FIN DE CONSOLE LOGS PARA DEBUG ---
+
+  // Hooks: useState, useLocation, useNavigate, useRef
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isMobileDevice, setIsMobileDevice] = useState(isMobile()); // Inicializar con la función
+  const [isMobileDevice, setIsMobileDevice] = useState(isMobile());
   const location = useLocation();
   const navigate = useNavigate();
   const menuRef = useRef(null);
-  // const menuContentRef = useRef(null); // No se usa, se puede quitar
   
-  // Efecto para manejar la visibilidad basada en el tamaño de la pantalla
+  // Hooks: useEffect
   useEffect(() => {
     const handleResize = () => {
       const mobile = isMobile();
-      setIsMobileDevice(mobile);
-      
-      if (menuRef.current) {
-        if (!mobile && menuOpen) { // Si cambia a desktop y el menú estaba abierto
-          setMenuOpen(false); // Ciérralo
+      setIsMobileDevice(prevIsMobile => prevIsMobile !== mobile ? mobile : prevIsMobile);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (menuRef.current) {
+      if (isMobileDevice) {
+        menuRef.current.style.display = 'flex';
+        console.log('[SimpleMenu] useEffect (displayLogic): isMobileDevice=true. Mostrando botón. Estilo actual:', menuRef.current.style.display, 'window.innerWidth:', window.innerWidth);
+      } else {
+        menuRef.current.style.display = 'none';
+        console.log('[SimpleMenu] useEffect (displayLogic): isMobileDevice=false. Ocultando botón. Estilo actual:', menuRef.current.style.display, 'window.innerWidth:', window.innerWidth);
+        if (menuOpen) {
+          setMenuOpen(false);
         }
       }
-    };
+    }
+  }, [isMobileDevice, menuOpen]);
 
-    handleResize(); // Llamada inicial para establecer el estado correcto
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, [menuOpen]); // Mantener menuOpen aquí para el caso de cerrar si se pasa a desktop
-
-  // Efecto para el scroll del body cuando el menú está abierto
   useEffect(() => {
     if (menuOpen && isMobileDevice) {
       document.body.style.overflow = 'hidden';
@@ -176,30 +187,36 @@ function SimpleMenu({ user }) {
     };
   }, [menuOpen, isMobileDevice]);
   
-  // Al cambiar de ruta, cerrar el menú
   useEffect(() => {
-    if (menuOpen) {
-      setMenuOpen(false);
+    // Solo cerrar el menú si la RUTA cambia y el menú ESTABA ABIERTO.
+    // No reaccionar a los cambios de menuOpen en sí mismos.
+    if (menuOpen) { // Checkear el estado actual
+        setMenuOpen(false);
     }
-  }, [location.pathname]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps 
+  }, [location.pathname]); // Depender SOLO de location.pathname
   
-  // Añadir evento de escape para cerrar el menú
   useEffect(() => {
     const handleEsc = (event) => {
       if (event.keyCode === 27 && menuOpen) {
         setMenuOpen(false);
       }
     };
-    
     window.addEventListener('keydown', handleEsc);
     return () => {
       window.removeEventListener('keydown', handleEsc);
     };
   }, [menuOpen]);
+
+  // Early return: AFTER all hooks
+  if (!user || location.pathname === '/') {
+    console.log('[SimpleMenu] CONDICIÓN DE SALIDA TEMPRANA CUMPLIDA. User:', user, 'Pathname:', location.pathname, '-> Retornando null.');
+    return null;
+  } else {
+    console.log('[SimpleMenu] CONDICIÓN DE SALIDA TEMPRANA NO CUMPLIDA. User:', user, 'Pathname:', location.pathname, '-> Renderizando menú.');
+  }
   
-  // Si no hay usuario, no renderizar nada
-  if (!user) return null;
-  
+  // Component logic and JSX
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
@@ -210,6 +227,7 @@ function SimpleMenu({ user }) {
   
   const handleLogout = (e) => {
     e.preventDefault();
+    closeMenu();
     window.localStorage.clear();
     navigate('/');
     window.location.reload();
@@ -229,14 +247,8 @@ function SimpleMenu({ user }) {
     menuItems.push({ name: 'Historial', path: '/historial', icon: <History size={22} /> });
   }
   
-  if (!isMobileDevice && !menuOpen) { // No renderizar nada en desktop si el menú no está forzado a abrirse
-      // O, si el botón es solo para mobile, y el menuRef.current.style.display='none' lo oculta
-      // entonces este if (!isMobileDevice) return null; podría ser más simple. 
-      // Dejemos que el display:none del useEffect haga su trabajo primero.
-  }
-
   return (
-    <div ref={menuRef} style={styles.container}>
+    <div id="simple-mobile-menu-container" ref={menuRef} style={styles.container}>
       <button 
         style={styles.button}
         onClick={toggleMenu}
@@ -257,7 +269,7 @@ function SimpleMenu({ user }) {
       {menuOpen && isMobileDevice && (
         <>
           <div style={styles.overlay} onClick={closeMenu} />
-          <nav /*ref={menuContentRef}*/ style={styles.menu}> {/* menuContentRef no se usa */}
+          <nav style={styles.menu}>
             <ul style={styles.menuList}>
               {menuItems.map((item) => {
                 const isActive = location.pathname === item.path;
@@ -268,7 +280,7 @@ function SimpleMenu({ user }) {
 
                 return (
                   <li key={item.name}>
-                    <Link to={item.path} style={itemStyle} onClick={closeMenu}> {/* Cerrar menú al hacer clic */}
+                    <Link to={item.path} style={itemStyle} onClick={closeMenu}>
                       <span style={iconStyle}>{item.icon}</span>
                       <span style={styles.menuItemText}>{item.name}</span>
                     </Link>
@@ -276,7 +288,7 @@ function SimpleMenu({ user }) {
                 );
               })}
               <li>
-                <div onClick={(e) => { closeMenu(); handleLogout(e); }} style={styles.logoutItem}> {/* Cerrar menú antes de logout */}
+                <div onClick={handleLogout} style={styles.logoutItem}>
                   <span style={styles.logoutIcon}><LogOut size={22}/></span>
                   <span style={styles.menuItemText}>Cerrar sesión</span>
                 </div>

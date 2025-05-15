@@ -315,36 +315,71 @@ app.post('/pagos', authenticateToken, async (req, res) => {
 });
 
 // Registrar log al editar un pago
-app.put('/pagos/:id', authenticateToken, async (req, res) => {
-  const { id } = req.params;
-  const { monto, fecha, estado, usuario_id, usuario_nombre, rol_id, curso_id, colegio_id } = req.body;
+app.put('/pagos/:id', authenticateToken, async (req, res, next) => {
+  // **** NUEVO CONSOLE.LOG PARA DEPURACIÓN ****
+  console.log('>>> INSPECCIONANDO req.user en PUT /pagos/:id:', JSON.stringify(req.user, null, 2));
+  // **** FIN DEL CONSOLE.LOG ****
+
+  const { id } = req.params; // ID del pago a editar
+  const { monto, fecha, estado } = req.body; // Datos del pago a actualizar
+
+  // Datos del usuario QUE REALIZA LA ACCIÓN (del token)
+  const editorUsuarioId = req.user ? req.user.id : null; // Asegurarse de que req.user exista
+  const editorNombre = req.user ? (req.user.nombre || req.body.usuario_nombre) : req.body.usuario_nombre;
+  const editorRolId = req.user ? (req.user.rol_id || req.body.rol_id) : req.body.rol_id;
+  const editorCursoId = req.user ? (req.user.curso_id || req.body.curso_id) : req.body.curso_id;
+  const editorColegioId = req.user ? (req.user.colegio_id || req.body.colegio_id) : req.body.colegio_id;
+
+  // **** NUEVO CONSOLE.LOG PARA VER editorUsuarioId ****
+  console.log('>>> editorUsuarioId para LOGS:', editorUsuarioId);
+  // **** FIN DEL CONSOLE.LOG ****
+
+  if (!editorUsuarioId) { // Si después de todo, editorUsuarioId es null/undefined
+    console.error('¡ALERTA! editorUsuarioId es nulo ANTES de la query de logs. req.user:', JSON.stringify(req.user));
+    // Considerar devolver un error aquí para no proceder si falta el ID del editor
+    // return res.status(500).json({ error: 'No se pudo determinar el ID del usuario editor para el log.' });
+  }
+
   try {
     const result = await pool.query(
       "UPDATE pagos SET monto = $1, fecha = $2, estado = $3 WHERE id = $4 RETURNING *",
       [monto, fecha, estado, id]
     );
-    // Registrar log
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Pago no encontrado para actualizar' });
+    }
+
+    // Registrar log con los datos del USUARIO EDITOR (del token)
     await pool.query(
-      'INSERT INTO logs (usuario_id, usuario_nombre, rol_id, curso_id, colegio_id, accion, entidad, entidad_id, detalle) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)',
-      [usuario_id, usuario_nombre, rol_id, curso_id, colegio_id, 'editar', 'pago', id, `Editó pago a $${monto}`]
+      'INSERT INTO logs (usuario_id, usuario_nombre, rol_id, curso_id, colegio_id, accion, entidad, entidad_id, detalle) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
+      [
+        editorUsuarioId,    // ID del usuario que edita (del token)
+        editorNombre,       // Nombre del usuario que edita
+        editorRolId,        // Rol del usuario que edita
+        editorCursoId,      // Curso del usuario que edita
+        editorColegioId,    // Colegio del usuario que edita
+        'editar',
+        'pago',
+        id,                 // ID del pago que se editó
+        `Editó pago ID ${id} a $${monto}`
+      ]
     );
-    res.json(result.rows[0]);
+    res.json(result.rows[0]); // Devuelve el pago actualizado
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    // Loguear el error específico antes de pasarlo al errorHandler
+    console.error('Error en el bloque try/catch de PUT /pagos/:id:', err);
+    next(err); // Pasa el error al errorHandler centralizado
   }
 });
 
 // Conceptos de Pago ordenados por calendario
-app.get('/conceptos', async (req, res) => {
+app.get('/conceptos', async (req, res, next) => {
   try {
     const result = await pool.query('SELECT id, nombre, orden, fecha_vencimiento FROM conceptos_pago ORDER BY orden ASC, nombre ASC');
-    // Añadir log para verificar
-    if (result.rows.length > 0) {
-      console.log('Ejemplo de concepto (primero):', result.rows[0]);
-    }
     res.json(result.rows);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 });
 

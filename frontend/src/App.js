@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet, useNavigate } from 'react-router-dom';
 
 import Header from './components/Layout/Header';
 import Sidebar from './components/Layout/Sidebar';
@@ -8,6 +8,8 @@ import SimpleMenu from './components/SimpleMenu'; // Menú móvil mejorado
 // import SidebarDebug from './components/Layout/SidebarDebug';
 import Footer from './components/Layout/Footer';
 import Login from './components/Login';
+import HomePage from './pages/HomePage'; // Importar HomePage
+import HeaderPublico from './components/Layout/HeaderPublico'; // <--- Importar HeaderPublico
 
 import Dashboard from './pages/Dashboard';
 import PagosPage from './pages/PagosPage';
@@ -35,13 +37,77 @@ import './components/Layout/CommonStyles.css'; // Importar estilos modernos mejo
 // import './components/MobilePagesOptimization.css'; // Importar optimizaciones específicas para cada página
 // import './components/MobilePerformanceFix.css'; // Importar optimizaciones de rendimiento en móviles
 
-function App() {
-  // Persistencia de sesión con localStorage
+// Componente para rutas protegidas
+const ProtectedRoute = ({ user, redirectPath = '/login', isLoggingOut }) => {
+  console.log(
+    'ProtectedRoute evaluated. User isPresent:', !!user, 
+    'isLoggingOut:', isLoggingOut,
+    'Path intended for redirect if no user:', redirectPath
+  );
+
+  if (isLoggingOut) {
+    console.log('[ProtectedRoute] Currently logging out. Suppressing redirect to login.');
+    return null; // O un <></> o un loader pequeño si la transición es perceptible
+  }
+
+  if (!user) {
+    console.log('[ProtectedRoute] User is null or undefined AND not logging out. Redirecting to:', redirectPath);
+    return <Navigate to={redirectPath} replace />;
+  }
+  return <Outlet />;
+};
+
+// Componente para rutas públicas que pueden tener un layout diferente
+const PublicLayout = ({ children }) => {
+  return (
+    <>
+      <HeaderPublico /> {/* <--- Añadir HeaderPublico aquí */}
+      {children}
+      {/* El Footer ya está fuera, en MainAppLayout o global, así que no se necesita aquí si HomePage lo incluye */}
+    </>
+  );
+};
+
+// Componente para el layout principal de la aplicación (cuando el usuario está logueado)
+const MainAppLayout = ({ user, handleLogout, sidebarOpen, setSidebarOpen, toggleSidebar, children, isLoggingOut }) => {
+  if (!user) return null; // No renderizar si no hay usuario (ya que ProtectedRoute maneja la redirección)
+
+  return (
+    <div className={sidebarOpen ? 'app-wrapper sidebar-open' : 'app-wrapper'}>
+      <Header 
+        onHamburgerClick={toggleSidebar} 
+        user={user}
+        onLogout={handleLogout}
+      />
+      
+      {/* Menú móvil simplificado - solo visible en móvil gracias a sus estilos internos */}
+      <SimpleMenu user={user} />
+      
+      <div className="app-container">
+        {/* Sidebar con soporte para escritorio */}
+        <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} user={user} />
+        
+        <main className="main-content">
+          {children} 
+        </main>
+      </div>
+      <Footer />
+    </div>
+  );
+};
+
+// --- Componente AppContent --- 
+// Este componente contendrá la lógica principal de la aplicación y usará useNavigate
+const AppContent = () => {
+  const navigate = useNavigate(); // Hook para navegación programática
+
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem('user');
     return savedUser ? JSON.parse(savedUser) : null;
   });
   const [token, setToken] = useState(() => localStorage.getItem('token') || null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false); // Nuevo estado
 
   useEffect(() => {
     if (user) {
@@ -59,59 +125,24 @@ function App() {
     }
   }, [token]);
 
-  // Función para cerrar sesión
-  const handleLogout = () => {
-    setUser(null);
-    setToken(null);
-  };
+  const handleLogout = useCallback(() => {
+    setIsLoggingOut(true); // 1. Marcar que estamos haciendo logout
+    setUser(null);         // 2. Limpiar usuario
+    setToken(null);        // 3. Limpiar token
+    navigate('/', { replace: true }); // 4. Navegar a HomePage
+    // Opcional: resetear isLoggingOut después de un pequeño delay o en un efecto de navegación
+    // setTimeout(() => setIsLoggingOut(false), 50); // Ejemplo de reseteo simple
+  }, [navigate]);
 
-  const handleLogin = (userData) => {
+  const handleLogin = useCallback((userData) => {
+    setIsLoggingOut(false); // Asegurarse de que no estemos en estado de logout al loguear
     setUser(userData);
     setToken(userData.token);
-  };
-
-  // Estado del sidebar para desktop
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  // Detección de dispositivo móvil
-  const isMobile = () => window.innerWidth <= 900;
-  const [isMobileDevice, setIsMobileDevice] = useState(isMobile());
-
-  // Efecto para detectar cambios de tamaño de pantalla
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobileDevice(isMobile());
-    };
-    
-    // Configuración inicial
-    handleResize();
-    
-    // Listener para cambios de tamaño
-    window.addEventListener('resize', handleResize);
-    
-    // Limpiar al desmontar
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
   }, []);
-
-  // Función para alternar el estado del sidebar
-  const toggleSidebar = () => {
-    console.log("Botón hamburguesa clickeado - toggle sidebar");
-    const newState = !sidebarOpen;
-    
-    // Actualizar las clases CSS directamente
-    if (newState) {
-      document.body.classList.add('sidebar-open');
-      document.documentElement.classList.add('sidebar-open');
-    } else {
-      document.body.classList.remove('sidebar-open');
-      document.documentElement.classList.remove('sidebar-open');
-    }
-    
-    // Actualizar el estado del sidebar
-    setSidebarOpen(newState);
-  };
+  
+  const toggleSidebar = useCallback(() => {
+    setSidebarOpen(prev => !prev);
+  }, []);
 
   // Efecto para sincronizar el estado del sidebar con las clases CSS
   useEffect(() => {
@@ -122,72 +153,99 @@ function App() {
       document.body.classList.remove('sidebar-open');
       document.documentElement.classList.remove('sidebar-open');
     }
+    // No se necesita limpieza específica aquí si se maneja al desmontar AppContent o App
   }, [sidebarOpen]);
 
-  // Efecto para limpiar las clases del body al desmontar
+  // Efecto para limpiar las clases del body al desmontar App (si AppContent es el componente principal)
   useEffect(() => {
     return () => {
       document.body.classList.remove('sidebar-open');
       document.documentElement.classList.remove('sidebar-open');
     };
   }, []);
-
-  // Efecto para estabilizar el desplazamiento vertical
+  
+  // El resto de los useEffects (isMobileDevice, scrollY) se pueden mantener si son necesarios
+  // Para simplificar, los omito aquí, pero deberían estar si antes estaban en App.
+  // Detección de dispositivo móvil (ejemplo)
+  /*
+  const isMobile = () => window.innerWidth <= 900;
+  const [isMobileDevice, setIsMobileDevice] = useState(isMobile());
   useEffect(() => {
-    // Guardar la posición de desplazamiento original
-    const originalScrollY = window.scrollY;
-    
-    // Función para prevenir cambios de tamaño que causen movimiento
-    const preventScrollJumps = () => {
-      if (Math.abs(window.scrollY - originalScrollY) < 5) {
-        window.scrollTo(0, originalScrollY);
-      }
-    };
-    
-    // Manejar cambios de tamaño de ventana
-    window.addEventListener('resize', preventScrollJumps);
-    
-    // Limpiar el evento al desmontar
-    return () => {
-      window.removeEventListener('resize', preventScrollJumps);
-    };
+    const handleResize = () => setIsMobileDevice(isMobile());
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
+  */
 
-  if (!user) {
-    return <Login onLogin={handleLogin} />;
-  }
+  return (
+    <Routes>
+      <Route path="/" element={<PublicLayout><HomePage /></PublicLayout>} />
+      <Route 
+        path="/login" 
+        element={user ? <Navigate to="/dashboard" replace /> : <Login onLogin={handleLogin} />} 
+      />
+      <Route element={<ProtectedRoute user={user} isLoggingOut={isLoggingOut} />}>
+        <Route 
+          path="/dashboard" 
+          element={
+            <MainAppLayout user={user} handleLogout={handleLogout} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} toggleSidebar={toggleSidebar}>
+              <Dashboard user={user} />
+            </MainAppLayout>
+          }
+        />
+        <Route 
+          path="/pagos" 
+          element={
+            <MainAppLayout user={user} handleLogout={handleLogout} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} toggleSidebar={toggleSidebar}>
+              <PagosPage user={user} />
+            </MainAppLayout>
+          }
+        />
+        <Route 
+          path="/gastos" 
+          element={
+            <MainAppLayout user={user} handleLogout={handleLogout} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} toggleSidebar={toggleSidebar}>
+              <GastosPage user={user} />
+            </MainAppLayout>
+          }
+        />
+        <Route 
+          path="/documentos" 
+          element={
+            <MainAppLayout user={user} handleLogout={handleLogout} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} toggleSidebar={toggleSidebar}>
+              <DocumentosPage user={user} />
+            </MainAppLayout>
+          }
+        />
+        <Route 
+          path="/fechas" 
+          element={
+            <MainAppLayout user={user} handleLogout={handleLogout} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} toggleSidebar={toggleSidebar}>
+              <FechasPage user={user} />
+            </MainAppLayout>
+          }
+        />
+        <Route 
+          path="/historial" 
+          element={
+            <MainAppLayout user={user} handleLogout={handleLogout} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} toggleSidebar={toggleSidebar}>
+              <HistorialPage user={user} />
+            </MainAppLayout>
+          }
+        />
+      </Route>
+      <Route path="*" element={<Navigate to={user ? "/dashboard" : "/"} />} />
+    </Routes>
+  );
+};
 
+// --- Componente App (Principal) --- 
+// Ahora solo configura el Router y el ToastProvider, y renderiza AppContent.
+function App() {
   return (
     <ToastProvider>
       <Router>
-        <div className={sidebarOpen ? 'app-wrapper sidebar-open' : 'app-wrapper'}>
-          <Header 
-            onHamburgerClick={toggleSidebar} 
-            user={user}
-            onLogout={handleLogout}
-          />
-          
-          {/* Menú móvil simplificado - solo visible en móvil gracias a sus estilos internos */}
-          <SimpleMenu user={user} />
-          
-          <div className="app-container">
-            {/* Sidebar con soporte para escritorio */}
-            <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} user={user} />
-            
-            <main className="main-content">
-              <Routes>
-                <Route path="/" element={<Dashboard user={user} />} />
-                <Route path="/pagos" element={<PagosPage user={user} />} />
-                <Route path="/gastos" element={<GastosPage user={user} />} />
-                <Route path="/documentos" element={<DocumentosPage user={user} />} />
-                <Route path="/fechas" element={<FechasPage user={user} />} />
-                <Route path="/historial" element={<HistorialPage user={user} />} />
-                <Route path="*" element={<Navigate to="/" />} />
-              </Routes>
-            </main>
-          </div>
-          <Footer />
-        </div>
+        <AppContent />
       </Router>
     </ToastProvider>
   );
