@@ -159,12 +159,12 @@ export default function FechasList() {
       </div>
     ) : (
       <div className="table-container">
-        <table className="table-modern">
+        <table className="table-modern fechas-table">
           <thead>
             <tr>
-              <th>Fecha</th>
-              <th>Descripción</th>
-              <th style={{textAlign: 'center'}}>Estado</th>
+              <th className="text-center">Fecha</th>
+              <th className="text-center">Descripción</th>
+              <th className="text-center">Estado</th>
             </tr>
           </thead>
           <tbody>
@@ -172,16 +172,18 @@ export default function FechasList() {
               const estadoClass = getEstadoClass(fecha.fecha);
               return (
                 <tr key={fecha.id}>
-                  <td className="fecha-cell" style={{verticalAlign: 'middle'}}>
-                    {getFechaIcon(fecha.fecha)}
-                    {new Date(fecha.fecha).toLocaleDateString('es-CL', {
-                      day: '2-digit', 
-                      month: '2-digit', 
-                      year: 'numeric'
-                    }).replace(/\//g, '-')}
+                  <td className="fecha-cell" style={{verticalAlign: 'middle', textAlign: 'center'}}>
+                    <span style={{display: 'inline-flex', alignItems: 'center', gap: 6}}>
+                      {getFechaIcon(fecha.fecha)}
+                      {new Date(fecha.fecha).toLocaleDateString('es-CL', {
+                        day: '2-digit', 
+                        month: '2-digit', 
+                        year: 'numeric'
+                      }).replace(/\//g, '-')}
+                    </span>
                   </td>
-                  <td>{fecha.descripcion}</td>
-                  <td style={{textAlign: 'center'}}>
+                  <td style={{verticalAlign: 'middle', textAlign: 'center'}}>{fecha.descripcion}</td>
+                  <td style={{textAlign: 'center', verticalAlign: 'middle'}}>
                     <span className={`estado-badge ${estadoClass}`}>
                       {getEstadoFecha(fecha.fecha)}
                     </span>

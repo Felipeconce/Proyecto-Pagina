@@ -141,7 +141,7 @@ export default function Sidebar({ open, setOpen, user }) {
         <nav className="sidebar-nav">
           {/* Información del Colegio y Curso */}
           {user && (nombreColegio || nombreCurso || loadingInfo) && (
-            <div className="px-4 pt-4 pb-2 text-sm text-gray-400">
+            <div className="px-4 pt-8 pb-2 text-sm text-gray-400">
               {loadingInfo ? (
                 <p className="text-gray-300">Cargando info...</p>
               ) : (

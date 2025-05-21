@@ -3,6 +3,7 @@ import PagosList from '../components/Pagos/PagosList';
 import ConceptosForm from '../components/Pagos/ConceptosForm';
 import { Wallet } from 'lucide-react';
 import { useToast } from '../components/Layout/ToastProvider';
+import { FaMoneyBillWave, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
 
 export default function PagosPage({ user }) {
   const [refresh, setRefresh] = React.useState(false);
@@ -169,10 +170,7 @@ export default function PagosPage({ user }) {
   // Función para forzar actualización cuando cambian los pagos
   const handlePagosChange = () => {
     console.log('Forzando actualización después de cambio en pagos');
-    // Usar setTimeout para asegurar que la actualización ocurra en el siguiente ciclo
-    setTimeout(() => {
-      setRefresh(prev => !prev);
-    }, 200);
+    setRefresh(prev => !prev);
   };
 
   // Verificar si un concepto está atrasado basado en su fecha de vencimiento o si es un mes pasado
@@ -286,39 +284,36 @@ export default function PagosPage({ user }) {
         <Wallet color="var(--color-primary)" size={28} /> Pagos
       </h2>
       
-      {/* Resumen destacado */}
-      <div className="pagos-resumen">
+      {/* Mantener solo el resumen destacado horizontal */}
+      <div className="pagos-resumen mejorado">
         <div className="resumen-item">
-          <span className="resumen-icon icon-primary"><Wallet size={24} /></span>
-          <div>
-            <div className="resumen-label">Total recaudado</div>
-            <div className="resumen-value resumen-value-primary">${estadisticas.totalPagado.toLocaleString('es-CL', formatoMoneda)}</div>
-          </div>
+          <span className="resumen-label resumen-label-small">Total recaudado</span>
+          <span className="resumen-num-row">
+            <span className="resumen-icon resumen-icon-green"><FaMoneyBillWave size={36} /></span>
+            <span className="resumen-value resumen-value-primary resumen-num-grande">${estadisticas.totalPagado.toLocaleString('es-CL', formatoMoneda)}</span>
+          </span>
         </div>
-        
+        <div className="resumen-separador"></div>
         <div className="resumen-item">
-          <span className="resumen-icon icon-success"><Wallet size={24} /></span>
-          <div>
-            <div className="resumen-label">Pagos completados</div>
-            <div className="resumen-value resumen-value-success">{estadisticas.pagosCompletados}</div>
-          </div>
+          <span className="resumen-label resumen-label-small">Pagos completados</span>
+          <span className="resumen-num-row">
+            <span className="resumen-icon resumen-icon-success"><FaCheckCircle size={36} /></span>
+            <span className="resumen-value resumen-value-success resumen-num-grande">{estadisticas.pagosCompletados}</span>
+          </span>
         </div>
-        
+        <div className="resumen-separador"></div>
         <div className="resumen-item">
-          <span className="resumen-icon icon-error"><Wallet size={24} /></span>
-          <div>
-            <div className="resumen-label">Atrasados</div>
-            <div className="resumen-value resumen-value-danger">{estadisticas.pagosAtrasados} (${estadisticas.totalAtrasado.toLocaleString('es-CL', formatoMoneda)})</div>
-          </div>
+          <span className="resumen-label resumen-label-small">Atrasados</span>
+          <span className="resumen-num-row">
+            <span className="resumen-icon resumen-icon-danger"><FaExclamationTriangle size={36} /></span>
+            <span className="resumen-value resumen-value-danger resumen-num-grande">{estadisticas.pagosAtrasados}</span>
+          </span>
         </div>
       </div>
       
-      <div className="card">
-        <ConceptosForm user={user} setRefresh={setRefresh} />
-      </div>
+      <ConceptosForm user={user} onConceptoAgregado={handlePagosChange} />
       
       <div className="card">
-        <h3 className="section-subtitle">Listado de pagos</h3>
         <PagosList 
           user={user}
           refresh={refresh}

@@ -101,33 +101,33 @@ export default function DocumentosList() {
         </div>
       ) : (
         <div className="table-container">
-          <table className="table-modern">
+          <table className="table-modern documentos-table">
             <thead>
               <tr>
-                <th>Nombre</th>
-                <th>Descripción</th>
-                <th>Fecha</th>
-                <th style={{textAlign: 'center'}}>Documento</th>
+                <th className="text-center">Nombre</th>
+                <th className="text-center">Descripción</th>
+                <th className="text-center">Fecha</th>
+                <th className="text-center">Documento</th>
               </tr>
             </thead>
             <tbody>
               {documentos.map(doc => (
                 <tr key={doc.id}>
-                  <td style={{ verticalAlign: 'middle' }}>
+                  <td className="text-left" style={{ verticalAlign: 'middle' }}>
                     <span style={{ display: 'inline-flex', alignItems: 'center', marginRight: '8px' }}>
                       {getFileIcon(doc.url)}
                     </span>
                     {doc.nombre}
                   </td>
-                  <td>{doc.descripcion}</td>
-                  <td>
+                  <td className="text-left">{doc.descripcion}</td>
+                  <td className="text-left">
                     {new Date(doc.fecha_subida).toLocaleDateString('es-CL', { 
                       day: '2-digit', 
                       month: '2-digit', 
                       year: 'numeric' 
                     })}
                   </td>
-                  <td style={{textAlign: 'center'}}>
+                  <td className="text-left" style={{textAlign: 'left'}}>
                     <a
                       href={`${process.env.REACT_APP_API_URL}${doc.url}`}
                       target="_blank"

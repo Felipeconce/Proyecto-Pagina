@@ -373,6 +373,39 @@ app.put('/pagos/:id', authenticateToken, async (req, res, next) => {
   }
 });
 
+// Eliminar un pago y registrar log
+app.delete('/pagos/:id', authenticateToken, async (req, res) => {
+  const { id } = req.params;
+  const editorUsuarioId = req.user ? req.user.id : null;
+  const editorNombre = req.user ? req.user.nombre : null;
+  const editorRolId = req.user ? req.user.rol_id : null;
+  const editorCursoId = req.user ? req.user.curso_id : null;
+  const editorColegioId = req.user ? req.user.colegio_id : null;
+  try {
+    // Obtener datos del pago antes de eliminar (para el log)
+    const pagoRes = await pool.query('SELECT * FROM pagos WHERE id = $1', [id]);
+    if (pagoRes.rowCount === 0) {
+      return res.status(404).json({ error: 'Pago no encontrado para eliminar' });
+    }
+    const pago = pagoRes.rows[0];
+    // Eliminar el pago
+    await pool.query('DELETE FROM pagos WHERE id = $1', [id]);
+    // Registrar log (pero no bloquear si falla)
+    try {
+      await pool.query(
+        'INSERT INTO logs (usuario_id, usuario_nombre, rol_id, curso_id, colegio_id, accion, entidad, entidad_id, detalle) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)',
+        [editorUsuarioId, editorNombre, editorRolId, editorCursoId, editorColegioId, 'eliminar', 'pago', id, `Eliminó pago de $${pago.monto} para concepto_id ${pago.concepto_id}`]
+      );
+    } catch (logErr) {
+      console.error('Error al registrar log de eliminación:', logErr);
+      // NO respondas con error aquí, solo loguea
+    }
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Conceptos de Pago ordenados por calendario
 app.get('/conceptos', async (req, res, next) => {
   try {

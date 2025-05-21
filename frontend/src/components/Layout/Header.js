@@ -31,15 +31,12 @@ export default function Header({ onHamburgerClick, user, onLogout }) {
   // const isMobileDevice = window.innerWidth <= 900; // Ya no es necesario aquí
   
   return (
-    <header className="header-pro">
-      <div className="header-title-wrapper">
-        <h1 className="font-semibold text-lg">
-          {/* <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f3eb.svg" alt="Edificio escolar" className="header-logo" /> */}
-          Gestión Curso
-        </h1>
+    <header className="header-pro bg-gradient-to-r from-blue-500 to-green-500 flex justify-center items-center">
+      <div className="header-title-wrapper flex justify-center items-center">
+        <img src="/uploads/logo_gestion_padres.png" alt="Gestión Curso Logo" className="h-16 w-auto text-white filter brightness-0 invert" />
       </div>
-      <div className="header-user-section">
-        <span className="header-user-name">
+      <div className="header-user-section text-white">
+        <span className="header-user-name text-white">
           {user.nombre} | {getRolName(user.rol_id)}
         </span>
         <button

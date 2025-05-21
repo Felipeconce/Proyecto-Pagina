@@ -193,9 +193,8 @@
   width: 80px;
   max-width: 80px;
   text-align: center;
-  padding: 10px 8px; /* Ajustar padding si es necesario */
+  padding: 10px 8px;
   overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 0.85rem;
 }
@@ -698,91 +697,48 @@
   white-space: nowrap;
 }
 
-/* Estilos base para la tabla de pagos - Funcionales para sticky */
-
-.table-modern { /* Clase de la tabla principal */
-    min-width: 1200px; /* O un valor que fuerce el scroll horizontal */
-    border-collapse: collapse;
-    width: 100%;
-}
-
-.table-modern th,
-.table-modern td {
-    padding: 10px; /* Padding base, será ajustado por reglas más específicas si es necesario */
-    border: 1px solid #ddd; /* Borde simple para la prueba */
-    min-width: 120px; /* Ancho mínimo de celda general */
-    text-align: left;
-    background-color: #f7f7f7; /* Fondo base opaco para celdas no fijas */
-}
-
-/* --- Columna Fija --- */
-.table-modern .sticky-col {
-    position: -webkit-sticky;
-    position: sticky;
-    left: 0;
-    background-color: white !important; /* Fondo blanco opaco */
-    z-index: 20 !important; 
-    border-right: 2px solid black !important; /* Borde visual */
-    opacity: 1 !important; /* Asegurar opacidad */
-    
-    /* Estilos adicionales para .sticky-col (del PagosStyles.css original) */
-    min-width: 200px; /* Ajustado del original */
-    width: 200px; /* Ajustado del original */
-    text-align: left; /* Del original */
-    padding: 12px 8px; /* Padding específico para la sticky col */
-    font-weight: 500; /* Del original */
-    box-shadow: 4px 0 8px -4px rgba(0, 0, 0, 0.15); /* Sombra funcional */
-}
-
-.table-modern thead .sticky-col {
-    background-color: #e0e0e0 !important; /* Fondo gris opaco para encabezado fijo */
-    z-index: 30 !important;
-    font-weight: 600; /* El original tenía 600 para thead .sticky-col */
-    text-align: left; /* Asegurar alineación para el header */
-    padding: 12px 8px; /* Consistencia con td sticky */
-}
-
-/* --- Colores de Estado de Pago (usando variables CSS globales) --- */
-/* Para celdas de datos (tanto fijas como no fijas) */
-.table-modern td.pago-completado,
-.table-modern .sticky-col.pago-completado { 
-    background-color: var(--color-success-bg) !important; 
-    color: var(--color-success); /* O var(--color-text) si se prefiere */
-}
-
-.table-modern td.pago-pendiente,
-.table-modern .sticky-col.pago-pendiente { 
-    background-color: var(--color-warning-bg) !important; 
-    color: var(--color-warning);
-}
-
-.table-modern td.pago-atrasado,
-.table-modern .sticky-col.pago-atrasado { 
-    background-color: var(--color-error-bg) !important; 
-    color: var(--color-error);
-}
-
-/* --- Estilos para columnas de conceptos (del PagosStyles.css original, sin !important) --- */
-.concepto-col { /* Esta clase se aplica a th y td de conceptos */
-  min-width: 80px;
-  width: 80px;
-  max-width: 80px;
-  text-align: center;
-  padding: 10px 8px; /* Padding específico para concepto-col */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+/* Estilos mejorados para la tabla de pagos */
+.table-modern {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+  background-color: white;
+  font-family: 'Inter', system-ui, sans-serif;
+  table-layout: fixed;
   font-size: 0.85rem;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-/* Aquí se pueden añadir gradualmente otros estilos de PagosStyles.css original,
-   como .pagos-container, .pagos-titulo, .pagos-leyenda, etc.
-   pero probando la columna fija después de cada adición importante. */
+.table-modern th, .table-modern td {
+  padding: 8px;
+  text-align: center;
+  border-bottom: 1px solid #e5e7eb;
+}
 
-/* Por ejemplo, la sombra que tenías en .sticky-col en PagosStyles.css original: */
-/* .table-modern .sticky-col {
-    box-shadow: 4px 0 8px -4px rgba(0, 0, 0, 0.15);
-   } */
+.table-modern th {
+  background-color: #2563eb;
+  font-weight: 600;
+  color: #fff;
+  text-align: center;
+}
+
+.table-modern tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+
+.table-modern tr:hover {
+  background-color: #f1f5f9;
+}
+
+.sticky-col {
+  position: sticky;
+  left: 0;
+  background-color: #f3f4f6;
+  z-index: 1;
+  box-shadow: 2px 0 5px -2px rgba(0, 0, 0, 0.1);
+}
 
 /* Estilos para el Popup de Edición de Pago */
 .edit-pago-popup {
@@ -835,13 +791,13 @@
 
 .edit-pago-popup .modal-actions {
   display: flex;
-  justify-content: flex-end; /* Alinea los botones a la derecha */
-  gap: 0.5rem; /* Espacio entre botones */
+  justify-content: space-between;
+  gap: 0.5rem;
 }
 
 .edit-pago-popup button {
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.85rem;
   border-radius: 0.25rem;
   border: 1px solid transparent;
   cursor: pointer;
@@ -894,4 +850,130 @@
   background-color: #5a6268;
   border-color: #545b62;
 }
-*/ 
+*/
+
+.btn-eliminar {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.85rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+  font-weight: 500;
+}
+
+.btn-eliminar:hover {
+  background-color: #dc2626;
+}
+
+.pagos-resumen.mejorado {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 0;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(30,41,59,0.06);
+  padding: 18px 0 10px 0;
+  margin-bottom: 18px;
+}
+
+.pagos-resumen.mejorado .resumen-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 120px;
+  padding: 0 8px;
+}
+
+.pagos-resumen.mejorado .resumen-label-small {
+  font-size: 0.98rem;
+  color: #334155;
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.pagos-resumen.mejorado .resumen-num-grande {
+  font-size: 2.1rem;
+  font-weight: 800;
+  margin-top: 2px;
+  letter-spacing: -1px;
+}
+
+.pagos-resumen.mejorado .resumen-separador {
+  width: 1px;
+  background: #e5e7eb;
+  margin: 0 8px;
+  border-radius: 2px;
+}
+
+.pagos-resumen.mejorado .resumen-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 8px 0 2px 0;
+}
+
+.pagos-resumen.mejorado .resumen-icon-green svg {
+  color: #22c55e;
+}
+
+.pagos-resumen.mejorado .resumen-icon-success svg {
+  color: #2563eb;
+}
+
+.pagos-resumen.mejorado .resumen-icon-danger svg {
+  color: #ef4444;
+}
+
+.pagos-resumen.mejorado .resumen-num-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+}
+
+@media (max-width: 700px) {
+  .pagos-resumen.mejorado {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 10px 0 0 0;
+    gap: 0;
+  }
+  .pagos-resumen.mejorado .resumen-item {
+    align-items: center;
+    text-align: center;
+    min-width: 0;
+    padding: 12px 0 8px 0;
+    border-radius: 0;
+  }
+  .pagos-resumen.mejorado .resumen-num-row {
+    justify-content: center;
+    gap: 10px;
+    font-size: 1.2rem;
+  }
+  .pagos-resumen.mejorado .resumen-icon {
+    margin: 6px 0 2px 0;
+  }
+  .pagos-resumen.mejorado .resumen-num-grande {
+    font-size: 1.6rem;
+  }
+  .pagos-resumen.mejorado .resumen-icon svg {
+    font-size: 2rem !important;
+    width: 2rem !important;
+    height: 2rem !important;
+  }
+  .pagos-resumen.mejorado .resumen-separador {
+    width: 100%;
+    height: 1px;
+    background: #e5e7eb;
+    margin: 0 0 0 0;
+    border-radius: 2px;
+    display: block;
+  }
+} 

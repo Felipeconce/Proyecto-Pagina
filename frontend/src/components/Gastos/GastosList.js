@@ -137,68 +137,24 @@ const GastosList = forwardRef(({ user }, ref) => {
           <button onClick={reloadGastos} className="btn-principal" style={{marginBottom:12}}>
             <i className="fa fa-refresh"></i> Actualizar listado
           </button>
-          <table className="table-modern">
+          <table className="table-modern gastos-table">
             <thead>
               <tr>
-                {/* <th>ID</th> */}
-                {/* <th>Curso</th> */}
-                <th>Descripción</th>
-                <th>Monto</th>
-                <th>Fecha</th>
-                {user && user.rol_id === 3 && <th>Acciones</th>}
+                <th className="text-left">Descripción</th>
+                <th className="text-center">Monto</th>
+                <th className="text-center">Fecha</th>
+                {user && user.rol_id === 3 && <th className="text-center">Acciones</th>}
               </tr>
             </thead>
             <tbody>
               {gastos.map(gasto => (
                 <tr key={gasto.id}>
-                  {/* <td>{gasto.id}</td> */}
-                  {/* <td>{gasto.curso}</td> */}
-                  <td>
-                    {editId === gasto.id ? (
-                      <input
-                        type="text"
-                        value={editDescripcion}
-                        onChange={e => setEditDescripcion(e.target.value)}
-                        className={styles.input}
-                      />
-                    ) : (
-                      gasto.descripcion
-                    )}
-                  </td>
-                  <td>
-                    {editId === gasto.id ? (
-                      <input
-                        type="number"
-                        value={editMonto}
-                        onChange={e => setEditMonto(e.target.value)}
-                        className={styles.input}
-                      />
-                    ) : (
-                      new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(gasto.monto)
-                    )}
-                  </td>
-                  <td>
-                    {editId === gasto.id ? (
-                      <input
-                        type="date"
-                        value={editFecha}
-                        onChange={e => setEditFecha(e.target.value)}
-                        className={styles.input}
-                      />
-                    ) : (
-                      new Date(gasto.fecha).toLocaleDateString('es-CL', {day: '2-digit', month: '2-digit', year: 'numeric'}).replace(/\//g, '-')
-                    )}
-                  </td>
+                  <td className="text-left">{gasto.descripcion}</td>
+                  <td className="text-center">${Number(gasto.monto).toLocaleString('es-CL')}</td>
+                  <td className="text-center">{new Date(gasto.fecha).toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit', year: 'numeric' })}</td>
                   {user && user.rol_id === 3 && (
-                    <td>
-                      {editId === gasto.id ? (
-                        <>
-                          <button onClick={saveEdit} className={styles.btnTable}>Guardar</button>
-                          <button onClick={cancelEdit} className={styles.btnTable}>Cancelar</button>
-                        </>
-                      ) : (
-                        <button onClick={() => startEdit(gasto)} className={styles.btnTable}>Editar</button>
-                      )}
+                    <td className="text-center">
+                      <button onClick={() => startEdit(gasto)} className="btnTable">Editar</button>
                     </td>
                   )}
                 </tr>

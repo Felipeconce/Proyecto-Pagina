@@ -28,7 +28,6 @@ const PagosTable = ({ alumnos, conceptos, pagos, user, onCellClick, atrasadosMap
   
   // Formatear montos
   const formatearMonto = (monto) => {
-    console.log('[PagosTable] formatearMonto recibiendo:', monto);
     if (!monto) return '—';
     const montoNumero = Number(monto);
     if (isNaN(montoNumero)) return '—';
@@ -96,6 +95,12 @@ const PagosTable = ({ alumnos, conceptos, pagos, user, onCellClick, atrasadosMap
     );
   }
   
+  const handleDeletePago = (alumnoId, conceptoId) => {
+    // Lógica para eliminar el pago
+    console.log(`Eliminar pago para Alumno: ${alumnoId}, Concepto: ${conceptoId}`);
+    // Aquí puedes añadir la lógica para eliminar el pago del estado o hacer una llamada a la API
+  };
+
   return (
     <div className="table-container">
       <div className="tabla-scroll-main">
@@ -105,7 +110,6 @@ const PagosTable = ({ alumnos, conceptos, pagos, user, onCellClick, atrasadosMap
               <th className="sticky-col">
                 ALUMNO
               </th>
-              
               {conceptosOrdenados.map(concepto => (
                 <th key={concepto.id} className="concepto-col">
                   {(concepto.nombre || '').slice(0, 3)}
@@ -113,14 +117,12 @@ const PagosTable = ({ alumnos, conceptos, pagos, user, onCellClick, atrasadosMap
               ))}
             </tr>
           </thead>
-          
           <tbody>
             {alumnos.map(alumno => (
               <tr key={alumno.id}>
                 <td className="sticky-col">
                   {alumno.nombre || 'Sin nombre'}
                 </td>
-                
                 {conceptosOrdenados.map(concepto => {
                   const cellClass = getCellClass(alumno.id, concepto.id);
                   return (

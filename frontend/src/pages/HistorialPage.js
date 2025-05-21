@@ -67,32 +67,30 @@ export default function HistorialPage({ user }) {
         ) : logs.length === 0 ? (
           <div className="loading-text">No hay registros de historial para tu curso/colegio.</div>
         ) : (
-          <div className="table-container">
-            <table className="table-modern">
-              <thead>
-                <tr>
-                  <th>Fecha</th>
-                  <th>Usuario</th>
-                  <th>Rol</th>
-                  <th>Acción</th>
-                  <th>Entidad</th>
-                  <th>Detalle</th>
+          <table className="table-modern text-sm historial-table">
+            <thead>
+              <tr>
+                <th className="text-center">Fecha</th>
+                <th className="text-center">Usuario</th>
+                <th className="text-center">Rol</th>
+                <th className="text-center">Acción</th>
+                <th className="text-center">Entidad</th>
+                <th className="text-center">Detalle</th>
+              </tr>
+            </thead>
+            <tbody>
+              {logs.map(log => (
+                <tr key={log.id}>
+                  <td>{new Date(log.fecha).toLocaleString('es-CL', { dateStyle: 'short', timeStyle: 'short' })}</td>
+                  <td>{log.usuario_nombre}</td>
+                  <td>{rolNombre(log.rol_id)}</td>
+                  <td>{log.accion}</td>
+                  <td>{log.entidad}</td>
+                  <td>{log.detalle}</td>
                 </tr>
-              </thead>
-              <tbody>
-                {logs.map(log => (
-                  <tr key={log.id}>
-                    <td>{new Date(log.fecha).toLocaleString('es-CL', { dateStyle: 'short', timeStyle: 'short' })}</td>
-                    <td>{log.usuario_nombre}</td>
-                    <td>{rolNombre(log.rol_id)}</td>
-                    <td>{log.accion}</td>
-                    <td>{log.entidad}</td>
-                    <td>{log.detalle}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         )}
       </div>
     </section>

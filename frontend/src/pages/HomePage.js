@@ -195,7 +195,7 @@ export default function HomePage() {
           <Megaphone size={26} className="mr-2.5 mb-1 sm:mb-0 flex-shrink-0 text-yellow-400 drop-shadow-[0_0_3px_rgba(250,204,21,0.5)]" />
           <span>UN SOLO PAGO ANUAL POR CURSO.</span>
           <span className="hidden sm:inline mx-1.5">•</span>
-          <span className="mt-1 sm:mt-0">ACCESO GRATUITO PARA TODOS LOS APODERADOS.</span>
+          <span className="mt-1 sm:mt-0 text-yellow-500">ACCESO GRATUITO PARA TODOS LOS APODERADOS.</span>
         </p>
       </div>
 
@@ -204,7 +204,7 @@ export default function HomePage() {
       {/* --- SECCIÓN HÉROE (ahora como <section>) --- */}
       <section 
         id="hero"
-        className="relative text-white py-6 md:py-10 lg:py-12 overflow-hidden"
+        className="relative text-white pt-4 md:pt-8 lg:pt-10 pb-0 overflow-hidden"
       >
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-2xl mx-auto text-center">
@@ -221,7 +221,7 @@ export default function HomePage() {
             </h1>
             
             {/* Subtítulo como lista de puntos destacados */}
-            <div className="max-w-xl lg:max-w-2xl mx-auto text-indigo-100 font-light mb-6 md:mb-8 space-y-3">
+            <div className="max-w-xl lg:max-w-2xl mx-auto text-indigo-100 font-light mb-0 space-y-3">
               <div className="flex items-start">
                 <CheckCircle2 size={28} className="text-green-400 mr-3 flex-shrink-0" />
                 <p className="text-base sm:text-lg md:text-xl leading-relaxed">
@@ -249,9 +249,9 @@ export default function HomePage() {
             </div>
 
             {/* Contenedor para Botón CTA y Estadísticas */}
-            <div className="mt-6 md:mt-8 flex flex-col sm:flex-row items-center justify-center sm:justify-center gap-4 sm:gap-8 w-full">
+            <div className="mt-4 md:mt-6 flex flex-col sm:flex-row items-center justify-center sm:justify-center gap-4 sm:gap-8 w-full mb-4 md:mb-6">
               {/* Sección de Estadísticas (Centrada si el botón se elimina) */}
-              <div className="flex items-center space-x-2 text-center sm:text-left order-2 sm:order-none">
+              <div className="flex items-center space-x-2 text-center sm:text-left order-2 sm:order-none mb-0">
                 <Users2 size={40} className="text-indigo-100 flex-shrink-0" />
                 <div className="text-center sm:text-left">
                   <p className="text-xl md:text-2xl font-bold text-white tracking-tight">
@@ -272,15 +272,15 @@ export default function HomePage() {
         </div>
       </section>
 
-      <main id="main-content" className="flex-grow container mx-auto px-4 py-4 md:py-6">
+      <main id="main-content" className="flex-grow container mx-auto px-4 pt-0 pb-2 md:pb-4">
         <div className="max-w-4xl mx-auto">
 
           {/* --- NUEVA SECCIÓN DE CARACTERÍSTICAS (6 TARJETAS) --- */}
-          <section id="features" className="mb-4 md:mb-6">
-            <h2 className="text-xl sm:text-2xl lg:text-[1.6rem] font-semibold text-center text-white mb-4 md:mb-5">
+          <section id="features" className="mb-4 md:mb-6 pt-0">
+            <h2 className="text-xl sm:text-2xl lg:text-[1.6rem] font-semibold text-center text-white mt-0 mb-4 md:mb-5">
               Todo lo que necesitas para gestionar tu curso, desde un solo panel
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 mt-2 md:mt-3">
               {featuresData.map((feature, index) => (
                 <RefinedFeatureCard 
                   key={index} 
@@ -297,14 +297,14 @@ export default function HomePage() {
           </section>
 
           {/* --- NUEVA SECCIÓN DE CONFIANZA / VALOR AGREGADO --- */}
-          <section id="value-prop" className="mb-4 md:mb-6 py-8 md:py-12 bg-white rounded-lg">
-            <div className="max-w-5xl mx-auto px-6 md:px-8 md:flex md:items-center md:gap-10 lg:gap-16">
+          <section id="value-prop" className="mb-2 md:mb-4 py-6 md:py-10 bg-white rounded-lg">
+            <div className="max-w-5xl mx-auto px-6 md:px-8 md:flex md:items-center md:gap-8 lg:gap-12">
               {/* Columna de Imagen (izquierda en md y superior) */}
               <div className="md:w-1/2 mb-6 md:mb-0">
                 <img 
                   src="https://images.unsplash.com/photo-1586473219010-2ffc57b0d282?q=80&w=1364&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
                   alt="Gestión de curso organizada y tranquila" 
-                  className="rounded-lg shadow-xl w-full h-auto object-cover max-h-[400px]"
+                  className="rounded-lg shadow-xl w-full h-auto object-cover max-h-[350px]"
                 />
               </div>
               {/* Columna de Texto y Botón (derecha en md y superior) */}
@@ -313,10 +313,10 @@ export default function HomePage() {
                   <Sparkles className="text-yellow-500 mr-2" size={20} />
                   <p className="text-sm font-semibold text-yellow-600">Gestión Inteligente</p>
                 </div>
-                <h2 className="text-2xl sm:text-3xl lg:text-[2.2rem] font-bold text-[var(--color-text)] mb-4 leading-tight">
+                <h2 className="text-2xl sm:text-3xl lg:text-[2.2rem] font-bold text-[var(--color-text)] mb-3 leading-tight">
                   Más tranquilidad, menos estrés
                 </h2>
-                <p className="text-base sm:text-lg text-[var(--color-text-secondary)] mb-6 leading-relaxed">
+                <p className="text-base sm:text-lg text-[var(--color-text-secondary)] mb-5 leading-relaxed">
                   Gestión Curso nace para ayudarte a organizar tu curso con total claridad. Olvídate de las planillas difíciles de manejar, los mensajes cruzados y la información perdida.
                 </p>
                 <Link
@@ -383,12 +383,12 @@ export default function HomePage() {
           </section>
 
           {/* --- NUEVA LLAMADA A LA ACCIÓN FINAL --- */}
-          <section id="final-cta" className="py-6 md:py-8 text-center bg-white rounded-lg">
+          <section id="final-cta" className="py-4 md:py-6 text-center bg-white rounded-lg mb-4 md:mb-6">
             <div className="max-w-2xl mx-auto px-4">
               <h2 className="text-xl sm:text-2xl lg:text-[1.6rem] font-bold text-[var(--color-text)] mb-2">
                 ¿Quieres ver cómo funciona Gestión Curso?
               </h2>
-              <p className="text-sm sm:text-base text-[var(--color-text-secondary)] mb-4">
+              <p className="text-sm sm:text-base text-[var(--color-text-secondary)] mb-3">
                 Conoce la plataforma en funcionamiento y descubre cómo puedes ordenar la gestión de tu curso sin complicaciones.
               </p>
               <Link

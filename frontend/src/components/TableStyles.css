@@ -203,4 +203,32 @@
   .table-filters {
     flex-direction: column;
   }
+}
+
+.historial-table th {
+  text-align: center !important;
+}
+
+.documentos-table th {
+  text-align: center !important;
+}
+
+.documentos-table td {
+  text-align: left !important;
+}
+
+.gastos-table th {
+  text-align: center !important;
+}
+
+.gastos-table th.text-left {
+  text-align: left !important;
+}
+
+.gastos-table td {
+  text-align: center !important;
+}
+
+.gastos-table td.text-left {
+  text-align: left !important;
 } 

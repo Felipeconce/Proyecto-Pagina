@@ -354,6 +354,43 @@ export default function PagosList({ user, refresh, onPagosChange, isPagoAtrasado
     }
   };
 
+  // Nueva función para eliminar el pago
+  const handleCellDelete = async () => {
+    const { alumnoId, conceptoId } = editCell;
+    if (!alumnoId || !conceptoId) return;
+    const pagoExistente = pagos.find(p => p.usuario_id === alumnoId && p.concepto_id === conceptoId);
+    if (!pagoExistente) {
+      toast.showToast('No hay pago para eliminar', 'error');
+      setEditCell({ ...editCell, visible: false });
+      setEditMonto('');
+      if (onPagosChange) onPagosChange();
+      return;
+    }
+    if (!window.confirm('¿Seguro que deseas eliminar este pago?')) return;
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast.showToast('No estás autenticado', 'error');
+        return;
+      }
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/pagos/${pagoExistente.id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        toast.showToast('Pago eliminado correctamente', 'success');
+      } else {
+        toast.showToast('Error al eliminar el pago', 'error');
+      }
+    } catch (err) {
+      console.error('Error al eliminar el pago:', err);
+      toast.showToast('Error de conexión o respuesta inesperada', 'error');
+    }
+    setEditCell({ ...editCell, visible: false });
+    setEditMonto('');
+    if (onPagosChange) onPagosChange();
+  };
+
   // Estados de carga y error
   if (loading) {
     return (
@@ -432,11 +469,8 @@ export default function PagosList({ user, refresh, onPagosChange, isPagoAtrasado
         <div
           className="edit-pago-popup"
           style={{
-            top: `${editCell.top + editCell.cellHeight + 2}px`, // Debajo de la celda + 2px de offset
-            left: `${editCell.left}px`, // Alinear con el borde izquierdo de la celda
-            // minWidth: `${editCell.cellWidth}px`, // Comentamos esto temporalmente para ver el ancho natural del popup
-            // Si el popup tiene un ancho más o menos fijo, podrías establecerlo aquí
-            // width: '250px', // Ejemplo de ancho fijo
+            top: `${editCell.top + editCell.cellHeight + 2}px`,
+            left: `${editCell.left}px`,
           }}
         >
           <h3>Editar Pago</h3>
@@ -453,6 +487,7 @@ export default function PagosList({ user, refresh, onPagosChange, isPagoAtrasado
             <button 
               className="btn-guardar"
               onClick={handleCellSave}
+              disabled={!editMonto || Number(editMonto) <= 0}
             >
               Guardar
             </button>
@@ -461,6 +496,12 @@ export default function PagosList({ user, refresh, onPagosChange, isPagoAtrasado
               onClick={handleCellCancel}
             >
               Cancelar
+            </button>
+            <button
+              className="btn-eliminar"
+              onClick={handleCellDelete}
+            >
+              Eliminar
             </button>
           </div>
         </div>

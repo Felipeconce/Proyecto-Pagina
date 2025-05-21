@@ -307,12 +307,15 @@ export default function Dashboard({ user }) {
             </div>
           </div>
           <Link to="/pagos" className={styles.tarjeta + ' ' + styles.tarjetaPagos} style={{ textDecoration: 'none' }}>
-            <Wallet className={styles.tarjetaIcon + " bg-teal-100 text-teal-600"} size={45} />
+            <FaCheckCircle className={styles.tarjetaIcon + " bg-teal-100 text-teal-600"} size={45} />
             <div>
               <div className={styles.tarjetaTitulo}>Pagos</div>
-              <div className={styles.tarjetaDesc}>
-                {pagosData.pagosPendientes} pendiente{pagosData.pagosPendientes === 1 ? '' : 's'} | {pagosData.pagosAtrasados} atrasado{pagosData.pagosAtrasados === 1 ? '' : 's'}
-              </div>
+              <div className={styles.tarjetaNumeroGrande}>{pagosData.pagosCompletados}</div>
+              {pagosData.pagosAtrasados > 0 && (
+                <div className={styles.tarjetaBadgeAtrasados}>
+                  <FaExclamationTriangle style={{marginRight: 4}} /> {pagosData.pagosAtrasados} atrasado{pagosData.pagosAtrasados === 1 ? '' : 's'}
+                </div>
+              )}
             </div>
           </Link>
           <Link to="/gastos" className={styles.tarjeta + ' ' + styles.tarjetaGastos} style={{ textDecoration: 'none' }}>
