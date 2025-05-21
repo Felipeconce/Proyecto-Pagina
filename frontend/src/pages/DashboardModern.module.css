@@ -156,6 +156,7 @@
   font-weight: 700;
   color: var(--color-text);
   margin-bottom: 2px;
+  text-align: center;
 }
 .tarjetaDesc {
   font-size: 1rem;
@@ -165,6 +166,13 @@
   font-size: 2.2rem;
   font-weight: 800;
   color: #22c55e;
+  margin: 8px 0 0 0;
+  text-align: center;
+}
+.tarjetaNumeroGrandeNegativo {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #ef4444;
   margin: 8px 0 0 0;
   text-align: center;
 }
@@ -180,6 +188,13 @@
   margin-top: 6px;
   margin-bottom: 2px;
   text-align: center;
+}
+.tarjetaDescSmall {
+  font-size: 1rem;
+  color: #64748b;
+  margin-top: 2px;
+  text-align: center;
+  font-weight: 500;
 }
 @media (max-width: 600px) {
   .dashboardHeader {
@@ -228,4 +243,13 @@
 
 .dashboardBanner {
   animation: fadeInUp 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.tarjetaContenido {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
 } 

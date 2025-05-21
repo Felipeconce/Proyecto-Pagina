@@ -280,11 +280,19 @@ export default function Dashboard({ user }) {
   const nuevosDocumentos = 1;
   const notificacion = 'Reunión de apoderados el lunes 6';
 
+  // Obtener el próximo evento del calendario
+  const proximoEvento = fechasData.proximasFechas && fechasData.proximasFechas.length > 0
+    ? fechasData.proximasFechas[0]
+    : null;
+  const textoProximoEvento = proximoEvento
+    ? `Próximo evento: ${proximoEvento.descripcion || 'Sin descripción'} el ${new Date(proximoEvento.fecha).toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit', year: 'numeric' })}`
+    : 'Sin eventos próximos';
+
   return (
     <>
       <div className={styles.bannerNotificacion}>
         <Calendar className={styles.bannerIcon + " text-indigo-600"} />
-        <span>{notificacion}</span>
+        <span>{textoProximoEvento}</span>
       </div>
       <div className={styles.dashboardContent}>
         <div className={styles.saludoSection}>
@@ -298,17 +306,22 @@ export default function Dashboard({ user }) {
         </div>
         <div className={styles.tarjetasGrid}>
           <div className={styles.tarjeta + ' ' + styles.tarjetaResumen}>
-            <CheckCircle className={styles.tarjetaIcon + " bg-green-100 text-green-600"} size={45} />
-            <div>
-              <div className={styles.tarjetaTitulo}>Resumen</div>
-              <div className={styles.tarjetaDesc}>
-                Saldo: {saldoData.saldo.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })} {saldoData.esPositivo ? '✔️' : '❗'}
+            <FaCheckCircle className={styles.tarjetaIcon + " bg-green-100 text-green-600"} size={45} />
+            <div className={styles.tarjetaContenido}>
+              <div className={styles.tarjetaTitulo}>Saldo</div>
+              <div className={saldoData.esPositivo ? styles.tarjetaNumeroGrande : styles.tarjetaNumeroGrandeNegativo}>
+                {saldoData.saldo.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}
               </div>
+              {!saldoData.esPositivo && (
+                <div className={styles.tarjetaBadgeAtrasados}>
+                  <FaExclamationTriangle style={{marginRight: 4}} /> Saldo negativo
+                </div>
+              )}
             </div>
           </div>
           <Link to="/pagos" className={styles.tarjeta + ' ' + styles.tarjetaPagos} style={{ textDecoration: 'none' }}>
             <FaCheckCircle className={styles.tarjetaIcon + " bg-teal-100 text-teal-600"} size={45} />
-            <div>
+            <div className={styles.tarjetaContenido}>
               <div className={styles.tarjetaTitulo}>Pagos</div>
               <div className={styles.tarjetaNumeroGrande}>{pagosData.pagosCompletados}</div>
               {pagosData.pagosAtrasados > 0 && (
@@ -320,34 +333,31 @@ export default function Dashboard({ user }) {
           </Link>
           <Link to="/gastos" className={styles.tarjeta + ' ' + styles.tarjetaGastos} style={{ textDecoration: 'none' }}>
             <FileStack className={styles.tarjetaIcon + " bg-orange-100 text-orange-600"} size={45} />
-            <div>
+            <div className={styles.tarjetaContenido}>
               <div className={styles.tarjetaTitulo}>Gastos</div>
-              <div className={styles.tarjetaDesc}>
-                {gastosData.cantidadGastos} gasto{gastosData.cantidadGastos === 1 ? '' : 's'} | Total: {gastosData.totalGastos.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}
-              </div>
+              <div className={styles.tarjetaNumeroGrande}>{gastosData.cantidadGastos}</div>
+              <div className={styles.tarjetaDescSmall}>Total: {gastosData.totalGastos.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}</div>
             </div>
           </Link>
           <Link to="/fechas" className={styles.tarjeta + ' ' + styles.tarjetaCalendario} style={{ textDecoration: 'none' }}>
             <Calendar className={styles.tarjetaIcon + " bg-indigo-100 text-indigo-600"} size={45} />
-            <div>
+            <div className={styles.tarjetaContenido}>
               <div className={styles.tarjetaTitulo}>Calendario</div>
-              <div className={styles.tarjetaDesc}>
-                Próximos eventos: {fechasData.proximasFechas.length}
-              </div>
+              <div className={styles.tarjetaNumeroGrande}>{fechasData.proximasFechas.length}</div>
+              <div className={styles.tarjetaDescSmall}>Próximos eventos</div>
             </div>
           </Link>
           <Link to="/documentos" className={styles.tarjeta + ' ' + styles.tarjetaDocumentos} style={{ textDecoration: 'none' }}>
             <FileText className={styles.tarjetaIcon + " bg-indigo-100 text-indigo-600"} size={45} />
-            <div>
+            <div className={styles.tarjetaContenido}>
               <div className={styles.tarjetaTitulo}>Documentos</div>
-              <div className={styles.tarjetaDesc}>
-                {documentosData.totalDocumentos} documento{documentosData.totalDocumentos === 1 ? '' : 's'}
-              </div>
+              <div className={styles.tarjetaNumeroGrande}>{documentosData.totalDocumentos}</div>
+              <div className={styles.tarjetaDescSmall}>documentos</div>
             </div>
           </Link>
           <Link to="/comunicaciones" className={styles.tarjeta + ' ' + styles.tarjetaComunicaciones} style={{ textDecoration: 'none' }}>
             <MessageCircle className={styles.tarjetaIcon + " bg-indigo-100 text-indigo-600"} size={45} />
-            <div>
+            <div className={styles.tarjetaContenido}>
               <div className={styles.tarjetaTitulo}>Comunicaciones</div>
               <div className={styles.tarjetaDesc}>Ver mensajes</div>
             </div>
