@@ -306,7 +306,7 @@ export default function Dashboard({ user }) {
         </div>
         <div className={styles.tarjetasGrid}>
           <div className={styles.tarjeta + ' ' + styles.tarjetaResumen}>
-            <FaCheckCircle className={styles.tarjetaIcon + " bg-green-100 text-green-600"} size={45} />
+            <FaCheckCircle className={styles.tarjetaIcon + " bg-teal-500 text-white"} size={45} />
             <div className={styles.tarjetaContenido}>
               <div className={styles.tarjetaTitulo}>Saldo</div>
               <div className={saldoData.esPositivo ? styles.tarjetaNumeroGrande : styles.tarjetaNumeroGrandeNegativo}>
@@ -320,27 +320,25 @@ export default function Dashboard({ user }) {
             </div>
           </div>
           <Link to="/pagos" className={styles.tarjeta + ' ' + styles.tarjetaPagos} style={{ textDecoration: 'none' }}>
-            <FaCheckCircle className={styles.tarjetaIcon + " bg-teal-100 text-teal-600"} size={45} />
+            <FaCheckCircle className={styles.tarjetaIcon + " bg-blue-600 text-white"} size={45} />
             <div className={styles.tarjetaContenido}>
               <div className={styles.tarjetaTitulo}>Pagos</div>
-              <div className={styles.tarjetaNumeroGrande}>{pagosData.pagosCompletados}</div>
-              {pagosData.pagosAtrasados > 0 && (
-                <div className={styles.tarjetaBadgeAtrasados}>
-                  <FaExclamationTriangle style={{marginRight: 4}} /> {pagosData.pagosAtrasados} atrasado{pagosData.pagosAtrasados === 1 ? '' : 's'}
-                </div>
-              )}
+              <div className={styles.tarjetaNumeroGrande}>
+                {pagosData.totalPagado.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}
+              </div>
             </div>
           </Link>
           <Link to="/gastos" className={styles.tarjeta + ' ' + styles.tarjetaGastos} style={{ textDecoration: 'none' }}>
-            <FileStack className={styles.tarjetaIcon + " bg-orange-100 text-orange-600"} size={45} />
+            <FileStack className={styles.tarjetaIcon + " bg-yellow-500 text-white"} size={45} />
             <div className={styles.tarjetaContenido}>
               <div className={styles.tarjetaTitulo}>Gastos</div>
-              <div className={styles.tarjetaNumeroGrande}>{gastosData.cantidadGastos}</div>
-              <div className={styles.tarjetaDescSmall}>Total: {gastosData.totalGastos.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}</div>
+              <div className={styles.tarjetaNumeroGrande}>
+                {gastosData.totalGastos.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}
+              </div>
             </div>
           </Link>
           <Link to="/fechas" className={styles.tarjeta + ' ' + styles.tarjetaCalendario} style={{ textDecoration: 'none' }}>
-            <Calendar className={styles.tarjetaIcon + " bg-indigo-100 text-indigo-600"} size={45} />
+            <Calendar className={styles.tarjetaIcon + " bg-purple-600 text-white"} size={45} />
             <div className={styles.tarjetaContenido}>
               <div className={styles.tarjetaTitulo}>Calendario</div>
               <div className={styles.tarjetaNumeroGrande}>{fechasData.proximasFechas.length}</div>
@@ -348,7 +346,7 @@ export default function Dashboard({ user }) {
             </div>
           </Link>
           <Link to="/documentos" className={styles.tarjeta + ' ' + styles.tarjetaDocumentos} style={{ textDecoration: 'none' }}>
-            <FileText className={styles.tarjetaIcon + " bg-indigo-100 text-indigo-600"} size={45} />
+            <FileText className={styles.tarjetaIcon + " bg-green-600 text-white"} size={45} />
             <div className={styles.tarjetaContenido}>
               <div className={styles.tarjetaTitulo}>Documentos</div>
               <div className={styles.tarjetaNumeroGrande}>{documentosData.totalDocumentos}</div>
@@ -356,7 +354,7 @@ export default function Dashboard({ user }) {
             </div>
           </Link>
           <Link to="/comunicaciones" className={styles.tarjeta + ' ' + styles.tarjetaComunicaciones} style={{ textDecoration: 'none' }}>
-            <MessageCircle className={styles.tarjetaIcon + " bg-indigo-100 text-indigo-600"} size={45} />
+            <MessageCircle className={styles.tarjetaIcon + " bg-red-500 text-white"} size={45} />
             <div className={styles.tarjetaContenido}>
               <div className={styles.tarjetaTitulo}>Comunicaciones</div>
               <div className={styles.tarjetaDesc}>Ver mensajes</div>

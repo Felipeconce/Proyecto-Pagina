@@ -18,8 +18,8 @@ export default function FechasForm({ user }) {
         return;
       }
       
-      if (!user) {
-        showToast('Datos de usuario no disponibles', 'error');
+      if (!user || ![1, 2, 5].includes(user.rol_id)) {
+        showToast('No tienes permiso para agregar fechas', 'error');
         return;
       }
       
@@ -54,6 +54,8 @@ export default function FechasForm({ user }) {
 
   // Si quieres restringir quién puede agregar fechas, usa algo como:
   // if (user.rol_id !== 1 && user.rol_id !== 2) return null;
+
+  if (!user || ![1, 2, 5].includes(user.rol_id)) return null;
 
   return (
     <form onSubmit={handleSubmit} className="fechas-form">
@@ -90,7 +92,7 @@ export default function FechasForm({ user }) {
         </div>
         
         <div className="form-group button-group">
-          <button type="submit" className="btn-principal">
+          <button type="submit" className="btn btn-primary">
             <FaPlus /> Agregar
           </button>
         </div>

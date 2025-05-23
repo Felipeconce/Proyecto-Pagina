@@ -28,7 +28,8 @@ INSERT INTO roles (id, nombre) VALUES
 (1, 'Superusuario'),
 (2, 'Presidente'),
 (3, 'Tesorero'),
-(4, 'Apoderado')
+(4, 'Apoderado'),
+(5, 'Secretario')
 ON CONFLICT (id) DO NOTHING;
 
 -- Tabla de usuarios

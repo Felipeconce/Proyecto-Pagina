@@ -70,8 +70,8 @@ const RefinedFeatureCard = ({ icon, title, children, delay = 0, iconStyle = {}, 
   return (
     <div
       ref={cardRef}
-      className={`bg-white rounded-xl shadow-lg hover:shadow-2xl flex flex-col h-full overflow-hidden
-                  opacity-0 transition-all duration-500 ease-out transform hover:-translate-y-1.5 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'}`}
+      className={`bg-white rounded-xl shadow-lg /* hover:shadow-2xl */ flex flex-col h-full overflow-hidden
+                  opacity-0 transition-all duration-500 ease-out transform /* hover:-translate-y-1.5 */ ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'}`}
       style={{ transitionDelay: `${isVisible ? delay : 0}ms` }}
     >
       <div className="relative">
@@ -82,8 +82,8 @@ const RefinedFeatureCard = ({ icon, title, children, delay = 0, iconStyle = {}, 
       </div>
       
       <div className="p-5 pt-8 flex-grow flex flex-col"> {/* Más padding-top para espacio del icono */} 
-        <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-2 leading-tight">{title}</h3>
-        <p className="text-sm text-gray-600 leading-relaxed flex-grow">{children}</p> 
+        <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-2 leading-tight hover:text-blue-700">{title}</h3>
+        <p className="text-sm text-gray-600 leading-relaxed flex-grow hover:text-blue-700">{children}</p> 
       </div>
     </div>
   );
@@ -321,7 +321,7 @@ export default function HomePage() {
                 </p>
                 <Link
                   to="/login#features" // Enlace temporal, considerar si dirigir a #features es mejor que /login
-                  className="inline-flex items-center justify-center bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 text-base md:text-lg transform hover:scale-105"
+                  className="inline-flex items-center justify-center bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white hover:text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 text-base md:text-lg transform hover:scale-105"
                 >
                   Explora las Ventajas
                   <ArrowRight size={20} className="ml-2" />
@@ -393,7 +393,7 @@ export default function HomePage() {
               </p>
               <Link
                 to="/login"
-                className="bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white font-semibold py-2 px-5 rounded-md shadow-md hover:shadow-lg transition duration-200 text-base md:text-lg transform hover:scale-105 inline-flex items-center justify-center"
+                className="bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white hover:text-white font-semibold py-2 px-5 rounded-md shadow-md hover:shadow-lg transition duration-200 text-base md:text-lg transform hover:scale-105 inline-flex items-center justify-center"
               >
                 <Play size={18} className="mr-1.5" /> 
                 Mira la demo en video

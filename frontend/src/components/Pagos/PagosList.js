@@ -408,7 +408,7 @@ export default function PagosList({ user, refresh, onPagosChange, isPagoAtrasado
         <p>{error}</p>
         <button 
           onClick={() => window.location.reload()}
-          className="btn-retry"
+          className="btn btn-secondary"
         >
           Intentar nuevamente
         </button>
@@ -485,20 +485,20 @@ export default function PagosList({ user, refresh, onPagosChange, isPagoAtrasado
           />
           <div className="modal-actions">
             <button 
-              className="btn-guardar"
+              className="btn btn-primary btn-small"
               onClick={handleCellSave}
               disabled={!editMonto || Number(editMonto) <= 0}
             >
               Guardar
             </button>
             <button 
-              className="btn-cancelar"
+              className="btn btn-secondary btn-small"
               onClick={handleCellCancel}
             >
               Cancelar
             </button>
             <button
-              className="btn-eliminar"
+              className="btn btn-danger btn-small"
               onClick={handleCellDelete}
             >
               Eliminar

@@ -1,4 +1,10 @@
 /* style.css */
+:root {
+    --color-primary: #007BFF;
+    --color-primary-hover: #0056b3;
+    --color-text: white;
+}
+
 body {
     background-color: #f0f0f0;
     font-family: Arial, sans-serif;
@@ -6,4 +12,39 @@ body {
 
 h1 {
     color: #3366cc;
+}
+
+button, .btn {
+    background-color: var(--color-primary);
+    color: var(--color-text);
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover, .btn:hover {
+    background-color: var(--color-primary-hover);
+    color: var(--color-text);
+    transform: translateY(-2px);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(51, 102, 204, 0.5);
 }

@@ -3,7 +3,7 @@
   flex-wrap: wrap;
   gap: 16px;
   margin-bottom: 0;
-  align-items: flex-end;
+  align-items: center;
 }
 
 .formGroupNombre,
@@ -12,7 +12,7 @@
 .formGroupBoton {
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: center;
 }
 
 .formGroupNombre {
@@ -71,14 +71,13 @@
 
 .input,
 select {
-  padding: 10px 14px;
+  padding: 12px 14px;
   border: 1px solid #d1d5db;
   border-radius: 8px;
   font-size: 1rem;
   background: #f8fafc;
   transition: border 0.2s;
   box-sizing: border-box;
-  height: 40px;
   width: 100%;
 }
 
@@ -115,8 +114,6 @@ select:focus {
   gap: 6px;
   padding-left: 1rem;
   padding-right: 1rem;
-  padding-top: 0;
-  padding-bottom: 0;
   background-color: var(--color-primary-light);
   color: var(--color-primary);
   border-radius: var(--border-radius-md);
@@ -126,7 +123,6 @@ select:focus {
   transition: all 0.2s;
   font-size: 0.9rem;
   white-space: nowrap;
-  height: 40px;
   flex-shrink: 0;
   box-sizing: border-box;
 }
@@ -157,7 +153,6 @@ select:focus {
 }
 
 .formGroupBoton button {
-  height: 40px;
   width: 100%;
   box-sizing: border-box;
 }

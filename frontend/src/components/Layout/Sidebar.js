@@ -3,6 +3,7 @@ import { useLocation, useNavigate, Link } from 'react-router-dom';
 /* import './SidebarReset.css'; */ /* ELIMINADO - Causa conflictos con !important */
 /* import styles from './Sidebar.module.css'; */ /* ELIMINADO */
 import { Home, Wallet, FileText, FileStack, Calendar, History, LogOut } from 'lucide-react';
+import { HiOutlineUserGroup } from 'react-icons/hi';
 
 // Items de navegación
 const menuItems = [
@@ -116,6 +117,11 @@ export default function Sidebar({ open, setOpen, user }) {
   // Filtrar elementos de menú según el rol del usuario
   const filteredItems = [
     ...menuItems,
+    (user && (user.rol_id === 1)) && {
+      nombre: 'Administración',
+      ruta: '/admin-usuarios',
+      icono: <HiOutlineUserGroup size={22} />,
+    },
     (user && (user.rol_id === 1 || user.rol_id === 2 || user.rol_id === 3)) && { // Verificar user
       nombre: 'Historial',
       ruta: '/historial',
@@ -171,6 +177,13 @@ export default function Sidebar({ open, setOpen, user }) {
                 </Link>
               </li>
             ))}
+            {/* Enlace para cambiar contraseña (visible para todos los usuarios autenticados) */}
+            <li className="sidebar-item">
+              <Link to="/cambiar-clave" className={`sidebar-utility-link${location.pathname === '/cambiar-clave' ? ' active' : ''}`}>
+                <span className="sidebar-icon">{/* Icono placeholder para estilos */}</span>
+                <span className="sidebarText">Cambiar Clave</span>
+              </Link>
+            </li>
           </ul>
         </nav>
       </aside>

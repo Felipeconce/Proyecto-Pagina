@@ -584,3 +584,176 @@ html.sidebar-open {
 .sidebar-modern .sidebar-item {
   width: 100%;
 }
+
+/* Styles for the modal backdrop */
+.modal {
+  position: fixed !important; /* Fixed position to cover the entire viewport */
+  top: 0;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background-color: rgba(0, 0, 0, 0.5) !important; /* Semi-transparent black background */
+  display: flex !important; /* Use flexbox to center content */
+  justify-content: center !important; /* Center horizontally */
+  align-items: center !important; /* Center vertically */
+  z-index: 1000 !important; /* Ensure it's above other content */
+}
+
+/* Styles for the modal content box */
+.modal-content {
+  background-color: white; /* White background for the content */
+  padding: 20px;
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+  z-index: 1001 !important; /* Ensure content is above the backdrop */
+  /* You might want to add max-width and overflow-y if content can be long */
+   max-width: 500px;
+   overflow-y: auto;
+}
+
+/* Styles for elements within the modal form for better spacing */
+.modal-content form div {
+  margin-bottom: 15px;
+}
+
+.modal-content label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.modal-content input[type="password"] {
+  width: 100%; /* Make inputs fill their container */
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Styles for the buttons inside the modal */
+.modal-content button {
+  padding: 8px 15px; /* Reduced vertical padding */
+  margin-right: 5px; /* Espacio entre botones */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.modal-content button[type="submit"] {
+  background-color: #007bff; /* Example primary color */
+  color: white;
+}
+
+.modal-content button[type="button"] {
+  background-color: #6c757d; /* Example secondary color */
+  color: white;
+}
+
+.modal-content button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Estilos para botones pequeños (btn-small) */
+.btn-small {
+  padding: 5px 10px; /* Ajusta el padding para reducir tamaño */
+  font-size: 0.85rem; /* Reduce el tamaño de fuente */
+  /* Asegúrate de que los estilos generales no los anulen con !important si es necesario */
+}
+
+/* Estilos para enlaces de utilidad en el sidebar (más pequeños) */
+.sidebar-utility-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* Menos espacio entre icono y texto */
+  color: var(--color-text-secondary);
+  padding: 0.5rem 1rem; /* Menos padding vertical y horizontal */
+  font-size: 0.9rem; /* Tamaño de fuente ligeramente menor */
+  text-decoration: none;
+  transition: color var(--transition-fast);
+  /* Eliminar min-height para que se ajuste al contenido */
+}
+
+.sidebar-utility-link:hover {
+  color: var(--color-text);
+  background-color: var(--color-border); /* Fondo hover */
+}
+
+.sidebar-utility-link.active {
+  color: var(--color-primary); /* Color primario para el texto activo */
+  font-weight: 600;
+  background-color: transparent; /* Sin fondo verde, solo resalta el texto */
+}
+
+/* Asegurar que el span del icono también tenga el color correcto en estado activo */
+.sidebar-utility-link.active .sidebar-icon {
+  color: var(--color-primary) !important; /* Color primario para el icono activo */
+}
+
+/* Estilos para campos de formulario angostos */
+.form-input-narrow {
+  max-width: 300px; /* Define el ancho máximo deseado */
+  width: 100%; /* Asegura que ocupe el 100% del contenedor hasta max-width */
+  box-sizing: border-box; /* Incluye padding y borde en el ancho total */
+}
+
+/* Estilos para grupos de formulario horizontales */
+.form-group-horizontal {
+  display: flex; /* Usa flexbox para alinear horizontalmente */
+  align-items: center; /* Alinea verticalmente los elementos */
+  margin-bottom: 15px; /* Espacio entre grupos de formulario */
+}
+
+.form-group-horizontal label {
+  flex-basis: 150px; /* Ancho fijo para las etiquetas */
+  margin-right: 15px; /* Espacio entre la etiqueta y el input */
+  text-align: right; /* Alinea el texto de la etiqueta a la derecha */
+}
+
+.form-group-horizontal input[type="password"],
+.form-group-horizontal .form-input-narrow {
+  flex-grow: 1; /* Permite que el input ocupe el espacio restante */
+  max-width: 300px; /* Mantén el ancho máximo si se definió */
+}
+
+/* Ajuste para la tarjeta */
+.card {
+  background-color: white; /* Fondo blanco */
+  border-radius: 8px; /* Bordes redondeados */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  padding: 20px; /* Añadir padding interno a la tarjeta */
+  border: 1px solid #e2e8f0; /* Borde sutil */
+}
+
+/* Estilos para elementos dentro de tarjetas (específicos para selectores) */
+.card .form-group {
+  margin-bottom: 15px; /* Espacio debajo de cada grupo de formulario */
+  /* Puedes añadir display: flex; align-items: center; aquí si quieres etiquetas y selectores en línea */
+}
+
+.card .form-group label {
+  display: block; /* Asegurar que la etiqueta ocupe su propia línea por defecto */
+  margin-bottom: 8px; /* Espacio debajo de la etiqueta */
+  font-weight: 500; /* Hacer la etiqueta un poco más negrita */
+  color: var(--color-text);
+  font-size: 0.95rem;
+}
+
+.card .form-group select {
+  width: 100%; /* Hacer que el selector ocupe todo el ancho disponible */
+  padding: 8px; /* Padding interno del selector */
+  border: 1px solid var(--color-border); /* Borde sutil */
+  border-radius: 4px; /* Bordes redondeados */
+  box-sizing: border-box; /* Incluir padding y borde en el ancho */
+  font-size: 0.95rem;
+  background-color: white; /* Fondo blanco */
+  cursor: pointer;
+}
+
+.card .form-group select:focus {
+  outline: none;
+  border-color: var(--color-primary); /* Resaltar al enfocar */
+  box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.2); /* Sombra suave al enfocar */
+}
+
+/* Estilos para grupos de formulario horizontales (si se usan) */
+/* ... estilos existentes ... */

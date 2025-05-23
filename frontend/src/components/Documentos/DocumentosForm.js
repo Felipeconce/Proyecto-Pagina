@@ -11,6 +11,8 @@ export default function DocumentosForm({ user }) {
   const [fileName, setFileName] = useState('');
   const { showToast } = useToast();
 
+  if (!user || ![1, 2, 3, 5].includes(user.rol_id)) return null;
+
   const handleFileChange = (e) => {
     if (e.target.files[0]) {
       setFile(e.target.files[0]);
@@ -117,7 +119,7 @@ export default function DocumentosForm({ user }) {
             required
             className={styles.hiddenFileInput}
           />
-          <label htmlFor="docFile" className={styles.fileInputLabel}>
+          <label htmlFor="docFile" className="btn btn-secondary">
             <FaUpload size={14} /> Seleccionar
           </label>
           <div className={styles.fileName}>
@@ -135,7 +137,7 @@ export default function DocumentosForm({ user }) {
       </div>
       
       <div className={styles.formGroupBoton}>
-        <button type="submit" className="btn-principal">
+        <button type="submit" className="btn btn-primary">
           <FaPlus /> Agregar
         </button>
       </div>

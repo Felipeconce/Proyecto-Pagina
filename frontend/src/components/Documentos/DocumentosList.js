@@ -113,27 +113,27 @@ export default function DocumentosList() {
             <tbody>
               {documentos.map(doc => (
                 <tr key={doc.id}>
-                  <td className="text-left" style={{ verticalAlign: 'middle' }}>
+                  <td className="text-center" style={{ verticalAlign: 'middle' }}>
                     <span style={{ display: 'inline-flex', alignItems: 'center', marginRight: '8px' }}>
                       {getFileIcon(doc.url)}
                     </span>
                     {doc.nombre}
                   </td>
-                  <td className="text-left">{doc.descripcion}</td>
-                  <td className="text-left">
+                  <td>{doc.descripcion}</td>
+                  <td className="text-center">
                     {new Date(doc.fecha_subida).toLocaleDateString('es-CL', { 
                       day: '2-digit', 
                       month: '2-digit', 
                       year: 'numeric' 
                     })}
                   </td>
-                  <td className="text-left" style={{textAlign: 'left'}}>
+                  <td className="text-center" style={{ verticalAlign: 'middle' }}>
                     <a
                       href={`${process.env.REACT_APP_API_URL}${doc.url}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       download
-                      className="btn-secondary"
+                      className="btn btn-secondary btn-outline-secondary btn-small"
                     >
                       <FaDownload /> Descargar
                     </a>

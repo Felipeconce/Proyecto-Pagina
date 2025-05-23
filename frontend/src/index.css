@@ -11,9 +11,12 @@
   --color-primary-rgb: 20, 184, 166; /* Componentes RGB de --color-primary */
   --color-primary-hover: #0d9488; /* Teal 600 */
   --color-primary-light: #ccfbf1; /* Teal 100 */
+  --color-primary-text: #0d9488; /* Teal 600 para texto en fondos claros */
+
   --color-secondary: #6366f1;     /* Indigo 500 */
   --color-secondary-hover: #4f46e5; /* Indigo 600 */
   --color-secondary-light: #e0e7ff; /* Indigo 100 - Nuevo */
+  --color-secondary-text: #4f46e5; /* Indigo 600 para texto en fondos claros */
   
   /* Colores de estado */
   --color-success: #10b981;       /* Verde esmeralda 500 */
@@ -21,7 +24,9 @@
   --color-warning: #f59e0b;       /* Ambar 500 */
   --color-warning-bg: #fef3c7;
   --color-error: #ef4444;         /* Rojo 500 */
+  --color-error-hover: #dc2626;    /* Rojo 600 */
   --color-error-bg: #fee2e2;
+  --color-error-text: #dc2626;    /* Rojo 600 para texto en fondos claros */
   
   /* Colores neutrales - Mantener paleta gris actual */
   --color-bg: #ffffff;
@@ -181,57 +186,122 @@ a:hover {
   color: var(--color-primary-hover);
 }
 
-/* Botones modernos */
-button, .btn-principal {
+/* -------------------- */
+/* Estilos de Botones */
+/* -------------------- */
+
+/* Base para todos los botones y elementos con comportamiento de botón */
+button,
+.btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background-color: var(--color-primary);
-  color: white;
   padding: 0.75rem 1.5rem;
   font-size: 0.95rem;
   font-weight: 600;
-  border: none;
   border-radius: var(--border-radius-md);
   cursor: pointer;
   box-shadow: var(--shadow-sm);
   transition: all var(--transition-normal);
+  text-decoration: none; /* Asegurar que los enlaces con clase .btn no tengan subrayado */
+  
+  /* Estilo uniforme por defecto */
+  background-color: var(--color-primary); /* Color de fondo uniforme */
+  color: white; /* Color de texto uniforme */
+  border: none; /* Eliminar bordes por defecto */
 }
 
-button:hover, .btn-principal:hover {
-  background-color: var(--color-primary-hover);
+/* Efectos de hover y active para la base */
+button:hover,
+.btn:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
+  /* Mantener el color de fondo uniforme en hover */
+  background-color: var(--color-primary-hover);
 }
 
-button:active, .btn-principal:active {
+button:active,
+.btn:active {
   transform: translateY(0);
-}
-
-/* Botón secundario */
-.btn-secondary {
-  display: inline-flex; /* Asegurar alineación de icono y texto */
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem; /* Espacio entre icono y texto, similar a btn-principal */
-  background-color: var(--color-primary-light);
-  color: var(--color-primary);
-  padding: 0.5rem 1rem; /* Padding más pequeño que el principal */
-  font-size: 0.9rem;
-  font-weight: 600;
-  border: 1px solid var(--color-primary-light);
-  border-radius: var(--border-radius-md);
-  box-shadow: none; /* Sin sombra por defecto */
-}
-
-.btn-secondary:hover {
+  box-shadow: var(--shadow-sm); /* O mantener el shadow-md si se prefiere */
+  /* Mantener el color de fondo uniforme en active */
   background-color: var(--color-primary);
-  color: white;
-  border-color: var(--color-primary);
-  transform: translateY(-1px);
+}
+
+/* Eliminar estilos específicos de las variantes que ahora son uniformes */
+.btn-primary,
+.btn-secondary,
+.btn-danger {
+  /* Estas clases ahora principalmente aseguran que el estilo base se aplique */
+  /* Los colores y fondos ya están definidos en .btn */
+}
+
+/* Las variantes outline sí necesitan sobrescribir el fondo y el color */
+.btn-outline-primary,
+.btn-outline-secondary,
+.btn-outline-danger {
+  background-color: transparent; /* Fondo transparente */
+  /* Usar el color primario para borde y texto en las variantes outline */
+  color: var(--color-primary-text);
+  border: 2px solid var(--color-primary);
+  box-shadow: none;
+}
+
+/* Efectos de hover para variantes outline */
+.btn-outline-primary:hover,
+.btn-outline-secondary:hover,
+.btn-outline-danger:hover {
+  background-color: var(--color-primary-light); /* Fondo claro en hover */
+  transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
 }
+
+/* Tamaño Pequeño (para tablas/listas compactas) */
+.btn-small {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  border-radius: var(--border-radius-sm); /* Radio más pequeño */
+  gap: 0.3rem; /* Espacio entre icono y texto */
+  /* No modificar color o fondo */
+}
+
+/* Ajustes para botones deshabilitados */
+button:disabled,
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  /* Asegurar que el color uniforme se mantenga, solo con opacidad */
+}
+
+/* Limpiar estilos existentes para botones que no usen clases específicas */
+/* Asegurar que siempre tomen el estilo base .btn */
+button:not([class*="btn-"]) {
+  /* No definir estilos aquí, deben usar la clase .btn o una de sus variantes */
+  /* Eliminar estilos por defecto si existen para evitar conflictos */
+  background-color: unset;
+  color: unset;
+  padding: unset;
+  font-size: unset;
+  border-radius: unset;
+  cursor: unset;
+  border: unset;
+  transition: unset;
+}
+
+button:not([class*="btn-"]):hover {
+    background-color: unset;
+}
+
+/* Asegurar que .btn-principal no tenga estilos duplicados */
+/* .btn-principal { @extend .btn-primary; } */
+/* Comentado o eliminado ya que .btn ya define el estilo primario */
+
+/* -------------------- */
+/* Otros estilos existentes */
+/* -------------------- */
 
 /* Estilos para inputs mejorados */
 input[type="text"],
@@ -252,10 +322,21 @@ select {
 
 input:focus, select:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb, 20, 184, 166), 0.25);
+  box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
 }
 
-/* Scrollbar personalizada */
+/* Estilo específico para input type file */
+input[type="file"] {
+  /* Ocultar el input file original y estilizar el label */
+  display: none;
+}
+
+.input-file {
+  /* Clase para estilizar el input[type="file"] si es necesario, 
+     aunque generalmente se estiliza el <label> asociado */
+}
+
+/* Scrollbar personalizado */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -263,19 +344,18 @@ input:focus, select:focus {
 
 ::-webkit-scrollbar-track {
   background: var(--color-bg-secondary);
-  border-radius: 8px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 8px;
+  background: var(--color-border);
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: var(--color-text-secondary);
 }
 
-/* Estructura principal del layout */
+/* MAIN CONTENT */
 .main-content {
   background-color: var(--color-bg);
   border-radius: var(--border-radius-lg);
@@ -301,7 +381,8 @@ table {
 
 th, td {
   padding: 1rem;
-  text-align: left;
+  text-align: center;
+  vertical-align: middle;
   border-bottom: 1px solid var(--color-border);
 }
 
@@ -367,3 +448,100 @@ body:not(.sidebar-open) #simple-mobile-menu-container {
   display: none !important;
 }
 */
+/* ELIMINADO TEMPORALMENTE:
+svg {
+  display: inline-block !important;
+  vertical-align: middle !important;
+  fill: currentColor !important; 
+}
+*/
+
+/* Fix para SimpleMenu y botón hamburguesa */
+/*
+[class*="SimpleMenu"] {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  [class*="SimpleMenu"] {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 9999 !important;
+  }
+  
+  [class*="SimpleMenu"] button {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    background-color: #2563eb !important;
+    color: white !important;
+  }
+  
+  [class*="SimpleMenu"] button svg {
+    color: white !important;
+    fill: currentColor !important;
+  }
+  
+  /* Ocultar sidebar en móvil */
+/*
+  .sidebar-modern {
+    display: none !important;
+  }
+} */
+
+/* Estilos para desktop */
+/* @media (min-width: 901px) {
+  [class*="SimpleMenu"] {
+    display: none !important;
+  }
+  
+  .sidebar-modern {
+    display: flex !important;
+    position: fixed !important;
+    left: 0 !important;
+    top: var(--header-height) !important;
+    height: calc(100vh - var(--header-height)) !important;
+    width: var(--sidebar-width) !important;
+  }
+  
+  /* Estilos para el botón hamburguesa en desktop */
+/*
+  .hamburger {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  .hamburger svg {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    color: #2563eb !important;
+    fill: currentColor !important;
+  }
+} */
+
+/* Corrección para el contenido principal */
+/*
+.main-content {
+  /* padding-top: 70px !important; */ /* Comentado para permitir que App.css controle el padding superior */
+  /* background-color: lightcoral !important; */ /* Eliminado color de depuración */
+  /* margin-left: calc(var(--sidebar-width) + var(--spacing-md)) !important; */ /* Eliminado margen forzado */
+/*}
+*/
+
+/* Centrar contenido de las columnas Fecha (3) y Documento (4) en th y td */
+.documentos-table th:nth-child(3),
+.documentos-table th:nth-child(4),
+.documentos-table td:nth-child(3),
+.documentos-table td:nth-child(4) {
+  text-align: center !important;
+  vertical-align: middle;
+}
+
+/* Forzar color blanco en hover para btn-secondary */
+.btn-secondary:hover, .btn-secondary:active, .btn-secondary:focus {
+  color: #fff !important;
+  background-color: var(--color-primary-hover) !important;
+}

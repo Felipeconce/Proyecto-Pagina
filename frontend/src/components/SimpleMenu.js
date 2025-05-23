@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Home, Wallet, FileStack, FileText, Calendar, History, LogOut } from 'lucide-react';
 import { HiMenu, HiX } from 'react-icons/hi';
+import { FaUserCircle } from 'react-icons/fa';
 
 // Función para detectar si estamos en un dispositivo móvil con más precisión
 const isMobile = () => {
@@ -233,19 +234,43 @@ function SimpleMenu({ user }) {
     window.location.reload();
   };
   
-  // Opciones del menú basadas en el rol del usuario
-  const menuItems = [
-    { name: 'Dashboard', path: '/', icon: <Home size={22} /> },
+  // Opciones del menú basadas en el rol del usuario, incluyendo Administración y Cambiar Clave
+  const mainMenuItems = [
+    { name: 'Dashboard', path: '/dashboard', icon: <Home size={22} /> },
     { name: 'Pagos', path: '/pagos', icon: <Wallet size={22} /> },
     { name: 'Gastos', path: '/gastos', icon: <FileStack size={22} /> },
     { name: 'Documentos', path: '/documentos', icon: <FileText size={22} /> },
     { name: 'Calendario', path: '/fechas', icon: <Calendar size={22} /> },
-  ];
-  
-  // Agregar historial solo para roles administrativos
-  if (user && (user.rol_id === 1 || user.rol_id === 2 || user.rol_id === 3)) {
-    menuItems.push({ name: 'Historial', path: '/historial', icon: <History size={22} /> });
-  }
+    
+    // Añadir opción Administración (solo para rol_id 1)
+    (user && user.rol_id === 1) && { 
+      name: 'Administración', 
+      path: '/admin-usuarios', 
+      icon: <FaUserCircle size={22} /> 
+    },
+    
+    // Historial (visible para rol_id 1, 2, 3)
+    (user && (user.rol_id === 1 || user.rol_id === 2 || user.rol_id === 3)) && { 
+      name: 'Historial', 
+      path: '/historial', 
+      icon: <History size={22} /> 
+    },
+    
+    // Cambiar Clave (visible para todos los usuarios autenticados)
+    user && { 
+      name: 'Cambiar Clave', 
+      path: '/cambiar-clave', 
+      icon: <FaUserCircle size={22} /> 
+    },
+
+    // Cerrar Sesión
+    user && { 
+      name: 'Cerrar sesión', 
+      onClick: handleLogout, 
+      icon: <LogOut size={22}/>, 
+      isButton: true 
+    }
+  ].filter(Boolean); // Elimina elementos false/null creados por el && condicional
   
   return (
     <div id="simple-mobile-menu-container" ref={menuRef} style={styles.container}>
@@ -271,28 +296,33 @@ function SimpleMenu({ user }) {
           <div style={styles.overlay} onClick={closeMenu} />
           <nav style={styles.menu}>
             <ul style={styles.menuList}>
-              {menuItems.map((item) => {
-                const isActive = location.pathname === item.path;
+              {mainMenuItems.map((item) => {
+                // Usar item.path como key si existe, de lo contrario usar item.name
+                const key = item.path || item.name;
+                const isActive = item.path && location.pathname === item.path; // Solo comparar ruta si item.path existe
                 const itemStyle = isActive 
                   ? { ...styles.menuItem, ...styles.menuItemActive }
                   : styles.menuItem;
                 const iconStyle = styles.icon; 
 
                 return (
-                  <li key={item.name}>
-                    <Link to={item.path} style={itemStyle} onClick={closeMenu}>
-                      <span style={iconStyle}>{item.icon}</span>
-                      <span style={styles.menuItemText}>{item.name}</span>
-                    </Link>
+                  <li key={key}>
+                    {item.isButton ? (
+                      // Si es un botón (Cerrar Sesión)
+                      <div onClick={item.onClick} style={styles.logoutItem}>
+                        <span style={styles.logoutIcon}>{item.icon}</span>
+                        <span style={styles.menuItemText}>{item.name}</span>
+                      </div>
+                    ) : (
+                      // Si es un Link
+                      <Link to={item.path} style={itemStyle} onClick={closeMenu}>
+                        <span style={iconStyle}>{item.icon}</span>
+                        <span style={styles.menuItemText}>{item.name}</span>
+                      </Link>
+                    )}
                   </li>
                 );
               })}
-              <li>
-                <div onClick={handleLogout} style={styles.logoutItem}>
-                  <span style={styles.logoutIcon}><LogOut size={22}/></span>
-                  <span style={styles.menuItemText}>Cerrar sesión</span>
-                </div>
-              </li>
             </ul>
           </nav>
         </>

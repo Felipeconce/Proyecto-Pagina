@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, Outlet, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet, useNavigate, useLocation } from 'react-router-dom';
 
 import Header from './components/Layout/Header';
 import Sidebar from './components/Layout/Sidebar';
@@ -17,7 +17,12 @@ import GastosPage from './pages/GastosPage';
 import DocumentosPage from './pages/DocumentosPage';
 import FechasPage from './pages/FechasPage';
 import HistorialPage from './pages/HistorialPage';
+import AdminUsuariosPage from './pages/AdminUsuariosPage';
+import ChangePasswordPage from './pages/ChangePasswordPage';
 import { ToastProvider } from './components/Layout/ToastProvider';
+
+// Importar el nuevo hook de autenticación
+import { useAuth, AuthProvider } from './hooks/useAuth';
 
 // Importaciones de estilos
 import './App.css';
@@ -100,61 +105,42 @@ const MainAppLayout = ({ user, handleLogout, sidebarOpen, setSidebarOpen, toggle
 // Este componente contendrá la lógica principal de la aplicación y usará useNavigate
 const AppContent = () => {
   const navigate = useNavigate(); // Hook para navegación programática
+  const { pathname } = useLocation(); // Obtener el pathname de la ubicación actual directamente
 
-  const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem('user');
-    return savedUser ? JSON.parse(savedUser) : null;
-  });
-  const [token, setToken] = useState(() => localStorage.getItem('token') || null);
+  // Usar el hook de autenticación
+  const { user, token, isLoggingOut, handleLogin, handleLogout } = useAuth();
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isLoggingOut, setIsLoggingOut] = useState(false); // Nuevo estado
 
-  useEffect(() => {
-    if (user) {
-      localStorage.setItem('user', JSON.stringify(user));
-    } else {
-      localStorage.removeItem('user');
-    }
-  }, [user]);
-
-  useEffect(() => {
-    if (token) {
-      localStorage.setItem('token', token);
-    } else {
-      localStorage.removeItem('token');
-    }
-  }, [token]);
-
-  const handleLogout = useCallback(() => {
-    setIsLoggingOut(true); // 1. Marcar que estamos haciendo logout
-    setUser(null);         // 2. Limpiar usuario
-    setToken(null);        // 3. Limpiar token
-    navigate('/', { replace: true }); // 4. Navegar a HomePage
-    // Opcional: resetear isLoggingOut después de un pequeño delay o en un efecto de navegación
-    // setTimeout(() => setIsLoggingOut(false), 50); // Ejemplo de reseteo simple
-  }, [navigate]);
-
-  const handleLogin = useCallback((userData) => {
-    setIsLoggingOut(false); // Asegurarse de que no estemos en estado de logout al loguear
-    setUser(userData);
-    setToken(userData.token);
-  }, []);
-  
   const toggleSidebar = useCallback(() => {
     setSidebarOpen(prev => !prev);
   }, []);
 
-  // Efecto para sincronizar el estado del sidebar con las clases CSS
-  useEffect(() => {
-    if (sidebarOpen) {
-      document.body.classList.add('sidebar-open');
-      document.documentElement.classList.add('sidebar-open');
-    } else {
-      document.body.classList.remove('sidebar-open');
-      document.documentElement.classList.remove('sidebar-open');
-    }
-    // No se necesita limpieza específica aquí si se maneja al desmontar AppContent o App
-  }, [sidebarOpen]);
+   // Efecto para sincronizar el estado del sidebar con las clases CSS
+   useEffect(() => {
+     if (sidebarOpen) {
+       document.body.classList.add('sidebar-open');
+       document.documentElement.classList.add('sidebar-open');
+     } else {
+       document.body.classList.remove('sidebar-open');
+       document.documentElement.classList.remove('sidebar-open');
+     }
+     // No se necesita limpieza específica aquí si se maneja al desmontar AppContent o App
+   }, [sidebarOpen]);
+
+   // Efecto para manejar la navegación después del login/logout
+   useEffect(() => {
+     // Si no hay usuario Y no estamos en proceso de logout, redirigir a la página de inicio (EXCEPTO si ya estamos en /login)
+     if (!user && !isLoggingOut && pathname !== '/login') {
+       // Si no hay usuario Y no estamos en proceso de logout, redirigir a la página de inicio
+       console.log('Redirigiendo a / (página de inicio) - No autenticado y no en /login');
+       navigate('/', { replace: true });
+     } else if (user && !isLoggingOut && pathname === '/login') {
+        // Si hay usuario, no estamos en logout, Y estamos en la página de login, redirigir al dashboard
+        navigate('/dashboard', { replace: true });
+     }
+     // Ahora location es una dependencia debido al uso de useLocation
+   }, [user, isLoggingOut, navigate, pathname]); // Dependencias: user, isLoggingOut, navigate, pathname
 
   // Efecto para limpiar las clases del body al desmontar App (si AppContent es el componente principal)
   useEffect(() => {
@@ -182,7 +168,8 @@ const AppContent = () => {
       <Route path="/" element={<PublicLayout><HomePage /></PublicLayout>} />
       <Route 
         path="/login" 
-        element={user ? <Navigate to="/dashboard" replace /> : <Login onLogin={handleLogin} />} 
+        // Si el usuario existe, redirigir al dashboard. De lo contrario, mostrar el componente Login.
+        element={user && !isLoggingOut ? <Navigate to="/dashboard" replace /> : <Login onLogin={handleLogin} />} 
       />
       <Route element={<ProtectedRoute user={user} isLoggingOut={isLoggingOut} />}>
         <Route 
@@ -233,19 +220,38 @@ const AppContent = () => {
             </MainAppLayout>
           }
         />
+        <Route 
+          path="/admin-usuarios" 
+          element={
+            <MainAppLayout user={user} handleLogout={handleLogout} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} toggleSidebar={toggleSidebar}>
+              <AdminUsuariosPage user={user} />
+            </MainAppLayout>
+          }
+        />
+        <Route 
+          path="/cambiar-clave" 
+          element={
+            <MainAppLayout user={user} handleLogout={handleLogout} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} toggleSidebar={toggleSidebar}>
+              <ChangePasswordPage user={user} />
+            </MainAppLayout>
+          }
+        />
       </Route>
-      <Route path="*" element={<Navigate to={user ? "/dashboard" : "/"} />} />
+      {/* Redirigir rutas desconocidas. Si hay usuario, ir al dashboard, si no, a la página de inicio. */}
+      <Route path="*" element={<Navigate to={user ? "/dashboard" : "/"} replace />} />
     </Routes>
   );
 };
 
 // --- Componente App (Principal) --- 
-// Ahora solo configura el Router y el ToastProvider, y renderiza AppContent.
+// Ahora solo configura el Router y el ToastProvider, y renderiza AppContent envuelto en AuthProvider.
 function App() {
   return (
     <ToastProvider>
       <Router>
-        <AppContent />
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
       </Router>
     </ToastProvider>
   );

@@ -10,6 +10,7 @@ export default function HeaderPublico() {
         <div className="flex justify-start w-auto"> {/* Ajustar ancho si es necesario o dejar en auto */} 
           <Link
             to="/login"
+            onClick={() => console.log('Click en Iniciar Sesión')}
             className={`font-semibold py-2 px-4 rounded-md text-sm transition-colors duration-300 shadow-sm hover:shadow-md 
                         bg-white text-[var(--color-primary)] hover:bg-gray-100`}
           >

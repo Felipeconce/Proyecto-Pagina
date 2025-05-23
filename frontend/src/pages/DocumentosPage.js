@@ -34,7 +34,7 @@ export default function DocumentosPage({ user }) {
           {isFormVisible ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
         </div>
 
-        {isFormVisible && (
+        {([1,2,3,5].includes(user?.rol_id)) && isFormVisible && (
           <div style={{ padding: '1rem' }}> 
             <DocumentosForm 
               user={user} 
