@@ -27,13 +27,11 @@ export default function DocumentosForm({ user }) {
     return <FaFileAlt color="#6b7280" />;
   };
 
+  // Solo superadmin(1), presidente(2), tesorero(3) y secretaria(5) pueden subir documentos
+  if (!user || ![1, 2, 3, 5].includes(user.rol_id)) return null;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!user) {
-      showToast('Datos de usuario no disponibles', 'error');
-      return;
-    }
     
     const formData = new FormData();
     formData.append('nombre', nombre);
@@ -79,8 +77,8 @@ export default function DocumentosForm({ user }) {
   };
 
   return (
-    <div className="content-section" style={{ 
-      backgroundColor: '#fff', 
+    <div className="content-section" style={{
+      backgroundColor: '#fff',
       borderRadius: '16px',
       padding: '24px',
       boxShadow: '0 2px 12px rgba(0, 0, 0, 0.06)',

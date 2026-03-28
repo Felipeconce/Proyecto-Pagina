@@ -30,12 +30,11 @@ export default function PagosList({ user, refresh, onPagosChange, isPagoAtrasado
       try {
         // Force cache refresh by adding timestamp to URL
         const timestamp = new Date().getTime();
+        const authHeader = token ? { 'Authorization': `Bearer ${token}` } : {};
         const [alumnosRes, conceptosRes, pagosRes] = await Promise.all([
-          fetch(`${process.env.REACT_APP_API_URL}/apoderados?t=${timestamp}`),
-          fetch(`${process.env.REACT_APP_API_URL}/conceptos?t=${timestamp}`),
-          fetch(`${process.env.REACT_APP_API_URL}/pagos?t=${timestamp}`, {
-            headers: token ? { 'Authorization': `Bearer ${token}` } : {}
-          })
+          fetch(`${process.env.REACT_APP_API_URL}/apoderados?t=${timestamp}`, { headers: authHeader }),
+          fetch(`${process.env.REACT_APP_API_URL}/conceptos?t=${timestamp}`, { headers: authHeader }),
+          fetch(`${process.env.REACT_APP_API_URL}/pagos?t=${timestamp}`, { headers: authHeader })
         ]);
 
         // Procesar las respuestas independientemente si hay errores de autorización
@@ -356,8 +355,8 @@ export default function PagosList({ user, refresh, onPagosChange, isPagoAtrasado
                     return (
                       <td 
                         key={con.id} 
-                        className={`${user.rol_id === 3 ? 'editable' : ''} ${cellClass}`}
-                        onClick={() => user.rol_id === 3 && handleCellClick(al.id, con.id)}
+                        className={`${[1, 3].includes(user.rol_id) ? 'editable' : ''} ${cellClass}`}
+                        onClick={() => [1, 3].includes(user.rol_id) && handleCellClick(al.id, con.id)}
                         data-concepto-nombre={con.nombre}
                       >
                         {editCell.alumnoId === al.id && editCell.conceptoId === con.id ? (

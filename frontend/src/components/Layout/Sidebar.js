@@ -61,9 +61,12 @@ export default function Sidebar({ open, setOpen, user }) {
   // Si no hay usuario, no renderizar nada
   if (!user) return null;
 
+  // Roles con acceso al historial: superadmin(1), presidente(2), tesorero(3)
+  const verHistorial = [1, 2, 3].includes(user.rol_id);
+
   const filteredMenuItems = [
     ...menuItems,
-    (user.rol_id === 1 || user.rol_id === 2 || user.rol_id === 3) && {
+    verHistorial && {
       nombre: 'Historial',
       ruta: '/historial',
       icono: 'history',

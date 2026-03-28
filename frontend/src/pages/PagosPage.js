@@ -29,10 +29,13 @@ export default function PagosPage({ user }) {
     setLoading(true);
     
     // Hacer las peticiones para obtener pagos, alumnos y conceptos
+    const token = localStorage.getItem('token');
+    const authHeader = token ? { 'Authorization': `Bearer ${token}` } : {};
+
     Promise.all([
-      fetch(`${process.env.REACT_APP_API_URL}/pagos`),
-      fetch(`${process.env.REACT_APP_API_URL}/apoderados`),
-      fetch(`${process.env.REACT_APP_API_URL}/conceptos`)
+      fetch(`${process.env.REACT_APP_API_URL}/pagos`, { headers: authHeader }),
+      fetch(`${process.env.REACT_APP_API_URL}/apoderados`, { headers: authHeader }),
+      fetch(`${process.env.REACT_APP_API_URL}/conceptos`, { headers: authHeader })
     ])
       .then(([pagosRes, alumnosRes, conceptosRes]) => {
         return Promise.all([
