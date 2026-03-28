@@ -8,7 +8,8 @@ export function useFetchList(url) {
   useEffect(() => {
     let isMounted = true;
     setLoading(true);
-    fetch(url)
+    const token = localStorage.getItem('token');
+    fetch(url, token ? { headers: { 'Authorization': `Bearer ${token}` } } : {})
       .then(res => {
         if (!res.ok) throw new Error('Error al cargar datos');
         return res.json();

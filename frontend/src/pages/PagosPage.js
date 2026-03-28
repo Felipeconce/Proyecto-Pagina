@@ -301,7 +301,7 @@ export default function PagosPage({ user }) {
         </div>
       </div>
       
-      <ConceptosForm user={user} setRefresh={setRefresh} />
+      <ConceptosForm user={user} onConceptoAgregado={() => setRefresh(prev => !prev)} />
       <PagosList 
         user={user}
         refresh={refresh}

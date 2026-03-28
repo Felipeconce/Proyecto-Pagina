@@ -159,12 +159,11 @@ export default function ConceptosForm({ user, onConceptoAgregado }) {
         onConceptoAgregado();
         
         // Recargamos conceptos inmediatamente
-        fetch(`${process.env.REACT_APP_API_URL}/conceptos`)
+        fetch(`${process.env.REACT_APP_API_URL}/conceptos`, {
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+        })
           .then(res => res.ok ? res.json() : [])
-          .then(data => {
-            console.log("Conceptos recargados después de agregar:", data);
-            setConceptos(data);
-          });
+          .then(data => { setConceptos(data); });
       }
     } catch (err) {
       console.error("Error completo:", err);
@@ -233,7 +232,7 @@ export default function ConceptosForm({ user, onConceptoAgregado }) {
 
   const handleEdit = () => {
     if (!selectedId) return;
-    const item = userItems.find(c => c.id === selectedId);
+    const item = userItems.find(c => c.id === parseInt(selectedId, 10));
     if (item) {
       setEditMode(true);
       setEditNombre(item.nombre);

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { HiOutlineUserGroup } from 'react-icons/hi';
 import { FiLogOut } from 'react-icons/fi';
 
