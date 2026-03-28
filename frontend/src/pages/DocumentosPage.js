@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import DocumentosList from '../components/Documentos/DocumentosList';
 import DocumentosForm from '../components/Documentos/DocumentosForm';
 import { FaFileAlt } from 'react-icons/fa';
 
 export default function DocumentosPage({ user }) {
+  const [refresh, setRefresh] = useState(false);
+
   return (
     <section>
       <h2 style={{
@@ -17,8 +19,8 @@ export default function DocumentosPage({ user }) {
       }}>
         <FaFileAlt color="#d97706" /> Documentos
       </h2>
-      <DocumentosForm user={user} />
-      <DocumentosList user={user} />
+      <DocumentosForm user={user} onSuccess={() => setRefresh(r => !r)} />
+      <DocumentosList user={user} refresh={refresh} onRefresh={() => setRefresh(r => !r)} />
     </section>
   );
 }

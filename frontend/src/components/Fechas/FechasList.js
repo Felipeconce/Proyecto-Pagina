@@ -1,9 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { FaCalendarDay, FaCalendarCheck, FaCalendarWeek, FaCalendarTimes } from 'react-icons/fa';
+import { FaCalendarDay, FaCalendarCheck, FaCalendarWeek, FaCalendarTimes, FaTrash } from 'react-icons/fa';
+import { useToast } from '../Layout/ToastProvider';
 
-export default function FechasList() {
+export default function FechasList({ user, refresh, onRefresh }) {
   const [fechas, setFechas] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { showToast } = useToast();
+  const puedeEliminar = user && [1, 2, 3, 5].includes(user.rol_id);
+
+  const handleDelete = async (id, descripcion) => {
+    if (!window.confirm(`¿Eliminar la fecha "${descripcion}"?`)) return;
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/fechas/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) throw new Error();
+      showToast('Fecha eliminada', 'success');
+      if (onRefresh) onRefresh();
+    } catch {
+      showToast('Error al eliminar fecha', 'error');
+    }
+  };
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -23,7 +42,7 @@ export default function FechasList() {
         console.error('Error al cargar fechas:', err);
         setLoading(false);
       });
-  }, []);
+  }, [refresh]);
 
   // Función para determinar el icono según la fecha
   const getFechaIcon = (fechaStr) => {
@@ -111,6 +130,7 @@ export default function FechasList() {
                 <th style={{ padding: '12px 16px', fontWeight: '600' }}>Fecha</th>
                 <th style={{ padding: '12px 16px', fontWeight: '600' }}>Descripción</th>
                 <th style={{ padding: '12px 16px', fontWeight: '600', textAlign: 'center' }}>Estado</th>
+                {puedeEliminar && <th style={{ padding: '12px 16px', fontWeight: '600', textAlign: 'center' }}>Acciones</th>}
               </tr>
             </thead>
             <tbody>
@@ -134,22 +154,29 @@ export default function FechasList() {
                       }).replace(/\//g, '-')}
                     </td>
                     <td style={{ padding: '12px 16px' }}>{fecha.descripcion}</td>
-                    <td style={{ 
-                      padding: '12px 16px', 
-                      textAlign: 'center' 
-                    }}>
+                    <td style={{ padding: '12px 16px', textAlign: 'center' }}>
                       <span style={{
-                        display: 'inline-block',
-                        padding: '4px 10px',
-                        borderRadius: '9999px',
-                        fontSize: '13px',
-                        fontWeight: '600',
-                        backgroundColor: `${fechaColor}20`,
-                        color: fechaColor
+                        display: 'inline-block', padding: '4px 10px', borderRadius: '9999px',
+                        fontSize: '13px', fontWeight: '600',
+                        backgroundColor: `${fechaColor}20`, color: fechaColor
                       }}>
                         {getEstadoFecha(fecha.fecha)}
                       </span>
                     </td>
+                    {puedeEliminar && (
+                      <td style={{ padding: '12px 16px', textAlign: 'center' }}>
+                        <button
+                          onClick={() => handleDelete(fecha.id, fecha.descripcion)}
+                          style={{
+                            display: 'inline-flex', alignItems: 'center', gap: 6,
+                            padding: '6px 12px', background: '#fee2e2', color: '#ef4444',
+                            border: 'none', borderRadius: 8, fontWeight: 600, fontSize: 13, cursor: 'pointer'
+                          }}
+                        >
+                          <FaTrash /> Eliminar
+                        </button>
+                      </td>
+                    )}
                   </tr>
                 );
               })}

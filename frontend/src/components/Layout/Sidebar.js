@@ -61,8 +61,8 @@ export default function Sidebar({ open, setOpen, user }) {
   // Si no hay usuario, no renderizar nada
   if (!user) return null;
 
-  // Roles con acceso al historial: superadmin(1), presidente(2), tesorero(3)
   const verHistorial = [1, 2, 3].includes(user.rol_id);
+  const esSuperAdmin = user.rol_id === 1;
 
   const filteredMenuItems = [
     ...menuItems,
@@ -72,6 +72,13 @@ export default function Sidebar({ open, setOpen, user }) {
       icono: 'history',
       color: '#6b7280',
       bg: 'rgba(255,255,255,0.95)',
+    },
+    esSuperAdmin && {
+      nombre: 'Administración',
+      ruta: '/admin',
+      icono: 'manage_accounts',
+      color: '#7c3aed',
+      bg: 'rgba(237,233,254,0.95)',
     },
   ].filter(Boolean);
 

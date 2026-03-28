@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PagosList from '../components/Pagos/PagosList';
 import ConceptosForm from '../components/Pagos/ConceptosForm';
-import { FaMoneyBillWave, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
+import { FaMoneyBillWave, FaCheckCircle, FaExclamationTriangle, FaFileDownload } from 'react-icons/fa';
 
 export default function PagosPage({ user }) {
   const [refresh, setRefresh] = React.useState(false);
@@ -194,6 +194,47 @@ export default function PagosPage({ user }) {
   // Opciones de formato para eliminar decimales
   const formatoMoneda = { maximumFractionDigits: 0 };
 
+  const exportarCSV = () => {
+    if (alumnos.length === 0 || conceptos.length === 0) return;
+
+    const conceptosOrdenados = [...conceptos].sort((a, b) => {
+      if (a.orden === 0 || a.orden === null) return -1;
+      if (b.orden === 0 || b.orden === null) return 1;
+      return a.orden - b.orden;
+    });
+
+    // Construir mapa de pagos: pagosMap[alumnoId][conceptoId] = { monto, estado }
+    const pagosMap = {};
+    pagos.forEach(p => {
+      if (!pagosMap[p.usuario_id]) pagosMap[p.usuario_id] = {};
+      pagosMap[p.usuario_id][p.concepto_id] = { monto: p.monto, estado: p.estado };
+    });
+
+    const encabezado = ['Alumno', ...conceptosOrdenados.map(c => c.nombre), 'Total Pagado'];
+    const filas = alumnos.map(al => {
+      let totalPagado = 0;
+      const celdas = conceptosOrdenados.map(con => {
+        const p = pagosMap[al.id]?.[con.id];
+        if (!p) return '';
+        if (p.estado === 'pagado') totalPagado += Number(p.monto);
+        return p.estado === 'pagado' ? Number(p.monto) : `Pendiente ($${Number(p.monto)})`;
+      });
+      return [al.nombre, ...celdas, totalPagado];
+    });
+
+    const csvContent = [encabezado, ...filas]
+      .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+      .join('\n');
+
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `pagos_${new Date().toISOString().slice(0, 10)}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <section>
       <h2 style={{
@@ -236,6 +277,21 @@ export default function PagosPage({ user }) {
           </div>
         </div>
         
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: '1', justifyContent: 'flex-end' }}>
+          {[1, 3].includes(user.rol_id) && (
+            <button
+              onClick={exportarCSV}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 6,
+                padding: '8px 16px', background: '#fff', color: '#2563eb',
+                border: '2px solid #2563eb', borderRadius: 8, fontWeight: 700,
+                fontSize: 14, cursor: 'pointer'
+              }}
+            >
+              <FaFileDownload /> Exportar CSV
+            </button>
+          )}
+        </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: '1' }}>
           <FaExclamationTriangle color="#ef4444" size={24} />
           <div>

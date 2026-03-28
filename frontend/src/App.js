@@ -12,6 +12,7 @@ import GastosPage from './pages/GastosPage';
 import DocumentosPage from './pages/DocumentosPage';
 import FechasPage from './pages/FechasPage';
 import HistorialPage from './pages/HistorialPage';
+import AdminPage from './pages/AdminPage';
 import { ToastProvider } from './components/Layout/ToastProvider';
 
 function App() {
@@ -73,6 +74,7 @@ function App() {
               <Route path="/documentos" element={<DocumentosPage user={user} />} />
               <Route path="/fechas" element={<FechasPage user={user} />} />
               <Route path="/historial" element={<HistorialPage user={user} />} />
+              <Route path="/admin" element={<AdminPage user={user} />} />
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </main>

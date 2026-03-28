@@ -206,6 +206,47 @@ app.post('/login', loginLimiter, [
   } catch (err) { next(err); }
 });
 
+// Editar usuario — solo superadmin
+app.put('/usuarios/:id', authenticateToken, requireRoles(1), async (req, res, next) => {
+  const { id } = req.params;
+  const { nombre, email, rol_id, curso_id, colegio_id, password } = req.body;
+  try {
+    if (password) {
+      const hashed = await bcrypt.hash(password, 10);
+      const result = await pool.query(
+        'UPDATE usuarios SET nombre=$1, email=$2, rol_id=$3, curso_id=$4, colegio_id=$5, password=$6 WHERE id=$7 RETURNING id, email, nombre, rol_id, curso_id, colegio_id',
+        [nombre, email, rol_id, curso_id, colegio_id, hashed, id]
+      );
+      return res.json(result.rows[0]);
+    }
+    const result = await pool.query(
+      'UPDATE usuarios SET nombre=$1, email=$2, rol_id=$3, curso_id=$4, colegio_id=$5 WHERE id=$6 RETURNING id, email, nombre, rol_id, curso_id, colegio_id',
+      [nombre, email, rol_id, curso_id, colegio_id, id]
+    );
+    res.json(result.rows[0]);
+  } catch (err) { next(err); }
+});
+
+// Eliminar usuario — solo superadmin
+app.delete('/usuarios/:id', authenticateToken, requireRoles(1), async (req, res, next) => {
+  const { id } = req.params;
+  if (Number(id) === req.user.id) {
+    return res.status(400).json({ error: 'No puedes eliminar tu propia cuenta' });
+  }
+  try {
+    await pool.query('DELETE FROM usuarios WHERE id=$1', [id]);
+    res.json({ success: true });
+  } catch (err) { next(err); }
+});
+
+// Colegios — solo superadmin
+app.get('/colegios', authenticateToken, requireRoles(1), async (req, res, next) => {
+  try {
+    const result = await pool.query('SELECT id, nombre FROM colegios ORDER BY nombre');
+    res.json(result.rows);
+  } catch (err) { next(err); }
+});
+
 // Crear usuario — solo superadmin
 app.post('/usuarios', authenticateToken, requireRoles(1), [
   body('email').isEmail().normalizeEmail(),
@@ -312,6 +353,19 @@ app.put('/pagos/:id', authenticateToken, requireRoles(1, 3), async (req, res, ne
       [req.user.id, req.user.email, req.user.rol_id, req.user.curso_id, req.user.colegio_id, 'editar', 'pago', id, `Editó pago a $${monto}`]
     );
     res.json(result.rows[0]);
+  } catch (err) { next(err); }
+});
+
+// Eliminar pago — tesorero y superadmin
+app.delete('/pagos/:id', authenticateToken, requireRoles(1, 3), async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    await pool.query('DELETE FROM pagos WHERE id=$1', [id]);
+    await pool.query(
+      'INSERT INTO logs (usuario_id, usuario_nombre, rol_id, curso_id, colegio_id, accion, entidad, entidad_id, detalle) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)',
+      [req.user.id, req.user.email, req.user.rol_id, req.user.curso_id, req.user.colegio_id, 'eliminar', 'pago', id, `Eliminó pago id ${id}`]
+    );
+    res.json({ success: true });
   } catch (err) { next(err); }
 });
 
@@ -458,6 +512,21 @@ app.put('/gastos/:id', authenticateToken, requireRoles(1, 3), async (req, res, n
   } catch (err) { next(err); }
 });
 
+// Eliminar gasto — tesorero y superadmin
+app.delete('/gastos/:id', authenticateToken, requireRoles(1, 3), async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const r = await pool.query('SELECT descripcion FROM gastos WHERE id=$1', [id]);
+    const desc = r.rows[0]?.descripcion || '';
+    await pool.query('DELETE FROM gastos WHERE id=$1', [id]);
+    await pool.query(
+      'INSERT INTO logs (usuario_id, usuario_nombre, rol_id, curso_id, colegio_id, accion, entidad, entidad_id, detalle) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)',
+      [req.user.id, req.user.email, req.user.rol_id, req.user.curso_id, req.user.colegio_id, 'eliminar', 'gasto', id, `Eliminó gasto: ${desc}`]
+    );
+    res.json({ success: true });
+  } catch (err) { next(err); }
+});
+
 // ============================================================
 // DOCUMENTOS
 // Lectura: todos los roles autenticados (filtrado por curso/colegio)
@@ -501,6 +570,21 @@ app.post('/documentos', authenticateToken, requireRoles(1, 2, 3, 5), upload.sing
   } catch (err) { next(err); }
 });
 
+// Eliminar documento — roles 1,2,3,5
+app.delete('/documentos/:id', authenticateToken, requireRoles(1, 2, 3, 5), async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const r = await pool.query('SELECT nombre FROM documentos WHERE id=$1', [id]);
+    const nombre = r.rows[0]?.nombre || '';
+    await pool.query('DELETE FROM documentos WHERE id=$1', [id]);
+    await pool.query(
+      'INSERT INTO logs (usuario_id, usuario_nombre, rol_id, curso_id, colegio_id, accion, entidad, entidad_id, detalle) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)',
+      [req.user.id, req.user.email, req.user.rol_id, req.user.curso_id, req.user.colegio_id, 'eliminar', 'documento', id, `Eliminó documento: ${nombre}`]
+    );
+    res.json({ success: true });
+  } catch (err) { next(err); }
+});
+
 // ============================================================
 // FECHAS IMPORTANTES
 // Lectura: todos los roles autenticados (filtrado por curso/colegio)
@@ -537,6 +621,21 @@ app.post('/fechas', authenticateToken, requireRoles(1, 2, 3, 5), async (req, res
       [req.user.id, req.user.email, req.user.rol_id, req.user.curso_id, req.user.colegio_id, 'crear', 'fecha', result.rows[0].id, `Agregó fecha: ${descripcion}`]
     );
     res.json(result.rows[0]);
+  } catch (err) { next(err); }
+});
+
+// Eliminar fecha — roles 1,2,3,5
+app.delete('/fechas/:id', authenticateToken, requireRoles(1, 2, 3, 5), async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const r = await pool.query('SELECT descripcion FROM fechas WHERE id=$1', [id]);
+    const desc = r.rows[0]?.descripcion || '';
+    await pool.query('DELETE FROM fechas WHERE id=$1', [id]);
+    await pool.query(
+      'INSERT INTO logs (usuario_id, usuario_nombre, rol_id, curso_id, colegio_id, accion, entidad, entidad_id, detalle) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)',
+      [req.user.id, req.user.email, req.user.rol_id, req.user.curso_id, req.user.colegio_id, 'eliminar', 'fecha', id, `Eliminó fecha: ${desc}`]
+    );
+    res.json({ success: true });
   } catch (err) { next(err); }
 });
 

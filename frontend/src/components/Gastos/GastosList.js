@@ -1,120 +1,170 @@
 import React, { useEffect, useState } from 'react';
+import { FaReceipt, FaEdit, FaTrash, FaSave, FaTimes } from 'react-icons/fa';
+import { useToast } from '../Layout/ToastProvider';
 
-export default function GastosList({ user }) {
+export default function GastosList({ user, refresh, onRefresh }) {
   const [gastos, setGastos] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [editId, setEditId] = useState(null);
   const [editDescripcion, setEditDescripcion] = useState('');
   const [editMonto, setEditMonto] = useState('');
   const [editFecha, setEditFecha] = useState('');
+  const { showToast } = useToast();
+
+  const canEdit = user && [1, 3].includes(user.rol_id);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
+    setLoading(true);
     fetch(`${process.env.REACT_APP_API_URL}/gastos`, {
       headers: { 'Authorization': `Bearer ${token}` }
     })
       .then(res => res.json())
-      .then(data => setGastos(data));
-  }, []);
+      .then(data => { setGastos(data); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, [refresh]);
 
   const startEdit = (gasto) => {
     setEditId(gasto.id);
     setEditDescripcion(gasto.descripcion);
     setEditMonto(gasto.monto);
-    setEditFecha(gasto.fecha);
+    setEditFecha(gasto.fecha ? gasto.fecha.slice(0, 10) : '');
   };
 
   const saveEdit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem('token');
-    await fetch(`${process.env.REACT_APP_API_URL}/gastos/${editId}`, {
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/gastos/${editId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-      body: JSON.stringify({
-        descripcion: editDescripcion,
-        monto: Number(editMonto),
-        fecha: editFecha,
-      }),
+      body: JSON.stringify({ descripcion: editDescripcion, monto: Number(editMonto), fecha: editFecha }),
     });
-    setEditId(null);
-    fetch(`${process.env.REACT_APP_API_URL}/gastos`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-      .then(res => res.json())
-      .then(data => setGastos(data));
+    if (res.ok) {
+      showToast('Gasto actualizado', 'success');
+      setEditId(null);
+      if (onRefresh) onRefresh();
+    } else {
+      showToast('Error al guardar', 'error');
+    }
   };
 
-  const cancelEdit = () => {
-    setEditId(null);
+  const cancelEdit = () => setEditId(null);
+
+  const handleDelete = async (id, descripcion) => {
+    if (!window.confirm(`¿Eliminar el gasto "${descripcion}"?`)) return;
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/gastos/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) throw new Error();
+      showToast('Gasto eliminado', 'success');
+      if (onRefresh) onRefresh();
+    } catch {
+      showToast('Error al eliminar gasto', 'error');
+    }
+  };
+
+  const totalGastos = gastos.reduce((acc, g) => acc + Number(g.monto), 0);
+
+  const inputStyle = {
+    padding: '5px 8px', borderRadius: 6, border: '1px solid #d1d5db',
+    fontSize: 13, width: '100%', boxSizing: 'border-box'
   };
 
   return (
-    <div>
-      <h3>Listado de Gastos</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Curso</th>
-            <th>Descripción</th>
-            <th>Monto</th>
-            <th>Fecha</th>
-            {[1, 3].includes(user.rol_id) && <th>Acciones</th>}
-          </tr>
-        </thead>
-        <tbody>
-          {gastos.map(gasto => (
-            <tr key={gasto.id}>
-              <td>{gasto.id}</td>
-              <td>{gasto.curso}</td>
-              <td>
-                {editId === gasto.id ? (
-                  <input
-                    type="text"
-                    value={editDescripcion}
-                    onChange={e => setEditDescripcion(e.target.value)}
-                  />
-                ) : (
-                  gasto.descripcion
-                )}
-              </td>
-              <td>
-                {editId === gasto.id ? (
-                  <input
-                    type="number"
-                    value={editMonto}
-                    onChange={e => setEditMonto(e.target.value)}
-                  />
-                ) : (
-                  new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(gasto.monto)
-                )}
-              </td>
-              <td>
-                {editId === gasto.id ? (
-                  <input
-                    type="date"
-                    value={editFecha}
-                    onChange={e => setEditFecha(e.target.value)}
-                  />
-                ) : (
-                  new Date(gasto.fecha).toLocaleDateString('es-CL', {day: '2-digit', month: '2-digit', year: 'numeric'}).replace(/\//g, '-')
-                )}
-              </td>
-              {[1, 3].includes(user.rol_id) && (
-                <td>
+    <div style={{
+      background: '#fff', borderRadius: 16,
+      boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+      border: '1px solid #e5e7eb', overflow: 'hidden'
+    }}>
+      <div style={{
+        background: '#dcfce7', padding: '16px 20px',
+        borderBottom: '1px solid #bbf7d0',
+        display: 'flex', alignItems: 'center', gap: 10,
+        fontSize: 18, fontWeight: 700, color: '#15803d'
+      }}>
+        <FaReceipt /> Listado de Gastos
+        <span style={{
+          marginLeft: 'auto', fontSize: 14, fontWeight: 600,
+          background: '#fff', color: '#16a34a', padding: '4px 12px',
+          borderRadius: 9999, border: '1px solid #bbf7d0'
+        }}>
+          Total: ${totalGastos.toLocaleString('es-CL', { maximumFractionDigits: 0 })}
+        </span>
+      </div>
+
+      {loading ? (
+        <div style={{ padding: 32, textAlign: 'center', color: '#6b7280' }}>Cargando gastos...</div>
+      ) : gastos.length === 0 ? (
+        <div style={{ padding: 32, textAlign: 'center', color: '#6b7280' }}>No hay gastos registrados.</div>
+      ) : (
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
+            <thead>
+              <tr style={{ background: '#f9fafb', borderBottom: '1px solid #e5e7eb' }}>
+                {['Curso', 'Descripción', 'Monto', 'Fecha', ...(canEdit ? ['Acciones'] : [])].map(h => (
+                  <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 700, color: '#374151', whiteSpace: 'nowrap' }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {gastos.map(gasto => (
+                <tr key={gasto.id} style={{ borderBottom: '1px solid #f3f4f6' }}>
                   {editId === gasto.id ? (
                     <>
-                      <button onClick={saveEdit}>Guardar</button>
-                      <button onClick={cancelEdit}>Cancelar</button>
+                      <td style={{ padding: '8px 12px', color: '#6b7280' }}>{gasto.curso}</td>
+                      <td style={{ padding: '8px 12px' }}>
+                        <input style={inputStyle} value={editDescripcion} onChange={e => setEditDescripcion(e.target.value)} />
+                      </td>
+                      <td style={{ padding: '8px 12px' }}>
+                        <input style={{ ...inputStyle, width: 100 }} type="number" value={editMonto} onChange={e => setEditMonto(e.target.value)} />
+                      </td>
+                      <td style={{ padding: '8px 12px' }}>
+                        <input style={{ ...inputStyle, width: 130 }} type="date" value={editFecha} onChange={e => setEditFecha(e.target.value)} />
+                      </td>
+                      <td style={{ padding: '8px 12px', whiteSpace: 'nowrap' }}>
+                        <div style={{ display: 'flex', gap: 6 }}>
+                          <button onClick={saveEdit} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '5px 10px', background: '#22c55e', color: '#fff', border: 'none', borderRadius: 6, fontWeight: 600, fontSize: 12, cursor: 'pointer' }}>
+                            <FaSave /> Guardar
+                          </button>
+                          <button onClick={cancelEdit} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '5px 10px', background: '#e5e7eb', color: '#374151', border: 'none', borderRadius: 6, fontWeight: 600, fontSize: 12, cursor: 'pointer' }}>
+                            <FaTimes /> Cancelar
+                          </button>
+                        </div>
+                      </td>
                     </>
                   ) : (
-                    <button onClick={() => startEdit(gasto)}>Editar</button>
+                    <>
+                      <td style={{ padding: '12px 16px', color: '#6b7280' }}>{gasto.curso}</td>
+                      <td style={{ padding: '12px 16px', fontWeight: 500 }}>{gasto.descripcion}</td>
+                      <td style={{ padding: '12px 16px', fontWeight: 700, color: '#16a34a' }}>
+                        {new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(gasto.monto)}
+                      </td>
+                      <td style={{ padding: '12px 16px', color: '#6b7280' }}>
+                        {new Date(gasto.fecha).toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-')}
+                      </td>
+                      {canEdit && (
+                        <td style={{ padding: '12px 16px', whiteSpace: 'nowrap' }}>
+                          <div style={{ display: 'flex', gap: 6 }}>
+                            <button onClick={() => startEdit(gasto)} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '5px 10px', background: '#dbeafe', color: '#2563eb', border: 'none', borderRadius: 6, fontWeight: 600, fontSize: 12, cursor: 'pointer' }}>
+                              <FaEdit /> Editar
+                            </button>
+                            <button onClick={() => handleDelete(gasto.id, gasto.descripcion)} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '5px 10px', background: '#fee2e2', color: '#ef4444', border: 'none', borderRadius: 6, fontWeight: 600, fontSize: 12, cursor: 'pointer' }}>
+                              <FaTrash /> Eliminar
+                            </button>
+                          </div>
+                        </td>
+                      )}
+                    </>
                   )}
-                </td>
-              )}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }

@@ -275,6 +275,25 @@ export default function PagosList({ user, refresh, onPagosChange, isPagoAtrasado
     setEditMonto('');
   };
 
+  const handleCellDelete = async (alumnoId, conceptoId) => {
+    const pagoExistente = pagos.find(p => p.usuario_id === alumnoId && p.concepto_id === conceptoId);
+    if (!pagoExistente) { handleCellCancel(); return; }
+    if (!window.confirm('¿Eliminar este pago?')) return;
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/pagos/${pagoExistente.id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) throw new Error();
+      handleCellCancel();
+      toast.showToast('Pago eliminado', 'success');
+      if (onPagosChange) onPagosChange();
+    } catch {
+      toast.showToast('Error al eliminar pago', 'error');
+    }
+  };
+
   const handleKeyDown = (e, alumnoId, conceptoId) => {
     // Guardar con Enter
     if (e.key === 'Enter') {
@@ -369,24 +388,20 @@ export default function PagosList({ user, refresh, onPagosChange, isPagoAtrasado
                               autoFocus
                             />
                             <div className="edit-cell-actions">
-                              <button 
-                                className="save-button"
-                                onClick={e => {
-                                  e.stopPropagation();
-                                  handleCellSave(al.id, con.id);
-                                }}
-                              >
+                              <button className="save-button" onClick={e => { e.stopPropagation(); handleCellSave(al.id, con.id); }}>
                                 Guardar
                               </button>
-                              <button 
-                                className="cancel-button"
-                                onClick={e => {
-                                  e.stopPropagation();
-                                  handleCellCancel();
-                                }}
-                              >
+                              <button className="cancel-button" onClick={e => { e.stopPropagation(); handleCellCancel(); }}>
                                 Cancelar
                               </button>
+                              {pagos.find(p => p.usuario_id === al.id && p.concepto_id === con.id) && (
+                                <button
+                                  style={{ background: '#fee2e2', color: '#ef4444', border: 'none', borderRadius: 4, padding: '2px 8px', cursor: 'pointer', fontSize: 12, fontWeight: 600 }}
+                                  onClick={e => { e.stopPropagation(); handleCellDelete(al.id, con.id); }}
+                                >
+                                  Eliminar
+                                </button>
+                              )}
                             </div>
                           </div>
                         ) : (

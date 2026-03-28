@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useToast } from '../Layout/ToastProvider';
 import { FaUpload, FaFileAlt, FaFileWord, FaFilePdf, FaFileExcel, FaImage } from 'react-icons/fa';
 
-export default function DocumentosForm({ user }) {
+export default function DocumentosForm({ user, onSuccess }) {
   const [nombre, setNombre] = useState('');
   const [descripcion, setDescripcion] = useState('');
   const [file, setFile] = useState(null);
@@ -68,8 +68,7 @@ export default function DocumentosForm({ user }) {
       setFile(null);
       setFileName('');
       showToast('Documento subido correctamente', 'success');
-      // Recargar la lista de documentos aquí si tienes función para ello
-      // Por ejemplo: onDocumentoAgregado()
+      if (onSuccess) onSuccess();
     } catch (err) {
       console.error('Error completo:', err);
       showToast(err.message || 'Error de red al subir documento', 'error');

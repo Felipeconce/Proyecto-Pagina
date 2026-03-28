@@ -1,9 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { FaDownload, FaFileAlt, FaFileWord, FaFilePdf, FaFileExcel, FaImage, FaList } from 'react-icons/fa';
+import { FaDownload, FaFileAlt, FaFileWord, FaFilePdf, FaFileExcel, FaImage, FaList, FaTrash } from 'react-icons/fa';
+import { useToast } from '../Layout/ToastProvider';
 
-export default function DocumentosList() {
+export default function DocumentosList({ user, refresh, onRefresh }) {
   const [documentos, setDocumentos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { showToast } = useToast();
+  const puedeEliminar = user && [1, 2, 3, 5].includes(user.rol_id);
+
+  const handleDelete = async (id, nombre) => {
+    if (!window.confirm(`¿Eliminar el documento "${nombre}"?`)) return;
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/documentos/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) throw new Error();
+      showToast('Documento eliminado', 'success');
+      if (onRefresh) onRefresh();
+    } catch {
+      showToast('Error al eliminar documento', 'error');
+    }
+  };
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -21,7 +40,7 @@ export default function DocumentosList() {
         console.error('Error al cargar documentos:', err);
         setLoading(false);
       });
-  }, []);
+  }, [refresh]);
 
   const getFileIcon = (url) => {
     if (!url) return <FaFileAlt color="#6b7280" />;
@@ -79,6 +98,7 @@ export default function DocumentosList() {
                 <th style={{ padding: '12px 16px', fontWeight: '600' }}>Descripción</th>
                 <th style={{ padding: '12px 16px', fontWeight: '600' }}>Fecha</th>
                 <th style={{ padding: '12px 16px', fontWeight: '600', textAlign: 'center' }}>Documento</th>
+                {puedeEliminar && <th style={{ padding: '12px 16px', fontWeight: '600', textAlign: 'center' }}>Acciones</th>}
               </tr>
             </thead>
             <tbody>
@@ -103,23 +123,29 @@ export default function DocumentosList() {
                       rel="noopener noreferrer"
                       download
                       style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '6px',
-                        padding: '6px 12px',
-                        backgroundColor: '#e0e7ff',
-                        color: '#4f46e5',
-                        borderRadius: '8px',
-                        fontWeight: '600',
-                        textDecoration: 'none',
-                        fontSize: '14px',
-                        transition: 'all 0.2s'
+                        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                        gap: '6px', padding: '6px 12px', backgroundColor: '#e0e7ff',
+                        color: '#4f46e5', borderRadius: '8px', fontWeight: '600',
+                        textDecoration: 'none', fontSize: '14px'
                       }}
                     >
                       <FaDownload /> Descargar
                     </a>
                   </td>
+                  {puedeEliminar && (
+                    <td style={{ padding: '12px 16px', textAlign: 'center' }}>
+                      <button
+                        onClick={() => handleDelete(doc.id, doc.nombre)}
+                        style={{
+                          display: 'inline-flex', alignItems: 'center', gap: 6,
+                          padding: '6px 12px', background: '#fee2e2', color: '#ef4444',
+                          border: 'none', borderRadius: 8, fontWeight: 600, fontSize: 13, cursor: 'pointer'
+                        }}
+                      >
+                        <FaTrash /> Eliminar
+                      </button>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>

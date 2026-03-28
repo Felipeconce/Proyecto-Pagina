@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useToast } from '../Layout/ToastProvider';
 import { useFetchList } from '../../hooks/useFetchList';
 
-export default function GastosForm({ user }) {
+export default function GastosForm({ user, onSuccess }) {
   const { data: cursos, loading, error } = useFetchList(`${process.env.REACT_APP_API_URL}/cursos`);
   const [cursoId, setCursoId] = useState('');
   const [descripcion, setDescripcion] = useState('');
@@ -61,7 +61,7 @@ export default function GastosForm({ user }) {
       setMonto('');
       setFecha('');
       showToast('Gasto agregado correctamente', 'success');
-      // Opcional: podrías recargar la lista de gastos aquí si lo deseas
+      if (onSuccess) onSuccess();
     } catch (err) {
       showToast(err.message || 'Error de red al agregar gasto', 'error');
     }

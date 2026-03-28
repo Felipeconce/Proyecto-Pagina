@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import GastosList from '../components/Gastos/GastosList';
 import GastosForm from '../components/Gastos/GastosForm';
 import { FaReceipt } from 'react-icons/fa';
 
 export default function GastosPage({ user }) {
+  const [refresh, setRefresh] = useState(false);
+
   return (
     <section>
       <h2 style={{
@@ -17,8 +19,8 @@ export default function GastosPage({ user }) {
       }}>
         <FaReceipt color="#16a34a" /> Gastos
       </h2>
-      <GastosForm user={user} />
-      <GastosList user={user} />
+      <GastosForm user={user} onSuccess={() => setRefresh(r => !r)} />
+      <GastosList user={user} refresh={refresh} onRefresh={() => setRefresh(r => !r)} />
     </section>
   );
 }

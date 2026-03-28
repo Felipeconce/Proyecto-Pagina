@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useToast } from '../Layout/ToastProvider';
 import { FaCalendarPlus, FaCalendarAlt, FaPencilAlt } from 'react-icons/fa';
 
-export default function FechasForm({ user }) {
+export default function FechasForm({ user, onSuccess }) {
   const [fecha, setFecha] = useState('');
   const [descripcion, setDescripcion] = useState('');
   const { showToast } = useToast();
@@ -43,7 +43,7 @@ export default function FechasForm({ user }) {
       setFecha('');
       setDescripcion('');
       showToast('Fecha agregada correctamente', 'success');
-      // Opcional: podrías recargar la lista de fechas aquí si lo deseas
+      if (onSuccess) onSuccess();
     } catch (err) {
       console.error('Error completo:', err);
       showToast(err.message || 'Error de red al agregar fecha', 'error');
