@@ -8,7 +8,6 @@ export default function PagosPage({ user }) {
   const [pagos, setPagos] = useState([]);
   const [alumnos, setAlumnos] = useState([]);
   const [conceptos, setConceptos] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [pagosAtrasadosMap, setPagosAtrasadosMap] = useState({});
 
   // Mapeo de abreviaturas de meses a números de mes (1-12)
@@ -26,8 +25,6 @@ export default function PagosPage({ user }) {
   const conceptosAtrasadosForzados = ['MAR', 'ABR', 'MAM', 'Mar', 'Abr'];
 
   useEffect(() => {
-    setLoading(true);
-    
     // Hacer las peticiones para obtener pagos, alumnos y conceptos
     const token = localStorage.getItem('token');
     const authHeader = token ? { 'Authorization': `Bearer ${token}` } : {};
@@ -61,18 +58,15 @@ export default function PagosPage({ user }) {
         // Procesar los conceptos y pagos después de cargarlos
         const atrasadosMap = calcularPagosAtrasados(pagosData, conceptosData, alumnosData, conceptosEspeciales);
         setPagosAtrasadosMap(atrasadosMap);
-        
-        setLoading(false);
       })
       .catch(err => {
         console.error("Error al cargar datos:", err);
-        setLoading(false);
         setPagos([]);
         setAlumnos([]);
         setConceptos([]);
         setPagosAtrasadosMap({});
       });
-  }, [refresh]);
+  }, [refresh]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Verificar si un concepto está atrasado basado en su fecha de vencimiento o si es un mes pasado
   const isConceptoAtrasado = (conceptoId, conceptosArray, conceptosEspeciales = []) => {
@@ -96,8 +90,7 @@ export default function PagosPage({ user }) {
     
     const hoy = new Date();
     const mesActual = hoy.getMonth() + 1; // Los meses en JS son 0-11
-    const anioActual = hoy.getFullYear();
-    
+
     // Si el concepto es un mes estándar (MAR, ABR, etc.)
     if (mesesMap[concepto.nombre]) {
       const mesConcepto = mesesMap[concepto.nombre];

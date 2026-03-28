@@ -5,7 +5,6 @@ import './PagosStyles.css';
 export default function ConceptosForm({ user, onConceptoAgregado }) {
   const [nombre, setNombre] = useState('');
   const [fechaVencimiento, setFechaVencimiento] = useState('');
-  const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [conceptos, setConceptos] = useState([]);
   const [selectedId, setSelectedId] = useState('');
@@ -81,11 +80,9 @@ export default function ConceptosForm({ user, onConceptoAgregado }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
     
     // Validar que el nombre tenga exactamente 3 caracteres
     if (nombre.length !== 3) {
-      setError('El nombre debe tener exactamente 3 caracteres');
       toast.showToast('El nombre debe tener exactamente 3 caracteres', 'error');
       return;
     }
@@ -93,7 +90,6 @@ export default function ConceptosForm({ user, onConceptoAgregado }) {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
-        setError('No estás autenticado');
         toast.showToast('No estás autenticado', 'error');
         return;
       }
@@ -138,7 +134,6 @@ export default function ConceptosForm({ user, onConceptoAgregado }) {
       
       if (!res.ok) {
         const data = await res.json();
-        setError(data.error || 'Error al agregar concepto');
         toast.showToast(data.error || 'Error al agregar ítem', 'error');
         return;
       }
@@ -167,7 +162,6 @@ export default function ConceptosForm({ user, onConceptoAgregado }) {
       }
     } catch (err) {
       console.error("Error completo:", err);
-      setError('Error de conexión');
       toast.showToast('Error de conexión', 'error');
     }
   };

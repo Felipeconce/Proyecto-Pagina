@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { FaUsersCog, FaUserPlus, FaEdit, FaTrash, FaSave, FaTimes, FaKey } from 'react-icons/fa';
+import { FaUsersCog, FaUserPlus, FaEdit, FaTrash, FaSave, FaTimes } from 'react-icons/fa';
 import { useToast } from '../components/Layout/ToastProvider';
 
 const API = process.env.REACT_APP_API_URL;

@@ -88,8 +88,3 @@ export const fixStickyColumn = () => {
   }
 };
 
-// Exportar funciones útiles
-export default {
-  setupScrollSync,
-  fixStickyColumn
-};

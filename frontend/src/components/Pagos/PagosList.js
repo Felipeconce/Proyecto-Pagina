@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { FaMoneyBillWave, FaCheckCircle, FaHourglassHalf, FaExclamationTriangle } from 'react-icons/fa';
 import { useToast } from '../Layout/ToastProvider';
 import './PagosStyles.css';
 import './TableScroll.css';

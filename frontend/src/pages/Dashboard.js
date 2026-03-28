@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaMoneyBillWave, FaReceipt, FaFileAlt, FaCalendarAlt, FaCheckCircle, FaHourglassHalf, FaExclamationTriangle, FaUserCircle, FaEnvelope, FaIdBadge, FaArrowRight, FaChartLine, FaBalanceScale, FaArrowUp, FaArrowDown } from 'react-icons/fa';
+import { FaMoneyBillWave, FaReceipt, FaFileAlt, FaCalendarAlt, FaCheckCircle, FaExclamationTriangle, FaUserCircle, FaEnvelope, FaIdBadge, FaArrowRight, FaChartLine, FaBalanceScale, FaArrowUp, FaArrowDown } from 'react-icons/fa';
 
 export default function Dashboard({ user }) {
   const [loading, setLoading] = useState(true);
@@ -175,7 +175,7 @@ export default function Dashboard({ user }) {
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Función para verificar si un concepto está atrasado
   const isConceptoAtrasado = (conceptoId, conceptosArray, conceptosEspeciales = []) => {
