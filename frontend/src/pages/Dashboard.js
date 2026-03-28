@@ -32,7 +32,8 @@ export default function Dashboard({ user }) {
     1: 'Superusuario',
     2: 'Presidente',
     3: 'Tesorero',
-    4: 'Apoderado'
+    4: 'Apoderado',
+    5: 'Secretaria'
   };
 
   // Mapeo de abreviaturas de meses a números de mes (1-12)

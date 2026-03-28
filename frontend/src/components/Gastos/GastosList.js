@@ -25,17 +25,20 @@ export default function GastosList({ user }) {
 
   const saveEdit = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem('token');
     await fetch(`${process.env.REACT_APP_API_URL}/gastos/${editId}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
       body: JSON.stringify({
         descripcion: editDescripcion,
-        monto: editMonto,
+        monto: Number(editMonto),
         fecha: editFecha,
       }),
     });
     setEditId(null);
-    fetch(`${process.env.REACT_APP_API_URL}/gastos`)
+    fetch(`${process.env.REACT_APP_API_URL}/gastos`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
       .then(res => res.json())
       .then(data => setGastos(data));
   };
@@ -55,7 +58,7 @@ export default function GastosList({ user }) {
             <th>Descripción</th>
             <th>Monto</th>
             <th>Fecha</th>
-            {user.rol_id === 3 && <th>Acciones</th>}
+            {[1, 3].includes(user.rol_id) && <th>Acciones</th>}
           </tr>
         </thead>
         <tbody>
@@ -96,7 +99,7 @@ export default function GastosList({ user }) {
                   new Date(gasto.fecha).toLocaleDateString('es-CL', {day: '2-digit', month: '2-digit', year: 'numeric'}).replace(/\//g, '-')
                 )}
               </td>
-              {user.rol_id === 3 && (
+              {[1, 3].includes(user.rol_id) && (
                 <td>
                   {editId === gasto.id ? (
                     <>

@@ -9,38 +9,32 @@ export default function HistorialPage({ user }) {
   useEffect(() => {
     if (![1, 2, 3].includes(user.rol_id)) return;
     setLoading(true);
-    console.log('HistorialPage user:', user);
 
-    // Validar que los IDs son números válidos
-    const rolIdValido = Number.isInteger(user.rol_id);
-    const cursoIdValido = Number.isInteger(user.curso_id);
-    const colegioIdValido = Number.isInteger(user.colegio_id);
-
-    if (!rolIdValido || !cursoIdValido || !colegioIdValido) {
-      toast.showToast('Faltan datos del usuario para cargar el historial', 'error');
+    const token = localStorage.getItem('token');
+    if (!token) {
+      toast.showToast('No estás autenticado', 'error');
       setLoading(false);
       return;
     }
 
-    fetch(`${process.env.REACT_APP_API_URL}/logs?rol_id=${user.rol_id}&curso_id=${user.curso_id}&colegio_id=${user.colegio_id}`)
+    fetch(`${process.env.REACT_APP_API_URL}/logs`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
       .then(res => {
         if (!res.ok) {
-          res.json().then(err => {
-            toast.showToast(err.error || 'Error desconocido al cargar historial', 'error');
+          return res.json().then(err => {
+            toast.showToast(err.error || 'Error al cargar historial', 'error');
+            throw new Error(err.error);
           });
-          throw new Error('No autorizado o error de red');
         }
         return res.json();
       })
       .then(data => {
         setLogs(data);
-        setLoading(false);
       })
-      .catch(err => {
-        if (!loading) toast.showToast('No se pudo cargar el historial', 'error');
-        setLoading(false);
-      });
-  }, [user, toast, loading]);
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, [user, toast]);
 
   if (![1, 2, 3].includes(user.rol_id)) {
     return <div style={{ color: '#b91c1c', margin: 32 }}>No tienes permiso para ver el historial.</div>;
@@ -90,5 +84,6 @@ function rolNombre(rol_id) {
   if (rol_id === 2) return 'Presidente';
   if (rol_id === 3) return 'Tesorero';
   if (rol_id === 4) return 'Apoderado';
+  if (rol_id === 5) return 'Secretaria';
   return 'Otro';
 }

@@ -50,8 +50,8 @@ export default function FechasForm({ user }) {
     }
   };
 
-  // Si quieres restringir quién puede agregar fechas, usa algo como:
-  // if (user.rol_id !== 1 && user.rol_id !== 2) return null;
+  // Solo superadmin(1), presidente(2), tesorero(3) y secretaria(5) pueden agregar fechas
+  if (!user || ![1, 2, 3, 5].includes(user.rol_id)) return null;
 
   return (
     <div className="content-section" style={{ 

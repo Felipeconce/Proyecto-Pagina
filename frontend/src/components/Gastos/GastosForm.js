@@ -49,12 +49,7 @@ export default function GastosForm({ user }) {
           curso_id: parseInt(cursoId, 10),
           descripcion,
           monto: montoNum,
-          fecha,
-          usuario_id: user.id,
-          usuario_nombre: user.nombre,
-          rol_id: user.rol_id,
-          curso_id: user.curso_id,
-          colegio_id: user.colegio_id
+          fecha
         })
       });
       if (!response.ok) {
@@ -72,7 +67,7 @@ export default function GastosForm({ user }) {
     }
   };
 
-  if (user.rol_id !== 3) return null;
+  if (![1, 3].includes(user.rol_id)) return null;
 
   return (
     <form onSubmit={handleSubmit} className="form-grid">

@@ -16,7 +16,10 @@ export default function ConceptosForm({ user, onConceptoAgregado }) {
   const toast = useToast();
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/conceptos`)
+    const token = localStorage.getItem('token');
+    fetch(`${process.env.REACT_APP_API_URL}/conceptos`, {
+      headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+    })
       .then(res => {
         if (res.ok) return res.json();
         return [];
@@ -215,7 +218,9 @@ export default function ConceptosForm({ user, onConceptoAgregado }) {
       if (onConceptoAgregado) onConceptoAgregado();
       
       // Actualizar lista de conceptos
-      const updatedRes = await fetch(`${process.env.REACT_APP_API_URL}/conceptos`);
+      const updatedRes = await fetch(`${process.env.REACT_APP_API_URL}/conceptos`, {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      });
       if (updatedRes.ok) {
         const data = await updatedRes.json();
         setConceptos(data);
@@ -299,7 +304,9 @@ export default function ConceptosForm({ user, onConceptoAgregado }) {
       if (onConceptoAgregado) onConceptoAgregado();
       
       // Actualizar lista de conceptos
-      const updatedRes = await fetch(`${process.env.REACT_APP_API_URL}/conceptos`);
+      const updatedRes = await fetch(`${process.env.REACT_APP_API_URL}/conceptos`, {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      });
       if (updatedRes.ok) {
         const data = await updatedRes.json();
         setConceptos(data);
@@ -310,7 +317,7 @@ export default function ConceptosForm({ user, onConceptoAgregado }) {
     }
   };
 
-  if (!user || user.rol_id !== 3) return null;
+  if (!user || ![1, 3].includes(user.rol_id)) return null;
 
   return (
     <div className="nuevo-cobro-container">
