@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FaReceipt, FaEdit, FaTrash, FaSave, FaTimes } from 'react-icons/fa';
+import { FaReceipt, FaEdit, FaTrash, FaSave, FaTimes, FaBoxOpen } from 'react-icons/fa';
 import { useToast } from '../Layout/ToastProvider';
 
 export default function GastosList({ user, refresh, onRefresh }) {
@@ -96,9 +96,22 @@ export default function GastosList({ user, refresh, onRefresh }) {
       </div>
 
       {loading ? (
-        <div style={{ padding: 32, textAlign: 'center', color: '#6b7280' }}>Cargando gastos...</div>
+        <div style={{ padding: '8px 0' }}>
+          {[1, 2, 3].map(i => (
+            <div key={i} className="skeleton-row">
+              <span className="skeleton" style={{ height: 14, width: '12%' }} />
+              <span className="skeleton" style={{ height: 14, width: '38%' }} />
+              <span className="skeleton" style={{ height: 14, width: '14%' }} />
+              <span className="skeleton" style={{ height: 14, width: '18%' }} />
+            </div>
+          ))}
+        </div>
       ) : gastos.length === 0 ? (
-        <div style={{ padding: 32, textAlign: 'center', color: '#6b7280' }}>No hay gastos registrados.</div>
+        <div className="empty-state">
+          <span className="empty-state-icon"><FaBoxOpen /></span>
+          <p className="empty-state-text">No hay gastos registrados</p>
+          {canEdit && <p className="empty-state-hint">Usa el formulario de arriba para agregar el primero</p>}
+        </div>
       ) : (
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
@@ -126,10 +139,10 @@ export default function GastosList({ user, refresh, onRefresh }) {
                       </td>
                       <td style={{ padding: '8px 12px', whiteSpace: 'nowrap' }}>
                         <div style={{ display: 'flex', gap: 6 }}>
-                          <button onClick={saveEdit} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '5px 10px', background: '#22c55e', color: '#fff', border: 'none', borderRadius: 6, fontWeight: 600, fontSize: 12, cursor: 'pointer' }}>
+                          <button onClick={saveEdit} className="btn-icon btn-save">
                             <FaSave /> Guardar
                           </button>
-                          <button onClick={cancelEdit} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '5px 10px', background: '#e5e7eb', color: '#374151', border: 'none', borderRadius: 6, fontWeight: 600, fontSize: 12, cursor: 'pointer' }}>
+                          <button onClick={cancelEdit} className="btn-icon btn-cancel">
                             <FaTimes /> Cancelar
                           </button>
                         </div>
@@ -148,10 +161,10 @@ export default function GastosList({ user, refresh, onRefresh }) {
                       {canEdit && (
                         <td style={{ padding: '12px 16px', whiteSpace: 'nowrap' }}>
                           <div style={{ display: 'flex', gap: 6 }}>
-                            <button onClick={() => startEdit(gasto)} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '5px 10px', background: '#dbeafe', color: '#2563eb', border: 'none', borderRadius: 6, fontWeight: 600, fontSize: 12, cursor: 'pointer' }}>
+                            <button onClick={() => startEdit(gasto)} className="btn-icon btn-edit">
                               <FaEdit /> Editar
                             </button>
-                            <button onClick={() => handleDelete(gasto.id, gasto.descripcion)} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '5px 10px', background: '#fee2e2', color: '#ef4444', border: 'none', borderRadius: 6, fontWeight: 600, fontSize: 12, cursor: 'pointer' }}>
+                            <button onClick={() => handleDelete(gasto.id, gasto.descripcion)} className="btn-icon btn-delete">
                               <FaTrash /> Eliminar
                             </button>
                           </div>

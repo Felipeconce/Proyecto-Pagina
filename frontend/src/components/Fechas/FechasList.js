@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FaCalendarDay, FaCalendarCheck, FaCalendarWeek, FaCalendarTimes, FaTrash } from 'react-icons/fa';
+import { FaCalendarDay, FaCalendarCheck, FaCalendarWeek, FaCalendarTimes, FaTrash, FaCalendarAlt } from 'react-icons/fa';
 import { useToast } from '../Layout/ToastProvider';
 
 export default function FechasList({ user, refresh, onRefresh }) {
@@ -106,12 +106,20 @@ export default function FechasList({ user, refresh, onRefresh }) {
       </h3>
 
       {loading ? (
-        <div style={{ padding: '20px', textAlign: 'center', color: '#6b7280' }}>
-          Cargando fechas...
+        <div style={{ padding: '8px 0' }}>
+          {[1, 2, 3].map(i => (
+            <div key={i} className="skeleton-row">
+              <span className="skeleton" style={{ height: 14, width: '18%' }} />
+              <span className="skeleton" style={{ height: 14, width: '44%' }} />
+              <span className="skeleton" style={{ height: 24, width: '14%', borderRadius: 9999 }} />
+            </div>
+          ))}
         </div>
       ) : fechas.length === 0 ? (
-        <div style={{ padding: '20px', textAlign: 'center', color: '#6b7280' }}>
-          No hay fechas importantes registradas.
+        <div className="empty-state">
+          <span className="empty-state-icon"><FaCalendarAlt /></span>
+          <p className="empty-state-text">No hay fechas importantes registradas</p>
+          {puedeEliminar && <p className="empty-state-hint">Agrega la primera fecha usando el formulario</p>}
         </div>
       ) : (
         <div style={{ overflowX: 'auto' }}>
@@ -165,14 +173,7 @@ export default function FechasList({ user, refresh, onRefresh }) {
                     </td>
                     {puedeEliminar && (
                       <td style={{ padding: '12px 16px', textAlign: 'center' }}>
-                        <button
-                          onClick={() => handleDelete(fecha.id, fecha.descripcion)}
-                          style={{
-                            display: 'inline-flex', alignItems: 'center', gap: 6,
-                            padding: '6px 12px', background: '#fee2e2', color: '#ef4444',
-                            border: 'none', borderRadius: 8, fontWeight: 600, fontSize: 13, cursor: 'pointer'
-                          }}
-                        >
+                        <button onClick={() => handleDelete(fecha.id, fecha.descripcion)} className="btn-icon btn-delete" style={{ fontSize: 13, padding: '6px 12px' }}>
                           <FaTrash /> Eliminar
                         </button>
                       </td>

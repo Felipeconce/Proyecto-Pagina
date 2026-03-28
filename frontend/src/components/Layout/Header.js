@@ -22,12 +22,11 @@ export default function Header({ onHamburgerClick, user, onLogout }) {
         Centro de Apoderados
       </h1>
       <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 16 }}>
-        <span style={{ 
-          color: '#4b5563', 
-          fontSize: '0.95rem',
-          fontWeight: 500 
-        }}>
-          {user.nombre} | {getRolName(user.rol_id)}
+        <span style={{ color: '#4b5563', fontSize: '0.95rem', fontWeight: 500 }}>
+          {user.nombre}
+        </span>
+        <span className={`rol-badge rol-badge-${user.rol_id}`}>
+          {getRolName(user.rol_id)}
         </span>
         <button
           onClick={handleLogout}
@@ -61,6 +60,7 @@ function getRolName(rol_id) {
     case 2: return 'Presidente';
     case 3: return 'Tesorero';
     case 4: return 'Apoderado';
+    case 5: return 'Secretaria';
     default: return 'Usuario';
   }
 }

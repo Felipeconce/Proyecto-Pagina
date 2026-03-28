@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FaDownload, FaFileAlt, FaFileWord, FaFilePdf, FaFileExcel, FaImage, FaList, FaTrash } from 'react-icons/fa';
+import { FaDownload, FaFileAlt, FaFileWord, FaFilePdf, FaFileExcel, FaImage, FaList, FaTrash, FaFolderOpen } from 'react-icons/fa';
 import { useToast } from '../Layout/ToastProvider';
 
 export default function DocumentosList({ user, refresh, onRefresh }) {
@@ -73,12 +73,21 @@ export default function DocumentosList({ user, refresh, onRefresh }) {
       </h3>
 
       {loading ? (
-        <div style={{ padding: '20px', textAlign: 'center', color: '#6b7280' }}>
-          Cargando documentos...
+        <div style={{ padding: '8px 0' }}>
+          {[1, 2, 3].map(i => (
+            <div key={i} className="skeleton-row">
+              <span className="skeleton" style={{ height: 14, width: '28%' }} />
+              <span className="skeleton" style={{ height: 14, width: '32%' }} />
+              <span className="skeleton" style={{ height: 14, width: '14%' }} />
+              <span className="skeleton" style={{ height: 28, width: '10%', borderRadius: 8 }} />
+            </div>
+          ))}
         </div>
       ) : documentos.length === 0 ? (
-        <div style={{ padding: '20px', textAlign: 'center', color: '#6b7280' }}>
-          No hay documentos disponibles.
+        <div className="empty-state">
+          <span className="empty-state-icon"><FaFolderOpen /></span>
+          <p className="empty-state-text">No hay documentos disponibles</p>
+          {puedeEliminar && <p className="empty-state-hint">Sube el primer documento usando el formulario</p>}
         </div>
       ) : (
         <div style={{ overflowX: 'auto' }}>
@@ -134,14 +143,7 @@ export default function DocumentosList({ user, refresh, onRefresh }) {
                   </td>
                   {puedeEliminar && (
                     <td style={{ padding: '12px 16px', textAlign: 'center' }}>
-                      <button
-                        onClick={() => handleDelete(doc.id, doc.nombre)}
-                        style={{
-                          display: 'inline-flex', alignItems: 'center', gap: 6,
-                          padding: '6px 12px', background: '#fee2e2', color: '#ef4444',
-                          border: 'none', borderRadius: 8, fontWeight: 600, fontSize: 13, cursor: 'pointer'
-                        }}
-                      >
+                      <button onClick={() => handleDelete(doc.id, doc.nombre)} className="btn-icon btn-delete" style={{ fontSize: 13, padding: '6px 12px' }}>
                         <FaTrash /> Eliminar
                       </button>
                     </td>
